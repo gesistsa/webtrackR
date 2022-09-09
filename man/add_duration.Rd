@@ -2,12 +2,14 @@
 % Please edit documentation in R/preprocess.R
 \name{add_duration}
 \alias{add_duration}
-\title{Add time spend on webpage}
+\title{Add time spent in seconds on webpage}
 \usage{
-add_duration(wt)
+add_duration(wt, reset = 3600)
 }
 \arguments{
 \item{wt}{webtrack data as data.table object}
+
+\item{reset}{numeric. If duration is greater than this value, it is reset to zero, assuming a new browsing session has started}
 }
 \value{
 data.table with the same columns as wt and a new column called duration
