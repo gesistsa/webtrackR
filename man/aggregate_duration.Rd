@@ -12,7 +12,7 @@ aggregate_duration(wt, keep = FALSE)
 \item{keep}{logical. if intermediary columns should be kept or not. defaults to FALSE}
 }
 \value{
-data.table with the same columns as wt with updated duration
+webtrack data.table with the same columns as wt with updated duration
 }
 \description{
 Aggregate duration of consecutive visits to a website
