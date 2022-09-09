@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# webtrackR
+# webtrackR <img src="man/figures/logo.png" width="120px" align="right"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
