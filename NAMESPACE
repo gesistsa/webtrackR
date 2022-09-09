@@ -2,6 +2,7 @@
 
 export(add_duration)
 export(extract_domain)
+export(is_valid_wt)
 export(vars_exist)
 importFrom(data.table,":=")
 importFrom(data.table,.BY)

@@ -3,7 +3,7 @@
 \docType{data}
 \name{news_types}
 \alias{news_types}
-\title{News Domains}
+\title{News Types}
 \format{
 An object of class \code{data.table} (inherits from \code{data.frame}) with 690 rows and 2 columns.
 }
