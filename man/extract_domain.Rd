@@ -7,7 +7,7 @@
 extract_domain(wt)
 }
 \arguments{
-\item{wt}{data.table object containing tracking data}
+\item{wt}{webtrack data object}
 }
 \value{
 data.table with the same columns as wt and a new column called domain

@@ -6,7 +6,7 @@
 \title{Domain list
 classification of some domains (probably from some Stier et al. paper)}
 \format{
-An object of class \code{list} of length 7.
+An object of class \code{data.table} (inherits from \code{data.frame}) with 663 rows and 2 columns.
 }
 \usage{
 domain_list

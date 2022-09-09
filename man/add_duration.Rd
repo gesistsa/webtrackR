@@ -7,7 +7,7 @@
 add_duration(wt, reset = 3600)
 }
 \arguments{
-\item{wt}{webtrack data as data.table object}
+\item{wt}{webtrack data object}
 
 \item{reset}{numeric. If duration is greater than this value, it is reset to zero, assuming a new browsing session has started}
 }

@@ -5,7 +5,7 @@
 \alias{test_data}
 \title{Test Data (needs to be removed)}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 100 rows and 7 columns.
+An object of class \code{wt_dt} (inherits from \code{data.table}, \code{data.frame}) with 100 rows and 7 columns.
 }
 \usage{
 test_data

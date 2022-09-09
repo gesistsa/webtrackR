@@ -7,7 +7,7 @@
 aggregate_duration(wt, keep = FALSE)
 }
 \arguments{
-\item{wt}{data.table object containing tracking data}
+\item{wt}{webtrack data object}
 
 \item{keep}{logical. if intermediary columns should be kept or not. defaults to FALSE}
 }
