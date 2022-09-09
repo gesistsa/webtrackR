@@ -24,3 +24,7 @@ Imports:
     urltools,
     utils
 LazyData: true
+Suggests: 
+    backbone,
+    igraph,
+    stats

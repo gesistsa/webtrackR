@@ -10,7 +10,7 @@ extract_domain(wt)
 \item{wt}{webtrack data object}
 }
 \value{
-data.table with the same columns as wt and a new column called domain
+webtrack data.table with the same columns as wt and a new column called domain
 }
 \description{
 Extracts the domain and subdomain from the urls

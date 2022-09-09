@@ -21,7 +21,7 @@ classify_domains(
 \item{return.only}{if not null, only return the specified domain type}
 }
 \value{
-data.table with the same columns as wt and a new column called type. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
+webtrack data.table with the same columns as wt and a new column called type. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
 }
 \description{
 Classify domains according to prespecified classes

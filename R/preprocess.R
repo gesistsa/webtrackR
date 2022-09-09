@@ -3,7 +3,7 @@
 #' @param wt webtrack data object
 #' @param reset numeric. If duration is greater than this value, it is reset to zero, assuming a new browsing session has started
 #' @importFrom data.table is.data.table shift
-#' @return data.table with the same columns as wt and a new column called duration
+#' @return webtrack data.table with the same columns as wt and a new column called duration
 #' @export
 add_duration <- function(wt, reset = 3600){
   stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
@@ -20,7 +20,7 @@ add_duration <- function(wt, reset = 3600){
 #' @description Extracts the domain and subdomain from the urls
 #' @param wt webtrack data object
 #' @importFrom data.table is.data.table
-#' @return data.table with the same columns as wt and a new column called domain
+#' @return webtrack data.table with the same columns as wt and a new column called domain
 #' @export
 extract_domain <- function(wt){
   stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
@@ -33,7 +33,7 @@ extract_domain <- function(wt){
 #' @param wt webtrack data object
 #' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
 #' @importFrom data.table is.data.table shift .N
-#' @return data.table with the same columns as wt with updated duration
+#' @return webtrack data.table with the same columns as wt with updated duration
 #' @export
 aggregate_duration <- function(wt, keep = FALSE){
   # trick to avoid NOTES from R CMD check:
@@ -60,11 +60,12 @@ aggregate_duration <- function(wt, keep = FALSE){
 #' @param domain_classes a data.table containing a column "domain" and "type". If NULL, an internal list is used
 #' @param preprocess_newsportals logical. add suffix "NEWS" to domains which are classified as portals. If TRUE there needs to be a domain type "newsportals"
 #' @param return.only if not null, only return the specified domain type
-#' @return data.table with the same columns as wt and a new column called type. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
+#' @return webtrack data.table with the same columns as wt and a new column called type. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
 #' @export
 classify_domains <- function(wt,domain_classes = NULL, preprocess_newsportals = FALSE, return.only = NULL){
   # trick to avoid NOTES from R CMD check:
   i.type = NULL
+
   stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
   vars_exist(wt,vars = c("url","domain"))
 
@@ -102,5 +103,20 @@ classify_domains <- function(wt,domain_classes = NULL, preprocess_newsportals = 
   if(!is.null(return.only)){
     wt <- wt[type==return.only]
   }
+  wt[]
+}
+
+#' Create an urldummy variable from a data.table object
+#' @param wt webtrack data object
+#' @param dummy a vector of urls that should be dummy coded
+#' @param name name of dummy variable to create.
+#' @return webtrack object with the same columns and a new column called "name" including the dummy variable
+#' @export
+#'
+create_urldummy <- function(wt,dummy,name){
+  stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
+  vars_exist(wt,vars = c("url"))
+  wt[,dummy:=data.table::fifelse(url%in%dummy, TRUE, FALSE)]
+  data.table::setnames(wt,"dummy",name)
   wt[]
 }

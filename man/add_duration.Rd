@@ -12,7 +12,7 @@ add_duration(wt, reset = 3600)
 \item{reset}{numeric. If duration is greater than this value, it is reset to zero, assuming a new browsing session has started}
 }
 \value{
-data.table with the same columns as wt and a new column called duration
+webtrack data.table with the same columns as wt and a new column called duration
 }
 \description{
 Derive the time spend on a website from the timestamps
