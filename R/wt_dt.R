@@ -18,7 +18,7 @@ NULL
 as.wt_dt <- function(x){
   stopifnot(is.data.table(x))
   vars_exist(x,vars = c("panelist_id", "url", "timestamp"))
-
+  data.table::setorder(x,panelist_id,timestamp)
   class(x) <- c("wt_dt",class(x))
   x
 }
@@ -47,14 +47,16 @@ print.wt_dt <- function(x, ...) {
 }
 
 #' Summary function for webtrack data
+#' @param object object of class wt_dt
+#' @param ... additional parameters for summary
 #'@export
-summary.wt_dt <- function(x,...){
+summary.wt_dt <- function(object,...){
   tick  <- '\u2714'
   cross <- '\u2716'
   symbols <- c(cross,tick)
-  no_panelist <- length(unique(x[["panelist_id"]]))
-  time_window <- range(x[["timestamp"]])
-  idx <- (!is.na(pmatch(c("duration","domain","type"),names(x))))+1
+  no_panelist <- length(unique(object[["panelist_id"]]))
+  time_window <- range(object[["timestamp"]])
+  idx <- (!is.na(pmatch(c("duration","domain","type"),names(object))))+1
   cat("\n ==== Overview ====\n\n")
   cat("panelists: ",no_panelist,"\n")
   cat("time window: ",as.character(time_window[1])," - ", as.character(time_window[2]),"\n")
@@ -62,5 +64,5 @@ summary.wt_dt <- function(x,...){
   cat("[",symbols[idx[2]],"] domain\n",sep="")
   cat("[",symbols[idx[3]],"] type\n",sep="")
   cat("\n ====== DATA ======\n\n")
-  NextMethod(x,...)
+  NextMethod(object,...)
 }

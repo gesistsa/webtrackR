@@ -4,7 +4,12 @@
 \alias{summary.wt_dt}
 \title{Summary function for webtrack data}
 \usage{
-\method{summary}{wt_dt}(x, ...)
+\method{summary}{wt_dt}(object, ...)
+}
+\arguments{
+\item{object}{object of class wt_dt}
+
+\item{...}{additional parameters for summary}
 }
 \description{
 Summary function for webtrack data
