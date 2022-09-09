@@ -24,3 +24,21 @@ extract_domain <- function(wt){
   wt
 }
 
+#' Aggregate duration of consecutive visits to a website
+#' @param wt data.table object containing tracking data
+#' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
+#' @importFrom data.table is.data.table shift
+#' @return data.table with the same columns as wt with updated duration
+#' @export
+aggregate_duration <- function(wt, keep = FALSE){
+  stopifnot(is.data.table(wt))
+  vars_exist(wt,vars = c("url","panelist_id","timestamp","domain"))
+  wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
+  wt[, day := as.Date(timestamp)]
+  wt <- wt[, .(visits = .N, duration = sum(as.numeric(duration), na.rm = TRUE)),
+           by = c("panelist_id", "visit", "url", "day")]
+  if(!keep){
+    wt[,c("visit","visits","day") := NULL]
+  }
+  wt
+}
