@@ -58,11 +58,16 @@ aggregate_duration <- function(wt, keep = FALSE){
 #' Classify domains according to prespecified classes
 #' @param wt webtrack data object
 #' @param domain_classes a data.table containing a column "domain" and "type". If NULL, an internal list is used
+#' @param prev_type logical. If TRUE (default) the type of the domain visited before the current visit is added
 #' @param preprocess_newsportals logical. add suffix "NEWS" to domains which are classified as portals. If TRUE there needs to be a domain type "newsportals"
 #' @param return.only if not null, only return the specified domain type
-#' @return webtrack data.table with the same columns as wt and a new column called type. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
+#' @return webtrack data.table with the same columns as wt and a new column called type. If prev_type is TRUE, a column prev_type is added with the type of the visit before the current one. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
 #' @export
-classify_domains <- function(wt,domain_classes = NULL, preprocess_newsportals = FALSE, return.only = NULL){
+classify_domains <- function(wt,
+                             domain_classes = NULL,
+                             prev_type = TRUE,
+                             preprocess_newsportals = FALSE,
+                             return.only = NULL){
   # trick to avoid NOTES from R CMD check:
   i.type = NULL
 
@@ -102,6 +107,10 @@ classify_domains <- function(wt,domain_classes = NULL, preprocess_newsportals = 
   }
   if(!is.null(return.only)){
     wt <- wt[type==return.only]
+  }
+  if(prev_type){
+  wt[,prev_type:=data.table::shift(type,n = 1L, fill = "other"),by=c("panelist_id","day")]
+  wt[,prev_type:=data.table::fifelse(data.table::shift(duration,n = 1L, fill = 5000)>3600,"direct",prev_type)]
   }
   wt[]
 }
