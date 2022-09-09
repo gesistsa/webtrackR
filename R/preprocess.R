@@ -127,5 +127,11 @@ create_urldummy <- function(wt,dummy,name){
   vars_exist(wt,vars = c("url"))
   wt[,dummy:=data.table::fifelse(url%in%dummy, TRUE, FALSE)]
   data.table::setnames(wt,"dummy",name)
+  data.table::setattr(wt,"dummy",c(attr(wt,"dummy"),name))
   wt[]
+}
+#' Add panelist features to webtrack data
+#' Add characteristics of panelists (e.g. from a survey) to the webtrack data
+add_panelist_data <- function(wt,data){
+
 }

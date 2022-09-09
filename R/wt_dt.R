@@ -57,12 +57,25 @@ summary.wt_dt <- function(object,...){
   no_panelist <- length(unique(object[["panelist_id"]]))
   time_window <- range(object[["timestamp"]])
   idx <- (!is.na(pmatch(c("duration","domain","type"),names(object))))+1
+
+  #printing
   cat("\n ==== Overview ====\n\n")
   cat("panelists: ",no_panelist,"\n")
   cat("time window: ",as.character(time_window[1])," - ", as.character(time_window[2]),"\n")
+  cat("\n")
   cat("[",symbols[idx[1]],"] duration\n",sep="")
   cat("[",symbols[idx[2]],"] domain\n",sep="")
   cat("[",symbols[idx[3]],"] type\n",sep="")
+  cat("\n")
+  if(!is.null(attr(object,"dummy"))){
+    urldummys <- attr(object,"dummy")
+    cat("urldummy variables:",paste(urldummys,collapse=","))
+  }
+  if(!is.null(attr(object,"panelist"))){
+    panelist <- attr(object,"panelist")
+    cat("panelist variables:",paste(panelist,collapse=","))
+  }
+  cat("\n")
   cat("\n ====== DATA ======\n\n")
   NextMethod(object,...)
 }
