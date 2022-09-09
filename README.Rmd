@@ -18,7 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of webtrackR is to ...
+webtrackR is an R package to preprocess and analyse webtracking data in conjunction with survey data of panelists.
+The package is built on top of data.table and can thus comfortably handle very large webtracking datasets
 
 ## Installation
 
@@ -29,17 +30,80 @@ You can install the development version of webtrackR from [GitHub](https://githu
 devtools::install_github("schochastics/webtrackR")
 ```
 
-## Example
+## S3 class
 
-This is a basic example which shows you how to solve a common problem:
+The package adds a S3 class called `wt_dt` which inherits most of the functionality from the data.table class
+A `summary` and `print` method are included in the package
 
-```{r example}
+## Preprocessing
+
+raw webtracking data is assumed to have (at least) the following variables:
+
+- **panelist_id**: person who's data is tracked
+- **url**: the website the person is visiting
+- **timestamp**: when the website was visited
+
+All preprocessing functions check if these are present. Otherwise an error is thrown.
+
+Several other variables can be derived from these with the package: 
+
+- **duration**: how much time was spend on a website (use `add_duration()` and `aggregate_duration()` to summarize consecutive visits to the same website)
+- **domain**: the toplevel domain of a URL (use `extract_domain()`)
+- **type** and **prev_type**: using a domain dictionary to classify domains and previously visited domains (use `classify_domains()`)
+- url dummy variables: add a dummy variable if a URL falls into a category or not (e.g. political website) (use `create_urldummy()`)
+- panelist data: add e.g. survey data to the webtrack data (use `add_panelist_data()`) 
+
+A typical workflow looks like this:
+
+```{r workflow, eval=FALSE}
+# load webtrack data as data.table
+library(data.table)
 library(webtrackR)
-## basic example code
+
+# webtrack data
+wt <- fread("<path/to/file>")
+
+# domain dictionary (there is also an inbuilt dictionary)
+domain_dict <- fread("<path/to/file>")
+
+# dummy file (should just be a vecor of urls)
+political_urls <- c("...")
+
+# survey data
+survey <- fread("<path/to/file>")
+
+# convert to wt_dt object
+wt <- as.wt_dt(wt)
+
+wt <- add_duration(wt)
+wt <- extract_domain(wt)
+
+# classify domains and only return rows with type news
+wt <- classify_domains(wt, domain_classes = domain_dict, return.only = "news")
+
+# create a dummy variable for political news
+wt <- create_urldummy(wt, dummy = political_urls, name = "political")
+
+# add survey data
+wt <- add_panelist_data(wt, data = survey)
+```
+
+## Analysis
+
+### Ideology
+
+Top 500 Bakshy scores are available in the package
+```{r bakshy, eval=FALSE}
+data("bakshy")
 ```
 
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
+### Audience Networks
 
+Create audiences network 
+```{r audience, eval=FALSE}
+audience_network(wt, cutoff = 3, type = "pmi")
+```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+- `cutoff` indicates minimal duration to count as visit. 
+- `type` can be one of "pmi", "phi", "disparity", "sdsm", or "fdsm"
