@@ -6,7 +6,7 @@
 #' @return webtrack data.table with the same columns as wt and a new column called duration
 #' @export
 add_duration <- function(wt, reset = 3600){
-  stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
+  stopifnot("wt is not a wt_dt object"=is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id","timestamp"))
   wt[,duration:=as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA)-timestamp),by="panelist_id"]
   # TODO: how to handle last visited page (seems to be set to zero in existing datasets)
@@ -23,7 +23,7 @@ add_duration <- function(wt, reset = 3600){
 #' @return webtrack data.table with the same columns as wt and a new column called domain
 #' @export
 extract_domain <- function(wt){
-  stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
+  stopifnot("wt is not a wt_dt object"=is.wt_dt(wt))
   vars_exist(wt,vars = "url")
   wt[,domain:=urltools::domain(url)]
   wt[]
@@ -38,7 +38,7 @@ extract_domain <- function(wt){
 aggregate_duration <- function(wt, keep = FALSE){
   # trick to avoid NOTES from R CMD check:
   . = .N =  NULL
-  stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
+  stopifnot("wt is not a wt_dt object"=is.wt_dt(wt))
   vars_exist(wt,vars = c("url","panelist_id","timestamp","domain"))
   grp_vars <- setdiff(names(wt),c("duration","timestamp"))
   wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
@@ -71,7 +71,7 @@ classify_domains <- function(wt,
   # trick to avoid NOTES from R CMD check:
   i.type = NULL
 
-  stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
+  stopifnot("wt is not a wt_dt object"=is.wt_dt(wt))
   vars_exist(wt,vars = c("url","domain"))
 
   if(is.null(domain_classes)){
@@ -123,15 +123,36 @@ classify_domains <- function(wt,
 #' @export
 #'
 create_urldummy <- function(wt,dummy,name){
-  stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
+  stopifnot("wt is not a wt_dt object"=is.wt_dt(wt))
   vars_exist(wt,vars = c("url"))
   wt[,dummy:=data.table::fifelse(url%in%dummy, TRUE, FALSE)]
   data.table::setnames(wt,"dummy",name)
   data.table::setattr(wt,"dummy",c(attr(wt,"dummy"),name))
   wt[]
 }
+
 #' Add panelist features to webtrack data
 #' Add characteristics of panelists (e.g. from a survey) to the webtrack data
-add_panelist_data <- function(wt,data){
+#' @param wt webtrack data object
+#' @param data a data.table (or object that can be converted to data.table) which contains variables of panelists
+#' @param cols character vector of columns to add. If NULL, all columns are added
+#' @export
+add_panelist_data <- function(wt,data,cols = NULL){
+  stopifnot("wt is not a wt_dt object"=is.wt_dt(wt))
+  vars_exist(wt,vars = c("panelist_id"))
+  if(!data.table::is.data.table(data)){
+    data <- data.table::as.data.table(data)
+  }
+  vars_exist(data,vars = c("panelist_id"))
+  if(!is.null(cols)){
+    if(!all(cols%in%names(data))){
+      stop("couldn't locate all cols in data")
+    }
+    data <- data[,c("panelist_id",cols), with = FALSE]
+    data.table::setattr(wt,"panelist",cols)
+  } else{
+    data.table::setattr(wt,"panelist",setdiff(names(data),"panelist_id"))
+  }
 
+  data[wt, on = "panelist_id"]
 }
