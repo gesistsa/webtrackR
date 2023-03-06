@@ -4,6 +4,12 @@
 #' @param cutoff visits below this cutoff will not be considered as a visit
 #' @return incidence audience-outlet network
 #' @seealso to create audience networks see [audience_network]
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- add_duration(wt)
+#' wt <- extract_domain(wt)
+#' audience_incidence(wt)
 #' @export
 audience_incidence <- function(wt,cutoff = 3){
   .N = 0 #revisit
@@ -18,6 +24,7 @@ audience_incidence <- function(wt,cutoff = 3){
   g <- igraph::graph_from_data_frame(el, directed = FALSE)
   igraph::V(g)$type <- !igraph::bipartite.mapping(g)$type
   A <- igraph::as_incidence_matrix(g)
+  A
 }
 
 #' Create audience networks
@@ -27,6 +34,12 @@ audience_incidence <- function(wt,cutoff = 3){
 #' @param type one of "pmi", "phi", "disparity", "sdsm, "or "fdsm". See details
 #' @param alpha significance level
 #' @return audience network as igraph object
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- add_duration(wt)
+#' wt <- extract_domain(wt)
+#' audience_network(wt, type = "pmi", cutoff = 120)
 #' @export
 audience_network <- function(wt, cutoff = 3, type = "pmi", alpha = 0.05){
   A <- audience_incidence(wt, cutoff = cutoff)

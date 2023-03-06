@@ -21,3 +21,10 @@ audience network as igraph object
 \description{
 audience network
 }
+\examples{
+data("test_data")
+wt <- as.wt_dt(test_data)
+wt <- add_duration(wt)
+wt <- extract_domain(wt)
+audience_network(wt, type = "pmi", cutoff = 120)
+}
