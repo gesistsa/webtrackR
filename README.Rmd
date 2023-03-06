@@ -16,6 +16,9 @@ knitr::opts_chunk$set(
 # webtrackR <img src="man/figures/logo.png" width="120px" align="right"/>
 
 <!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/webtrackR)](https://CRAN.R-project.org/package=webtrackR)
+[![R-CMD-check](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/schochastics/webtrackR?branch=main)
 <!-- badges: end -->
 
 webtrackR is an R package to preprocess and analyse webtracking data in conjunction with survey data of panelists.

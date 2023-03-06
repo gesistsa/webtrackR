@@ -4,6 +4,12 @@
 # webtrackR <img src="man/figures/logo.png" width="120px" align="right"/>
 
 <!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/webtrackR)](https://CRAN.R-project.org/package=webtrackR)
+[![R-CMD-check](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/schochastics/webtrackR?branch=main)
 <!-- badges: end -->
 
 webtrackR is an R package to preprocess and analyse webtracking data in
@@ -32,25 +38,25 @@ are included in the package
 raw webtracking data is assumed to have (at least) the following
 variables:
 
--   **panelist_id**: person who’s data is tracked
--   **url**: the website the person is visiting
--   **timestamp**: when the website was visited
+- **panelist_id**: person who’s data is tracked
+- **url**: the website the person is visiting
+- **timestamp**: when the website was visited
 
 All preprocessing functions check if these are present. Otherwise an
 error is thrown.
 
 Several other variables can be derived from these with the package:
 
--   **duration**: how much time was spend on a website (use
-    `add_duration()` and `aggregate_duration()` to summarize consecutive
-    visits to the same website)
--   **domain**: the toplevel domain of a URL (use `extract_domain()`)
--   **type** and **prev_type**: using a domain dictionary to classify
-    domains and previously visited domains (use `classify_domains()`)
--   url dummy variables: add a dummy variable if a URL falls into a
-    category or not (e.g. political website) (use `create_urldummy()`)
--   panelist data: add e.g. survey data to the webtrack data (use
-    `add_panelist_data()`)
+- **duration**: how much time was spend on a website (use
+  `add_duration()` and `aggregate_duration()` to summarize consecutive
+  visits to the same website)
+- **domain**: the toplevel domain of a URL (use `extract_domain()`)
+- **type** and **prev_type**: using a domain dictionary to classify
+  domains and previously visited domains (use `classify_domains()`)
+- url dummy variables: add a dummy variable if a URL falls into a
+  category or not (e.g. political website) (use `create_urldummy()`)
+- panelist data: add e.g. survey data to the webtrack data (use
+  `add_panelist_data()`)
 
 A typical workflow looks like this:
 
@@ -105,5 +111,5 @@ Create audiences network
 audience_network(wt, cutoff = 3, type = "pmi")
 ```
 
--   `cutoff` indicates minimal duration to count as visit.
--   `type` can be one of “pmi”, “phi”, “disparity”, “sdsm”, or “fdsm”
+- `cutoff` indicates minimal duration to count as visit.
+- `type` can be one of “pmi”, “phi”, “disparity”, “sdsm”, or “fdsm”
