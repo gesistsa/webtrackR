@@ -4,7 +4,6 @@
 #' @param wt webtrack data as data.table object
 #' @param vars character vector of variables
 #' @return A data.table object
-#' @export
 vars_exist <- function(wt,vars = c("panelist_id", "url", "timestamp")){
   vars_wt <- names(wt)
   idx <- pmatch(vars,vars_wt)
@@ -21,7 +20,6 @@ vars_exist <- function(wt,vars = c("panelist_id", "url", "timestamp")){
 #' @param processed logical. If TRUE, also checks if "duration" and "domain" are present. Otherwise just checks if the standard columns exist
 #' @param verbose should details be printed or not
 #' @return logical if wt is valid webtrack data or not
-#' @export
 is_valid_wt <- function(wt, processed = TRUE, verbose = TRUE){
   wt_vars_opt <- c("panelist_id", "url", "timestamp", "duration", "domain")
   tick <- "\u2714"

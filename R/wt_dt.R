@@ -13,7 +13,11 @@ NULL
 # Construction ------------------------------------------------------------
 
 #' @rdname wt_dt
-#' @param x [data.table] containing the correct set of variables
+#' @param x [data.table] containing the correct set of variables (panelist_id,url and timestamp)
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' is.wt_dt(wt)
 #' @export
 as.wt_dt <- function(x){
   stopifnot(is.data.table(x))

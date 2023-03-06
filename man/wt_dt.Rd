@@ -11,7 +11,7 @@ as.wt_dt(x)
 is.wt_dt(x)
 }
 \arguments{
-\item{x}{\link{data.table} containing the correct set of variables}
+\item{x}{\link{data.table} containing the correct set of variables (panelist_id,url and timestamp)}
 }
 \description{
 An S3 class, based on \link{data.table}, to store webtrack data
@@ -22,6 +22,11 @@ Therefore, it can be used by any function that would work on a \link{data.frame}
 Most of the operation such as variable creation, subsetting and joins are inherited from the \link{data.table}
 \verb{[]} operator, following the convention \code{DT[i,j,by]} (see data table package for detail).
 These operations are applied on the data.
+}
+\examples{
+data("test_data")
+wt <- as.wt_dt(test_data)
+is.wt_dt(wt)
 }
 \seealso{
 \itemize{
