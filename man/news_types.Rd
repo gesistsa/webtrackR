@@ -11,6 +11,9 @@ An object of class \code{data.table} (inherits from \code{data.frame}) with 690 
 news_types
 }
 \description{
-probably from some Stier et al. paper
+Classification of domains into different news types
+}
+\references{
+Stier, S., Mangold, F., Scharkow, M., & Breuer, J. (2022). Post Post-Broadcast Democracy? News Exposure in the Age of Online Intermediaries. American Political Science Review, 116(2), 768-774. doi:10.1017/S0003055421001222
 }
 \keyword{datasets}

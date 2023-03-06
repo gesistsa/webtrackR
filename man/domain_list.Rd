@@ -4,7 +4,7 @@
 \name{domain_list}
 \alias{domain_list}
 \title{Domain list
-classification of some domains (probably from some Stier et al. paper)}
+classification of domains into news,portals, search, and social media}
 \format{
 An object of class \code{data.table} (inherits from \code{data.frame}) with 663 rows and 2 columns.
 }
@@ -13,6 +13,9 @@ domain_list
 }
 \description{
 Domain list
-classification of some domains (probably from some Stier et al. paper)
+classification of domains into news,portals, search, and social media
+}
+\references{
+Stier, S., Mangold, F., Scharkow, M., & Breuer, J. (2022). Post Post-Broadcast Democracy? News Exposure in the Age of Online Intermediaries. American Political Science Review, 116(2), 768-774. doi:10.1017/S0003055421001222
 }
 \keyword{datasets}

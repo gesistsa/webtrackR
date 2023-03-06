@@ -17,3 +17,11 @@ webtrack data.table with the same columns as wt with updated duration
 \description{
 Aggregate duration of consecutive visits to a website
 }
+\examples{
+\dontrun{
+data("test_data")
+wt <- as.wt_dt(test_data)
+wt <- add_duration(wt)
+aggregate_duration(wt)
+}
+}

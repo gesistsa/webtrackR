@@ -1,5 +1,5 @@
 Package: webtrackR
-Title: What the Package Does (One Line, Title Case)
+Title: Analysing Webtracking Data and Online News Behaviour
 Version: 0.0.0.9000
 Authors@R: c(
     person("David", "Schoch", email = "david@schochastics.net", role = c("aut", "cre"),
@@ -9,7 +9,7 @@ Authors@R: c(
     person("Sebastian", "Stier", email = "sebastian.stier@gesis.org", role = "aut",
            comment = c(ORCID = "0000-0002-1217-5778"))
     )
-Description: What the package does (one paragraph).
+Description: Implements datastructures and methods to work with webtracking data. This includes data preprocessing steps, methods to construct audience networks <https://doi.org/10.1080/19312458.2020.1724274>, and metrics of news audience polarization <https://doi.org/10.1080/19312458.2022.2085249>.
 URL: https://github.com/schochastics/webtrackR
 BugReports: https://github.com/schochastics/webtrackR/issues
 Depends: 

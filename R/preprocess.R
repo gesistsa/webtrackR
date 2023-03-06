@@ -4,9 +4,13 @@
 #' @param reset numeric. If duration is greater than this value, it is reset to zero, assuming a new browsing session has started
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called duration
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- add_duration(wt)
 #' @export
 add_duration <- function(wt, reset = 3600){
-  stopifnot("wt is not a wt_dt object" = is.wt_dt(wt))
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id","timestamp"))
   wt[,duration:=as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA)-timestamp),by="panelist_id"]
   # TODO: how to handle last visited page (seems to be set to zero in existing datasets)
@@ -21,9 +25,13 @@ add_duration <- function(wt, reset = 3600){
 #' @param wt webtrack data object
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called domain
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- extract_domain(wt)
 #' @export
 extract_domain <- function(wt){
-  stopifnot("wt is not a wt_dt object" = is.wt_dt(wt))
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = "url")
   wt[,domain:=urltools::domain(url)]
   wt[]
@@ -34,11 +42,17 @@ extract_domain <- function(wt){
 #' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
 #' @importFrom data.table is.data.table shift .N
 #' @return webtrack data.table with the same columns as wt with updated duration
+#' @examples
+#' \dontrun{
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- add_duration(wt)
+#' aggregate_duration(wt)
+#' }
 #' @export
 aggregate_duration <- function(wt, keep = FALSE){
-  # trick to avoid NOTES from R CMD check:
-  . = .N =  NULL
-  stopifnot("wt is not a wt_dt object" = is.wt_dt(wt))
+  . = .N =  NULL #revisit
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("url","panelist_id","timestamp","domain"))
   grp_vars <- setdiff(names(wt),c("duration","timestamp"))
   wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
@@ -62,16 +76,22 @@ aggregate_duration <- function(wt, keep = FALSE){
 #' @param preprocess_newsportals logical. add suffix "NEWS" to domains which are classified as portals. If TRUE there needs to be a domain type "newsportals"
 #' @param return.only if not null, only return the specified domain type
 #' @return webtrack data.table with the same columns as wt and a new column called type. If prev_type is TRUE, a column prev_type is added with the type of the visit before the current one. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- extract_domain(wt)
+#' wt <- add_duration(wt)
+#' wt <- classify_domains(wt)
 #' @export
 classify_domains <- function(wt,
                              domain_classes = NULL,
                              prev_type = TRUE,
                              preprocess_newsportals = FALSE,
                              return.only = NULL){
-  # trick to avoid NOTES from R CMD check:
-  i.type = NULL
 
-  stopifnot("wt is not a wt_dt object" = is.wt_dt(wt))
+  i.type = NULL #revisit
+
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("url","domain"))
 
   if(is.null(domain_classes)){
@@ -90,7 +110,7 @@ classify_domains <- function(wt,
     stopifnot("return.only not found in domain_classes"=!return.only%in%domain_classes[["type"]])
   }
 
-  if(preprocess_newsportals){
+  if(isTRUE(preprocess_newsportals)){
     if(!"newsportals"%in%domain_classes[["type"]]){
       warning("newsportals type is missing in domain_classes. No preprocessing done")
     } else{
@@ -108,9 +128,11 @@ classify_domains <- function(wt,
   if(!is.null(return.only)){
     wt <- wt[type==return.only]
   }
-  if(prev_type){
-  wt[,prev_type:=data.table::shift(type,n = 1L, fill = "other"),by=c("panelist_id","day")]
-  wt[,prev_type:=data.table::fifelse(data.table::shift(duration,n = 1L, fill = 5000)>3600,"direct",prev_type)]
+  if(isTRUE(prev_type)){
+    wt[,day:=as.Date(timestamp)]
+    wt[,prev_type:=data.table::shift(type,n = 1L, fill = "other"),by=c("panelist_id","day")]
+    wt[,prev_type:=data.table::fifelse(data.table::shift(duration,n = 1L, fill = 5000)>3600,"direct",prev_type)]
+    wt[,day:=NULL]
   }
   wt[]
 }
@@ -120,10 +142,15 @@ classify_domains <- function(wt,
 #' @param dummy a vector of urls that should be dummy coded
 #' @param name name of dummy variable to create.
 #' @return webtrack object with the same columns and a new column called "name" including the dummy variable
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- extract_domain(wt)
+#' code_urls <- c("Ccj4QELzbJe6.com/FrKrkvugBVJWwfSobV")
+#' create_urldummy(wt,dummy = code_urls, name = "test_dummy")
 #' @export
-#'
 create_urldummy <- function(wt,dummy,name){
-  stopifnot("wt is not a wt_dt object" = is.wt_dt(wt))
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("url"))
   wt[,dummy:=data.table::fifelse(url%in%dummy, TRUE, FALSE)]
   data.table::setnames(wt,"dummy",name)
@@ -138,7 +165,7 @@ create_urldummy <- function(wt,dummy,name){
 #' @param cols character vector of columns to add. If NULL, all columns are added
 #' @export
 add_panelist_data <- function(wt,data,cols = NULL){
-  stopifnot("wt is not a wt_dt object" = is.wt_dt(wt))
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id"))
   if(!data.table::is.data.table(data)){
     data <- data.table::as.data.table(data)

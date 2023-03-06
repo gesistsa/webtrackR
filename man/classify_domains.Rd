@@ -29,3 +29,10 @@ webtrack data.table with the same columns as wt and a new column called type. If
 \description{
 Classify domains according to prespecified classes
 }
+\examples{
+data("test_data")
+wt <- as.wt_dt(test_data)
+wt <- extract_domain(wt)
+wt <- add_duration(wt)
+wt <- classify_domains(wt)
+}

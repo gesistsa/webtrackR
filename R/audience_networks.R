@@ -6,17 +6,15 @@
 #' @seealso to create audience networks see [audience_network]
 #' @export
 audience_incidence <- function(wt,cutoff = 3){
-  # trick to avoid NOTES from R CMD check:
-  .N = 0
+  .N = 0 #revisit
   if(!requireNamespace("igraph", quietly = TRUE)){
     stop("The package 'igraph' is needed for this function.")
   }
-  stopifnot("wt is not an wt_dt object"=is.wt_dt(wt))
+  stopifnot("wt is not an wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id","domain"))
 
   el <- wt[duration >= cutoff, c("panelist_id", "domain")]
   el <- el[, .N, by = c("panelist_id", "domain")]
-  # g <- netUtils::bipartite_from_data_frame(el[, c("panelist_id", "domain")], "panelist_id", "domain")
   g <- igraph::graph_from_data_frame(el, directed = FALSE)
   igraph::V(g)$type <- !igraph::bipartite.mapping(g)$type
   A <- igraph::as_incidence_matrix(g)
@@ -45,7 +43,6 @@ audience_network <- function(wt, cutoff = 3, type = "pmi", alpha = 0.05){
 }
 
 # network extraction methods ----
-# TODO: this needs to be double checked
 pmi <- function(A, t = 0) {
   reach <- rowSums(A) / ncol(A)
   exp_mat <- outer(reach, reach, "*")
@@ -54,7 +51,6 @@ pmi <- function(A, t = 0) {
   igraph::graph_from_adjacency_matrix(B, mode = "undirected", diag = FALSE)
 }
 
-# TODO: this needs to be double checked
 phi <- function(A, p = 0.05) {
   if(!requireNamespace("stats", quietly = TRUE)){
     stop("The package 'stats' is needed for this function.")

@@ -17,3 +17,8 @@ webtrack data.table with the same columns as wt and a new column called duration
 \description{
 Derive the time spend on a website from the timestamps
 }
+\examples{
+data("test_data")
+wt <- as.wt_dt(test_data)
+wt <- add_duration(wt)
+}

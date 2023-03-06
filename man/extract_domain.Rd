@@ -15,3 +15,8 @@ webtrack data.table with the same columns as wt and a new column called domain
 \description{
 Extracts the domain and subdomain from the urls
 }
+\examples{
+data("test_data")
+wt <- as.wt_dt(test_data)
+wt <- extract_domain(wt)
+}
