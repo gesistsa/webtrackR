@@ -8,13 +8,27 @@ In terms of news exposure, the isolation index captures the extent to which cons
 isolation_index(left, right)
 }
 \arguments{
-\item{left}{vector (usually corresponds to a column in a webtrack data.table)}
+\item{left}{vector (usually corresponds to a column in a webtrack data.table) indicating the number of left leaning individuals using an outlet}
 
-\item{right}{vector (usually corresponds to a column in a webtrack data.table)}
+\item{right}{vector (usually corresponds to a column in a webtrack data.table) indicating the number of right leaning individuals using an outlet}
 }
 \description{
 Isolation Index
 In terms of news exposure, the isolation index captures the extent to which conservatives disproportionately visit outlets whose other visitors are conservative
+}
+\details{
+a value of 1 indicates that left leaning and right leaning users do not have any outlet overlap. A value of 0 means both use exactly the same outlets
+}
+\examples{
+# perfect isolation
+left <-  c(5,5,0,0)
+right <- c(0,0,5,5)
+isolation_index(left,right)
+
+#perfect overlap
+left <-  c(5,5,5,5)
+right <- c(5,5,5,5)
+isolation_index(left,right)
 }
 \references{
 Cutler, David M., Edward L. Glaeser, and Jacob L. Vigdor. "The rise and decline of the American ghetto." Journal of political economy 107.3 (1999): 455-506.
