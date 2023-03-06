@@ -1,6 +1,3 @@
-#' Test Data (needs to be removed)
-"test_data"
-
 #' News Types
 #'
 #' probably from some Stier et al. paper
