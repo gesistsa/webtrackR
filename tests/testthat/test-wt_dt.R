@@ -11,3 +11,12 @@ test_that("is.wt_dt", {
   expect_true(is.wt_dt(wt))
   expect_false(is.wt_dt(test_data))
 })
+
+test_that("summary", {
+  skip_on_cran()
+  data("test_data")
+  wt <- as.wt_dt(test_data)
+  (sum <- summary(wt))
+  expect_true(any(grepl("Length",sum)))
+  expect_equal(length(sum),18)
+})
