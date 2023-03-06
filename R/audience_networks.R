@@ -31,7 +31,7 @@ audience_incidence <- function(wt,cutoff = 3){
 #' @description audience network
 #' @param wt webtrack data object
 #' @param cutoff visits below this cutoff will not be considered as a visit
-#' @param type one of "pmi", "phi", "disparity", "sdsm, "or "fdsm". See details
+#' @param type one of "pmi", "phi", "disparity", "sdsm, "or "fdsm".
 #' @param alpha significance level
 #' @return audience network as igraph object
 #' @examples

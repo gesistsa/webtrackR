@@ -163,6 +163,11 @@ create_urldummy <- function(wt,dummy,name){
 #' @param wt webtrack data object
 #' @param data a data.table (or object that can be converted to data.table) which contains variables of panelists
 #' @param cols character vector of columns to add. If NULL, all columns are added
+#' @examples
+#' data("test_data")
+#' data("test_survey")
+#' wt <- as.wt_dt(test_data)
+#' add_panelist_data(wt,test_survey)
 #' @export
 add_panelist_data <- function(wt,data,cols = NULL){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))

@@ -3,6 +3,12 @@
 #' Randomly generated webtrack data only used for illustrative purposes
 "test_data"
 
+#' Test survey
+#'
+#' Randomly generated survey data only used for illustrative purposes
+"test_survey"
+
+
 #' News Types
 #'
 #' Classification of domains into different news types

@@ -11,7 +11,7 @@ audience_network(wt, cutoff = 3, type = "pmi", alpha = 0.05)
 
 \item{cutoff}{visits below this cutoff will not be considered as a visit}
 
-\item{type}{one of "pmi", "phi", "disparity", "sdsm, "or "fdsm". See details}
+\item{type}{one of "pmi", "phi", "disparity", "sdsm, "or "fdsm".}
 
 \item{alpha}{significance level}
 }
