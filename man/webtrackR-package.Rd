@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Implements datastructures and methods to work with webtracking data. This includes data preprocessing steps, methods to construct audience networks \url{https://doi.org/10.1080/19312458.2020.1724274}, and metrics of news audience polarization \url{https://doi.org/10.1080/19312458.2022.2085249}.
+Implements datastructures and methods to work with webtracking data. This includes data preprocessing steps, methods to construct audience networks \doi{10.1080/19312458.2020.1724274}, and metrics of news audience polarization \doi{10.1080/19312458.2022.2085249}.
 }
 \seealso{
 Useful links:
