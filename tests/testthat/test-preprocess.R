@@ -5,6 +5,14 @@ test_that("add duration", {
   expect_true("duration"%in% names(wt))
 })
 
+test_that("aggregate duration", {
+  data("test_data")
+  wt <- as.wt_dt(test_data)
+  wt <- add_duration(wt)
+  wt <- extract_domain(wt)
+  expect_no_error(aggregate_duration(wt[1:10,]))
+})
+
 test_that("extract_domain", {
   data("test_data")
   wt <- as.wt_dt(test_data)
@@ -22,6 +30,15 @@ test_that("classify_domain", {
   expect_true("prev_type"%in% names(wt))
 })
 
+test_that("classify_domain errors", {
+  data("test_data")
+  wt <- as.wt_dt(test_data)
+  wt <- extract_domain(wt)
+  wt <- add_duration(wt)
+  expect_error(classify_domains(wt,domain_classes = data.frame(a=5,b=6)))
+  expect_error(classify_domains(wt,domain_classes = data.table::data.table(a=5,b=6)))
+})
+
 test_that("urldummy", {
   data("test_data")
   wt <- as.wt_dt(test_data)
@@ -31,3 +48,17 @@ test_that("urldummy", {
   expect_true(wt$test_dummy[1])
 })
 
+test_that("panelist_data", {
+  data("test_data")
+  data("test_survey")
+  wt <- as.wt_dt(test_data)
+  wt <- add_panelist_data(wt,test_survey)
+  expect_true("leftright"%in%names(wt))
+})
+
+test_that("panelist_data errors", {
+  data("test_data")
+  wt <- as.wt_dt(test_data)
+  wt <- add_panelist_data(wt,test_survey)
+  expect_error(add_panelist_data(wt,"test"))
+})
