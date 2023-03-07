@@ -13,10 +13,16 @@ test_that("is.wt_dt", {
 })
 
 test_that("summary", {
-  skip_on_cran()
   data("test_data")
   wt <- as.wt_dt(test_data)
-  (sum <- summary(wt))
-  expect_true(any(grepl("Length",sum)))
-  expect_equal(length(sum),18)
+  sum <- utils::capture.output(summary(wt))
+  expect_true(any(grepl("Overview",sum)))
+  expect_true(any(grepl("DATA",sum)))
+})
+
+test_that("print", {
+  data("test_data")
+  wt <- as.wt_dt(test_data)
+  sum <- utils::capture.output(print(wt))
+  expect_true(any(grepl("webtrack data",sum)))
 })
