@@ -12,9 +12,9 @@ status](https://www.r-pkg.org/badges/version/webtrackR)](https://CRAN.R-project.
 coverage](https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/schochastics/webtrackR?branch=main)
 <!-- badges: end -->
 
-webtrackR is an R package to preprocess and analyse webtracking data in
+webtrackR is an R package to preprocess and analyse web tracking data in
 conjunction with survey data of panelists. The package is built on top
-of data.table and can thus comfortably handle very large webtracking
+of data.table and can thus comfortably handle very large web tracking
 datasets
 
 ## Installation
@@ -35,7 +35,7 @@ are included in the package
 
 ## Preprocessing
 
-raw webtracking data is assumed to have (at least) the following
+raw web tracking data is assumed to have (at least) the following
 variables:
 
 - **panelist_id**: person who’s data is tracked

@@ -2,7 +2,7 @@
 % Please edit documentation in R/wt_dt.R
 \name{print.wt_dt}
 \alias{print.wt_dt}
-\title{Print webtracking data}
+\title{Print web tracking data}
 \usage{
 \method{print}{wt_dt}(x, ...)
 }
@@ -12,5 +12,5 @@
 \item{...}{additional parameters for print}
 }
 \description{
-Print webtracking data
+Print web tracking data
 }

@@ -1,6 +1,6 @@
-## Initial submission 
+## Resubmission of Initial submission 
 
-This is the initial submission of the package webtrackR
+Fixed spelling errors and dois
 
 # Test environments
 * ubuntu 22.04, R 4.2.2

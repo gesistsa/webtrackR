@@ -42,7 +42,7 @@ print_wt_dt <- function(x, ...) {
   invisible(x)
 }
 
-#' Print webtracking data
+#' Print web tracking data
 #' @param x object of class wt_dt
 #' @param ... additional parameters for print
 #' @export
