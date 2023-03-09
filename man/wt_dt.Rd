@@ -13,6 +13,11 @@ is.wt_dt(x)
 \arguments{
 \item{x}{\link{data.table} containing the correct set of variables (panelist_id,url and timestamp)}
 }
+\value{
+a webtrack data object
+
+logical. TRUE if x is a webtrack data object and FALSE otherwise
+}
 \description{
 An S3 class, based on \link{data.table}, to store webtrack data
 }

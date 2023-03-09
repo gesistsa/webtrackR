@@ -12,6 +12,9 @@ isolation_index(left, right)
 
 \item{right}{vector (usually corresponds to a column in a webtrack data.table) indicating the number of right leaning individuals using an outlet}
 }
+\value{
+numeric value between 0 and 1. 0 indicates no isolation and 1 perfect isolation
+}
 \description{
 Isolation Index
 In terms of news exposure, the isolation index captures the extent to which conservatives disproportionately visit outlets whose other visitors are conservative

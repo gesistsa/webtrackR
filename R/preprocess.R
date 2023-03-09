@@ -43,12 +43,13 @@ extract_domain <- function(wt){
 #' @importFrom data.table is.data.table shift .N
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
-#' \dontrun{
 #' data("test_data")
 #' wt <- as.wt_dt(test_data)
 #' wt <- add_duration(wt)
+#' wt <- extract_domain(wt)
+#' # the following step can take longer
+#' wt <- wt[1:100,]
 #' aggregate_duration(wt)
-#' }
 #' @export
 aggregate_duration <- function(wt, keep = FALSE){
   . = .N =  NULL #revisit
@@ -163,6 +164,7 @@ create_urldummy <- function(wt,dummy,name){
 #' @param wt webtrack data object
 #' @param data a data.table (or object that can be converted to data.table) which contains variables of panelists
 #' @param cols character vector of columns to add. If NULL, all columns are added
+#' @return webtrack object with the same columns and joined with panelist survey data
 #' @examples
 #' data("test_data")
 #' data("test_survey")

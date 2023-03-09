@@ -3,6 +3,7 @@
 #' @param left  vector (usually corresponds to a column in a webtrack data.table) indicating the number of left leaning individuals using an outlet
 #' @param right vector (usually corresponds to a column in a webtrack data.table) indicating the number of right leaning individuals using an outlet
 #' @details a value of 1 indicates that left leaning and right leaning users do not have any outlet overlap. A value of 0 means both use exactly the same outlets
+#' @return numeric value between 0 and 1. 0 indicates no isolation and 1 perfect isolation
 #' @references
 #' Cutler, David M., Edward L. Glaeser, and Jacob L. Vigdor. "The rise and decline of the American ghetto." Journal of political economy 107.3 (1999): 455-506.
 #' Gentzkow, Matthew, and Jesse M. Shapiro. "Ideological segregation online and offline." The Quarterly Journal of Economics 126.4 (2011): 1799-1839.

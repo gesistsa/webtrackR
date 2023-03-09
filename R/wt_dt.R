@@ -14,6 +14,7 @@ NULL
 
 #' @rdname wt_dt
 #' @param x [data.table] containing the correct set of variables (panelist_id,url and timestamp)
+#' @return a webtrack data object
 #' @examples
 #' data("test_data")
 #' wt <- as.wt_dt(test_data)
@@ -28,6 +29,7 @@ as.wt_dt <- function(x){
 }
 
 #' @rdname wt_dt
+#' @return logical. TRUE if x is a webtrack data object and FALSE otherwise
 #' @export
 is.wt_dt <- function(x){
   data.table::is.data.table(x) & "wt_dt" %in% class(x)

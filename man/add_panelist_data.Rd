@@ -14,6 +14,9 @@ add_panelist_data(wt, data, cols = NULL)
 
 \item{cols}{character vector of columns to add. If NULL, all columns are added}
 }
+\value{
+webtrack object with the same columns and joined with panelist survey data
+}
 \description{
 Add panelist features to webtrack data
 Add characteristics of panelists (e.g. from a survey) to the webtrack data
