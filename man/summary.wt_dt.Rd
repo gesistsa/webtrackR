@@ -11,6 +11,9 @@
 
 \item{...}{additional parameters for summary}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Summary function for webtrack data
 }

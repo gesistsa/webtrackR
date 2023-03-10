@@ -11,6 +11,9 @@
 
 \item{...}{additional parameters for print}
 }
+\value{
+No return value, called for side effects
+}
 \description{
 Print web tracking data
 }

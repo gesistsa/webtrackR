@@ -47,6 +47,7 @@ print_wt_dt <- function(x, ...) {
 #' Print web tracking data
 #' @param x object of class wt_dt
 #' @param ... additional parameters for print
+#' @return No return value, called for side effects
 #' @export
 print.wt_dt <- function(x, ...) {
   print_wt_dt(x, ...)
@@ -55,6 +56,7 @@ print.wt_dt <- function(x, ...) {
 #' Summary function for webtrack data
 #' @param object object of class wt_dt
 #' @param ... additional parameters for summary
+#' @return No return value, called for side effects
 #'@export
 summary.wt_dt <- function(object,...){
   tick  <- '\u2714'
