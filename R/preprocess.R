@@ -33,7 +33,7 @@ add_duration <- function(wt, reset = 3600){
 extract_domain <- function(wt){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = "url")
-  wt[,domain:=urltools::domain(url)]
+  wt[,host:=urltools::domain(url)]
   wt[,domain_name:=urltools::suffix_extract(host)$domain]
   wt[,suffix:=urltools::suffix_extract(host)$suffix]
   wt[,domain:=paste0(domain_name, '.', suffix)]
