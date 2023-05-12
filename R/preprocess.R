@@ -20,8 +20,8 @@ add_duration <- function(wt, reset = 3600){
   wt[]
 }
 
-#' Extract domain from url
-#' @description Extracts the domain and subdomain from the urls
+#' Extract host from url
+#' @description Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
 #' @param wt webtrack data object
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called domain
@@ -30,7 +30,7 @@ add_duration <- function(wt, reset = 3600){
 #' wt <- as.wt_dt(test_data)
 #' wt <- extract_domain(wt)
 #' @export
-extract_domain <- function(wt){
+extract_host <- function(wt){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = "url")
   wt[,tmp:=urltools::domain(gsub("@","%40",url))]
