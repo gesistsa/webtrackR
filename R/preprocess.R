@@ -55,7 +55,7 @@ extract_domain <- function(wt){
   wt[,host:=urltools::domain(gsub("@","%40",url))]
   wt[,suffix:=urltools::suffix_extract(host)[["suffix"]]]
   wt[,domain_name:=urltools::suffix_extract(host)[["domain"]]]
-  wt[,domain:=paste0(domain_name, ".", suffix)]
+  wt[,domain:=ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
   wt[,host:=NULL]
   wt[,suffix:=NULL]
   wt[,domain_name:=NULL]
