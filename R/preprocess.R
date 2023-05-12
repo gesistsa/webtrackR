@@ -34,7 +34,7 @@ extract_host <- function(wt){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = "url")
   wt[,tmp:=urltools::domain(gsub("@","%40",url))]
-  wt[,domain:=urltools::domain(tmp)]
+  wt[,host:=urltools::domain(tmp)]
   wt[,tmp:=NULL]
   wt[]
 }
