@@ -59,6 +59,60 @@ extract_domain <- function(wt){
   wt[]
 }
 
+#' Add the next visit as a variable
+#' @description Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
+#' @param wt webtrack data object
+#' @param level character. Either "url", "host" or "domain". Defaults to "url".
+#' @param platform character. 
+#' @importFrom data.table is.data.table shift
+#' @return webtrack data.table with the same columns as wt and a new column called url_next, host_next or domain_next.
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- add_duration(wt)
+#' @export
+add_next_visit <- function(wt, level = "url"){
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt,vars = c("panelist_id","timestamp"))
+  if (level == "url") {
+    wt[,url_next:=shift(url, n = 1, type = "lead", fill = NA),by="panelist_id"]
+  } else if (level == "host") {
+    wt <- extract_host(wt)
+    wt[,host_next:=shift(host, n = 1, type = "lead", fill = NA),by="panelist_id"]
+  } else if (level == "domain") {
+    wt <- extract_domain(wt)
+    wt[,domain_next:=shift(domain, n = 1, type = "lead", fill = NA),by="panelist_id"]
+  }
+  wt[]
+}
+
+#' Add the previous visit as a variable
+#' @description Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
+#' @param wt webtrack data object
+#' @param level character. Either "url", "host" or "domain". Defaults to "url".
+#' @param platform character. 
+#' @importFrom data.table is.data.table shift
+#' @return webtrack data.table with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- add_duration(wt)
+#' @export
+add_next_visit <- function(wt, level = "url"){
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt,vars = c("panelist_id","timestamp"))
+  if (level == "url") {
+    wt[,url_next:=shift(url, n = 1, type = "lag", fill = NA),by="panelist_id"]
+  } else if (level == "host") {
+    wt <- extract_host(wt)
+    wt[,host_next:=shift(host, n = 1, type = "lag", fill = NA),by="panelist_id"]
+  } else if (level == "domain") {
+    wt <- extract_domain(wt)
+    wt[,domain_next:=shift(domain, n = 1, type = "lag", fill = NA),by="panelist_id"]
+  }
+  wt[]
+}
+
 #' Aggregate duration of consecutive visits to a website
 #' @param wt webtrack data object
 #' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
