@@ -6,12 +6,14 @@
 \alias{is.wt_dt}
 \title{An S3 class, based on \link{data.table}, to store webtrack data}
 \usage{
-as.wt_dt(x)
+as.wt_dt(x, timestamp_format = "\%Y-\%m-\%d \%H:\%M:\%OS")
 
 is.wt_dt(x)
 }
 \arguments{
 \item{x}{\link{data.table} containing the correct set of variables (panelist_id,url and timestamp)}
+
+\item{timestamp_format}{string. Specify the raw timestamp's formatting. Defaults to "\%Y-\%m-\%d \%H:\%M:\%OS".}
 }
 \value{
 a webtrack data object
