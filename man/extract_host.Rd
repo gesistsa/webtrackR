@@ -18,5 +18,5 @@ Extracts the host from urls. The host is defined as the part between the scheme 
 \examples{
 data("test_data")
 wt <- as.wt_dt(test_data)
-wt <- extract_domain(wt)
+wt <- extract_host(wt)
 }
