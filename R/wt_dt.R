@@ -14,15 +14,17 @@ NULL
 
 #' @rdname wt_dt
 #' @param x [data.table] containing the correct set of variables (panelist_id,url and timestamp)
+#' @param timestamp_format string. Specify the raw timestamp's formatting. Defaults to "%Y-%m-%d %H:%M:%OS".
 #' @return a webtrack data object
 #' @examples
 #' data("test_data")
 #' wt <- as.wt_dt(test_data)
 #' is.wt_dt(wt)
 #' @export
-as.wt_dt <- function(x){
+as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS"){
   stopifnot(is.data.table(x))
   vars_exist(x,vars = c("panelist_id", "url", "timestamp"))
+  x <- x[,timestamp:=as.POSIXct(timestamp, format = timestamp_format)]
   data.table::setorder(x,panelist_id,timestamp)
   class(x) <- c("wt_dt",class(x))
   x
