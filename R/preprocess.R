@@ -39,6 +39,29 @@ extract_host <- function(wt){
   wt[]
 }
 
+#' Extract domain from url
+#' @description Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).
+#' @param wt webtrack data object
+#' @importFrom data.table is.data.table
+#' @return webtrack data.table with the same columns as wt and a new column called domain
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- extract_domain(wt)
+#' @export
+extract_domain <- function(wt){
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt,vars = "url")
+  wt[,host:=urltools::domain(gsub("@","%40",url))]
+  wt[,suffix:=urltools::suffix_extract(host)[["suffix"]]]
+  wt[,domain_name:=urltools::suffix_extract(host)[["domain"]]]
+  wt[,domain:=paste0(domain_name, ".", suffix)]
+  wt[,host:=NULL]
+  wt[,suffix:=NULL]
+  wt[,domain_name:=NULL]
+  wt[]
+}
+
 #' Aggregate duration of consecutive visits to a website
 #' @param wt webtrack data object
 #' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
