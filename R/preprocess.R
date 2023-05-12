@@ -20,6 +20,26 @@ add_duration <- function(wt, reset = 3600){
   wt[]
 }
 
+#' Create a session variable
+#' @description Define sessions of browsing depending on aq time cutoff for inactivity
+#' @param wt webtrack data object
+#' @param cutoff numeric. If the consecutive visit happens later than this value (in seconds), a new browsing session is defined
+#' @importFrom data.table is.data.table shift
+#' @return webtrack data.table with the same columns as wt and a new column called duration
+#' @examples
+#' data("test_data")
+#' wt <- as.wt_dt(test_data)
+#' wt <- add_session(wt,cutoff = 120)
+#' @export
+add_session <- function(wt, cutoff){
+  stopifnot("cutoff argument is missing" = !missing(cutoff))
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt,vars = c("panelist_id","timestamp"))
+  wt[as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA)-timestamp) > cutoff,session:=1:.N,by="panelist_id"]
+  data.table::setnafill(wt, type = "nocb", cols = "session")
+  wt[]
+}
+
 #' Extract host from url
 #' @description Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
 #' @param wt webtrack data object
@@ -28,7 +48,7 @@ add_duration <- function(wt, reset = 3600){
 #' @examples
 #' data("test_data")
 #' wt <- as.wt_dt(test_data)
-#' wt <- extract_domain(wt)
+#' wt <- extract_host(wt)
 #' @export
 extract_host <- function(wt){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
