@@ -20,5 +20,5 @@ Define sessions of browsing depending on aq time cutoff for inactivity
 \examples{
 data("test_data")
 wt <- as.wt_dt(test_data)
-wt <- add_session(wt)
+wt <- add_session(wt,cutoff = 120)
 }
