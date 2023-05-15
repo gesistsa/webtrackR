@@ -1,22 +1,40 @@
-#' Add time spent in seconds on webpage
-#' @description Derive the time spend on a website from the timestamps
+#' Add time spent on a visit in seconds
+#' @description Approximate the time spent on a visit based on the sequence of timestamps
 #' @param wt webtrack data object
-#' @param reset numeric. If duration is greater than this value, it is reset to zero, assuming a new browsing session has started
+#' @param cutoff numeric. If duration is greater than this value, it is reset to na, the cutoff, or a user-defined value. Defaults to 5 minutes (= 300 seconds).
+#' @param replace_by boolean. This determines whether differences greater than the cutoff, as well as the last visit for an individual, are set to na (default), the cutoff, or a user-defined value
+#' @param replace_val numeric. If replace_by is set to "value", this argument determines what value differences greater than the cutoff, as well as the last visit for an individual are set to.
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called duration
 #' @examples
 #' data("test_data")
 #' wt <- as.wt_dt(test_data)
 #' wt <- add_duration(wt)
+#' # Defining cutoff at 10 minutes and setting critical visits to the cutoff:
+#' wt <- add_duration(wt, cutoff = 600, replace_by = "cutoff")
+#' # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
+#' wt <- add_duration(wt, cutoff = 600, replace_by = "value", replace_val = 300)
 #' @export
-add_duration <- function(wt, reset = 3600){
+add_duration <- function(wt, cutoff = 300, replace_by = "na", replace_val = NULL){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  stopifnot("replace_val must be NULL or numeric" = (is.null(replace_val) | is.numeric(replace_val)))
+  if (replace_by == "value") {
+    stopifnot("if replace_by is set to 'value' replace_val must not be null" = is.numeric(replace_val))
+  }
   vars_exist(wt,vars = c("panelist_id","timestamp"))
   wt[,duration:=as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA)-timestamp),by="panelist_id"]
-  # TODO: how to handle last visited page (seems to be set to zero in existing datasets)
-  wt[is.na(duration),duration:=0]
-  # TODO: does this make sense?
-  wt[duration>reset,duration:=0]
+  if (replace_by == "na") {
+    wt[is.na(duration),duration:=NA]
+    wt[duration>cutoff,duration:=NA]
+  } 
+  else if (replace_by == "cutoff") {
+    wt[is.na(duration),duration:=cutoff]
+    wt[duration>cutoff,duration:=cutoff]
+  } 
+  else if (replace_by == "value") {
+    wt[is.na(duration),duration:=replace_val]
+    wt[duration>cutoff,duration:=replace_val]
+  }
   wt[]
 }
 
