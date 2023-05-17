@@ -63,13 +63,14 @@ extract_domain <- function(wt){
 #' @description Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
 #' @param wt webtrack data object
 #' @param level character. Either "url", "host" or "domain". Defaults to "url".
-#' @param platform character. 
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called url_next, host_next or domain_next.
 #' @examples
 #' data("test_data")
 #' wt <- as.wt_dt(test_data)
-#' wt <- add_duration(wt)
+#' wt <- add_next_visit(wt, level = "url")
+#' wt <- add_next_visit(wt, level = "host")
+#' wt <- add_next_visit(wt, level = "domain")
 #' @export
 add_next_visit <- function(wt, level = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -90,13 +91,14 @@ add_next_visit <- function(wt, level = "url"){
 #' @description Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
 #' @param wt webtrack data object
 #' @param level character. Either "url", "host" or "domain". Defaults to "url".
-#' @param platform character. 
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
 #' @examples
 #' data("test_data")
 #' wt <- as.wt_dt(test_data)
-#' wt <- add_duration(wt)
+#' wt <- add_previous_visit(wt, level = "url")
+#' wt <- add_previous_visit(wt, level = "host")
+#' wt <- add_previous_visit(wt, level = "domain")
 #' @export
 add_previous_visit <- function(wt, level = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))

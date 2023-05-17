@@ -5,31 +5,22 @@
 \title{Add the next visit as a variable}
 \usage{
 add_next_visit(wt, level = "url")
-
-add_next_visit(wt, level = "url")
 }
 \arguments{
 \item{wt}{webtrack data object}
 
 \item{level}{character. Either "url", "host" or "domain". Defaults to "url".}
-
-\item{platform}{character.}
 }
 \value{
 webtrack data.table with the same columns as wt and a new column called url_next, host_next or domain_next.
-
-webtrack data.table with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
 }
 \description{
 Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
-
-Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
 }
 \examples{
 data("test_data")
 wt <- as.wt_dt(test_data)
-wt <- add_duration(wt)
-data("test_data")
-wt <- as.wt_dt(test_data)
-wt <- add_duration(wt)
+wt <- add_next_visit(wt, level = "url")
+wt <- add_next_visit(wt, level = "host")
+wt <- add_next_visit(wt, level = "domain")
 }
