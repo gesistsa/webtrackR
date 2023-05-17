@@ -2,23 +2,31 @@
 % Please edit documentation in R/preprocess.R
 \name{add_duration}
 \alias{add_duration}
-\title{Add time spent in seconds on webpage}
+\title{Add time spent on a visit in seconds}
 \usage{
-add_duration(wt, reset = 3600)
+add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
-\item{reset}{numeric. If duration is greater than this value, it is reset to zero, assuming a new browsing session has started}
+\item{cutoff}{numeric. If duration is greater than this value, it is reset to na, the cutoff, or a user-defined value. Defaults to 5 minutes (= 300 seconds).}
+
+\item{replace_by}{boolean. This determines whether differences greater than the cutoff, as well as the last visit for an individual, are set to na (default), the cutoff, or a user-defined value}
+
+\item{replace_val}{numeric. If replace_by is set to "value", this argument determines what value differences greater than the cutoff, as well as the last visit for an individual are set to.}
 }
 \value{
 webtrack data.table with the same columns as wt and a new column called duration
 }
 \description{
-Derive the time spend on a website from the timestamps
+Approximate the time spent on a visit based on the sequence of timestamps
 }
 \examples{
 data("test_data")
 wt <- as.wt_dt(test_data)
 wt <- add_duration(wt)
+# Defining cutoff at 10 minutes and setting critical visits to the cutoff:
+wt <- add_duration(wt, cutoff = 600, replace_by = "cutoff")
+# Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
+wt <- add_duration(wt, cutoff = 600, replace_by = "value", replace_val = 300)
 }
