@@ -25,6 +25,7 @@ Authors:
 \itemize{
   \item Frank Mangold \email{frank.mangold@gesis.org} (\href{https://orcid.org/0000-0002-9776-3113}{ORCID})
   \item Sebastian Stier \email{sebastian.stier@gesis.org} (\href{https://orcid.org/0000-0002-1217-5778}{ORCID})
+  \item Bernhard Clemm von Hohenberg \email{Bernhard.Clemm@gesis.org} (\href{https://orcid.org/0000-0002-6976-9745}{ORCID})
 }
 
 }
