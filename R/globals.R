@@ -1,1 +1,1 @@
-utils::globalVariables(c("duration", "timestamp", "panelist_id","domain","visit","day","type","prev_type","tmp","session"))
+utils::globalVariables(c("duration", "timestamp", "panelist_id","domain","visit","day","type","prev_type","tmp","session", "url_next", "host_next", "domain_next", "url_previous", "host_previous", "domain_previous"))

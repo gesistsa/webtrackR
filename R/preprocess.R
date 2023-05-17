@@ -98,17 +98,17 @@ add_next_visit <- function(wt, level = "url"){
 #' wt <- as.wt_dt(test_data)
 #' wt <- add_duration(wt)
 #' @export
-add_next_visit <- function(wt, level = "url"){
+add_previous_visit <- function(wt, level = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id","timestamp"))
   if (level == "url") {
-    wt[,url_next:=shift(url, n = 1, type = "lag", fill = NA),by="panelist_id"]
+    wt[,url_previous:=shift(url, n = 1, type = "lag", fill = NA),by="panelist_id"]
   } else if (level == "host") {
     wt <- extract_host(wt)
-    wt[,host_next:=shift(host, n = 1, type = "lag", fill = NA),by="panelist_id"]
+    wt[,host_previous:=shift(host, n = 1, type = "lag", fill = NA),by="panelist_id"]
   } else if (level == "domain") {
     wt <- extract_domain(wt)
-    wt[,domain_next:=shift(domain, n = 1, type = "lag", fill = NA),by="panelist_id"]
+    wt[,domain_previous:=shift(domain, n = 1, type = "lag", fill = NA),by="panelist_id"]
   }
   wt[]
 }
