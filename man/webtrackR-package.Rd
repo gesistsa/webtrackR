@@ -6,9 +6,9 @@
 \alias{webtrackR-package}
 \title{webtrackR: Analysing Web Tracking Data and Online News Behaviour}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
 
-Implements data structures and methods to work with web tracking data. This includes data preprocessing steps, methods to construct audience networks as described in Mangold & Scharkow (2020) \doi{10.1080/19312458.2020.1724274}, and metrics of news audience polarization described in Mangold & Scharkow (2022) \doi{10.1080/19312458.2022.2085249}.
+Implements data structures and methods to work with web tracking data. This includes data preprocessing steps, methods to construct audience networks as described in Mangold & Scharkow (2020) <doi:10.1080/19312458.2020.1724274>, and metrics of news audience polarization described in Mangold & Scharkow (2022) <doi:10.1080/19312458.2022.2085249>.
 }
 \seealso{
 Useful links:
