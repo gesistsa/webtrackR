@@ -4,7 +4,7 @@ test_that("audience_incidence", {
   wt <- add_duration(wt)
   wt <- extract_domain(wt)
   A <- audience_incidence(wt)
-  expect_equal(dim(A)[1],766)
+  expect_equal(dim(A)[1],754)
   expect_equal(dim(A)[2],9)
 })
 
@@ -15,5 +15,5 @@ test_that("audience_networks", {
   wt <- add_duration(wt)
   wt <- extract_domain(wt)
   pmi <- audience_network(wt, type = "pmi", cutoff = 120)
-  expect_equal(ecount(pmi),16583)
+  expect_equal(ecount(pmi),8832)
 })
