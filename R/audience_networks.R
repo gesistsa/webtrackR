@@ -5,8 +5,8 @@
 #' @return incidence audience-outlet network
 #' @seealso to create audience networks see [audience_network]
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' wt <- extract_domain(wt)
 #' audience_incidence(wt)
@@ -35,8 +35,8 @@ audience_incidence <- function(wt,cutoff = 3){
 #' @param alpha significance level
 #' @return audience network as igraph object
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' wt <- extract_domain(wt)
 #' audience_network(wt, type = "pmi", cutoff = 120)

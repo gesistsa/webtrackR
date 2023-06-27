@@ -1,28 +1,28 @@
 test_that("add duration", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
   expect_true("duration"%in% names(wt))
 })
 
 test_that("aggregate duration", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
   wt <- extract_domain(wt)
   expect_no_error(aggregate_duration(wt[1:10,]))
 })
 
 test_that("extract_domain", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
   expect_true("domain"%in% names(wt))
 })
 
 test_that("classify_domain", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
   wt <- add_duration(wt)
   wt <- classify_domains(wt)
@@ -31,8 +31,8 @@ test_that("classify_domain", {
 })
 
 test_that("classify_domain errors", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
   wt <- add_duration(wt)
   expect_error(classify_domains(wt,domain_classes = data.frame(a=5,b=6)))
@@ -40,8 +40,8 @@ test_that("classify_domain errors", {
 })
 
 test_that("urldummy", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
   code_urls <- c("Ccj4QELzbJe6.com/FrKrkvugBVJWwfSobV")
   wt <- create_urldummy(wt,dummy = code_urls, name = "test_dummy")
@@ -49,16 +49,16 @@ test_that("urldummy", {
 })
 
 test_that("panelist_data", {
-  data("test_data")
-  data("test_survey")
-  wt <- as.wt_dt(test_data)
-  wt <- add_panelist_data(wt,test_survey)
+  data("testdt_tracking")
+  data("testdt_survey_w")
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- add_panelist_data(wt,testdt_survey_w)
   expect_true("leftright"%in%names(wt))
 })
 
 test_that("panelist_data errors", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
-  wt <- add_panelist_data(wt,test_survey)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- add_panelist_data(wt,testdt_survey_w)
   expect_error(add_panelist_data(wt,"test"))
 })

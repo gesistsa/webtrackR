@@ -27,8 +27,8 @@ sum_visits allows you to summarize the number of visits by panelist_id for diffe
 It further allows to break down the number by any set of "classes" of visits, e.g. the type of the visit's domain.
 }
 \examples{
-data("test_data")
-wt <- as.wt_dt(test_data)
+data("testdt_tracking")
+wt <- as.wt_dt(testdt_tracking)
 # example of visit classification
 wt <- extract_domain(wt)
 wt[,google:=ifelse(domain == "google.com", 1, 0)]

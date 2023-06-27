@@ -1,6 +1,6 @@
 test_that("audience_incidence", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
   wt <- extract_domain(wt)
   A <- audience_incidence(wt)
@@ -10,8 +10,8 @@ test_that("audience_incidence", {
 
 test_that("audience_networks", {
   library(igraph)
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
   wt <- extract_domain(wt)
   pmi <- audience_network(wt, type = "pmi", cutoff = 120)
