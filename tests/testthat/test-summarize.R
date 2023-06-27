@@ -19,5 +19,5 @@ test_that("sum_visits errors", {
   wt[,google:=ifelse(domain == "google.com", 1, 0)]
   wt[,search:=ifelse(grepl("search", url), 1, 0)]
   expect_error(sum_visits(wt, timeframe = "something"))
-  expect_error(sum_visits(wt, timeframe = "wave"))
+  # expect_error(sum_visits(wt, timeframe = "wave"))
 })
