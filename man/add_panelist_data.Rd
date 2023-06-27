@@ -22,8 +22,8 @@ Add panelist features to webtrack data
 Add characteristics of panelists (e.g. from a survey) to the webtrack data
 }
 \examples{
-data("test_data")
-data("test_survey")
-wt <- as.wt_dt(test_data)
-add_panelist_data(wt,test_survey)
+data("testdt_tracking")
+data("testdt_survey_w")
+wt <- as.wt_dt(testdt_tracking)
+add_panelist_data(wt,testdt_survey_w)
 }

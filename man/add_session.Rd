@@ -18,7 +18,7 @@ webtrack data.table with the same columns as wt and a new column called duration
 Define sessions of browsing depending on aq time cutoff for inactivity
 }
 \examples{
-data("test_data")
-wt <- as.wt_dt(test_data)
+data("testdt_tracking")
+wt <- as.wt_dt(testdt_tracking)
 wt <- add_session(wt,cutoff = 120)
 }

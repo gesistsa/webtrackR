@@ -21,8 +21,8 @@ Create incidence matrix for audience-outlet network
 The incidence matrix is a matrix A with entries  \code{A[i,j]=1} if panelist i visited outlet j at least once.
 }
 \examples{
-data("test_data")
-wt <- as.wt_dt(test_data)
+data("testdt_tracking")
+wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
 wt <- extract_domain(wt)
 audience_incidence(wt)

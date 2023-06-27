@@ -18,8 +18,8 @@ webtrack data.table with the same columns as wt with updated duration
 Aggregate duration of consecutive visits to a website
 }
 \examples{
-data("test_data")
-wt <- as.wt_dt(test_data)
+data("testdt_tracking")
+wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
 wt <- extract_domain(wt)
 # the following step can take longer
