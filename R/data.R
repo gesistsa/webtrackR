@@ -1,12 +1,14 @@
 #' Test data
 #'
-#' Randomly generated webtrack data only used for illustrative purposes
-"test_data"
+#' Sample of fully anomymized webtrack data from a research project with US participants
+"testdt_tracking"
 
 #' Test survey
 #'
-#' Randomly generated survey data only used for illustrative purposes
-"test_survey"
+#' Randomly generated survey data only used for illustrative purposes (wide format)
+"testdt_survey_w"
+#' Same randomly generated survey data, one row per person/wave (long format)
+"testdt_survey_w"
 
 
 #' News Types
