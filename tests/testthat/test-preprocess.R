@@ -50,15 +50,15 @@ test_that("urldummy", {
 
 test_that("panelist_data", {
   data("testdt_tracking")
-  data("test_survey")
+  data("testdt_survey_w")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_panelist_data(wt,test_survey)
+  wt <- add_panelist_data(wt,testdt_survey_w)
   expect_true("leftright"%in%names(wt))
 })
 
 test_that("panelist_data errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_panelist_data(wt,test_survey)
+  wt <- add_panelist_data(wt,testdt_survey_w)
   expect_error(add_panelist_data(wt,"test"))
 })

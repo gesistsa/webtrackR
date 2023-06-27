@@ -286,9 +286,9 @@ create_urldummy <- function(wt,dummy,name){
 #' @return webtrack object with the same columns and joined with panelist survey data
 #' @examples
 #' data("testdt_tracking")
-#' data("test_survey")
+#' data("testdt_survey_w")
 #' wt <- as.wt_dt(testdt_tracking)
-#' add_panelist_data(wt,test_survey)
+#' add_panelist_data(wt,testdt_survey_w)
 #' @export
 add_panelist_data <- function(wt,data,cols = NULL){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
