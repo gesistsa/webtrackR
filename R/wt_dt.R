@@ -17,8 +17,8 @@ NULL
 #' @param timestamp_format string. Specify the raw timestamp's formatting. Defaults to "%Y-%m-%d %H:%M:%OS".
 #' @return a webtrack data object
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' is.wt_dt(wt)
 #' @export
 as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS"){

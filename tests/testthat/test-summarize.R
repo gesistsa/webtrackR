@@ -1,6 +1,6 @@
 test_that("sum_visits", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
   wt[,google:=ifelse(domain == "google.com", 1, 0)]
   wt[,search:=ifelse(grepl("search", url), 1, 0)]
@@ -13,8 +13,8 @@ test_that("sum_visits", {
 })
 
 test_that("sum_visits errors", {
-  data("test_data")
-  wt <- as.wt_dt(test_data)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
   wt[,google:=ifelse(domain == "google.com", 1, 0)]
   wt[,search:=ifelse(grepl("search", url), 1, 0)]

@@ -11,8 +11,8 @@
 #' @return a data.table with columns "panelist_id", column indicating the time unit unless "all" was specified,
 #' name indicating the class variable if specified, and "n_visits" indicating the number of visits
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' # example of visit classification
 #' wt <- extract_domain(wt)
 #' wt[,google:=ifelse(domain == "google.com", 1, 0)]
