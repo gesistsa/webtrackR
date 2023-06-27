@@ -5,7 +5,6 @@ test_that("sum_visits", {
   wt[,google:=ifelse(domain == "google.com", 1, 0)]
   wt[,search:=ifelse(grepl("search", url), 1, 0)]
   wt_sum <- sum_visits(wt)
-  # expect_no_error(sum_visits(wt)) # expect_no_error not found - package version?
   expect_true("n_visits" %in% names(wt_sum))
   expect_true("panelist_id" %in% names(wt_sum))
   # expect_true(sum_visits(wt), is.null(timeframe_var)) # this does not work, I assume because timeframe_var is not carried outside function
