@@ -22,6 +22,10 @@ name indicating the class variable if specified, and "n_visits" indicating the n
 \description{
 Summarize number of visits by person within a time frame, and optionally by class of visit
 }
+\details{
+sum_visits allows you to summarize the number of visits by panelist_id for different time periods (for example, by day).
+It further allows to break down the number by any set of "classes" of visits, e.g. the type of the visit's domain.
+}
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)

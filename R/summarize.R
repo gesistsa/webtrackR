@@ -1,6 +1,6 @@
 #' Summarize number of visits by person
 #' @description Summarize number of visits by person within a time frame, and optionally by class of visit
-#' @detail sum_visits allows you to summarize the number of visits by panelist_id for different time periods (for example, by day).
+#' @details sum_visits allows you to summarize the number of visits by panelist_id for different time periods (for example, by day).
 #' It further allows to break down the number by any set of "classes" of visits, e.g. the type of the visit's domain.
 #' @param wt webtrack data object.
 #' @param timeframe character. indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", "wave" or "all".
@@ -21,33 +21,32 @@
 #' @export
 sum_visits <- function(wt, timeframe = "all", visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("url","panelist_id","timestamp"))
+  timeframe <- match.arg(timeframe, c("all", "date", "week", "month", "year", "wave"))
+  vars_exist(wt, vars = c("url", "panelist_id", "timestamp"))
   if (timeframe == "all") {
     timeframe_var <- NULL
   } else if (timeframe == "date") {
-    wt[, date := format(timestamp, format = "%F")]
+    wt[, `:=`(date = format(timestamp, format = "%F"))]
     timeframe_var <- "date"
   } else if (timeframe == "week") {
-    wt[, week := format(timestamp, format = "%Y week %W")]
+    wt[, `:=`(week = format(timestamp, format = "%Y week %W"))]
     timeframe_var <- "week"
   } else if (timeframe == "month") {
-    wt[, month := format(timestamp, format = "%Y month %m")]
+    wt[, `:=`(month = format(timestamp, format = "%Y month %m"))]
     timeframe_var <- "month"
   } else if (timeframe == "year") {
-    wt[, year := format(timestamp, format = "%Y")]
+    wt[, `:=`(year = format(timestamp, format = "%Y"))]
     timeframe_var <- "year"
   } else if (timeframe == "wave") {
     vars_wt <- names(wt)
-    wave <- pmatch("wave",vars_wt)
+    wave <- pmatch("wave", vars_wt)
     if (is.na(wave)) {
-      stop(paste0("couldn't find the column 'wave' in the webtrack data"), call. = FALSE)
+      stop("couldn't find the column 'wave' in the webtrack data", call. = FALSE)
     } else {
       timeframe_var <- "wave"
     }
-  } else {
-    stop(paste0("unknown timeframe option specified"), call. = FALSE)
   }
   grp_vars <- c("panelist_id", timeframe_var, visit_class)
-  summary <- as.data.frame(wt[, list("n_visits" = .N), by = grp_vars])
+  summary <- wt[, list("n_visits" = .N), by = grp_vars]
   summary[]
 }
