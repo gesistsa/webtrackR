@@ -2,7 +2,7 @@ test_that("add duration", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
-  expect_true("duration"%in% names(wt))
+  expect_true("duration" %in% names(wt))
 })
 
 test_that("aggregate duration", {
@@ -10,14 +10,14 @@ test_that("aggregate duration", {
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
   wt <- extract_domain(wt)
-  expect_no_error(aggregate_duration(wt[1:10,]))
+  expect_no_error(aggregate_duration(wt[1:10, ]))
 })
 
 test_that("extract_domain", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
-  expect_true("domain"%in% names(wt))
+  expect_true("domain" %in% names(wt))
 })
 
 test_that("classify_domain", {
@@ -26,8 +26,8 @@ test_that("classify_domain", {
   wt <- extract_domain(wt)
   wt <- add_duration(wt)
   wt <- classify_domains(wt)
-  expect_true("type"%in% names(wt))
-  expect_true("prev_type"%in% names(wt))
+  expect_true("type" %in% names(wt))
+  expect_true("prev_type" %in% names(wt))
 })
 
 test_that("classify_domain errors", {
@@ -43,7 +43,7 @@ test_that("urldummy", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
-  code_urls <- c("Ccj4QELzbJe6.com/FrKrkvugBVJWwfSobV")
+  code_urls <- c("https://invite.rmrsurveys.com/survey/selfserve/2252/1812586")
   wt <- create_urldummy(wt,dummy = code_urls, name = "test_dummy")
   expect_true(wt$test_dummy[1])
 })

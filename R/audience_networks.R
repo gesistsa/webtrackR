@@ -21,6 +21,7 @@ audience_incidence <- function(wt,cutoff = 3){
 
   el <- wt[duration >= cutoff, c("panelist_id", "domain")]
   el <- el[, .N, by = c("panelist_id", "domain")]
+  el <- el[!is.na(domain)]
   g <- igraph::graph_from_data_frame(el, directed = FALSE)
   igraph::V(g)$type <- !igraph::bipartite.mapping(g)$type
   A <- igraph::as_incidence_matrix(g)
