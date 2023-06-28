@@ -6,12 +6,8 @@
 \title{Test survey}
 \format{
 An object of class \code{data.frame} with 500 rows and 8 columns.
-
-An object of class \code{data.frame} with 500 rows and 8 columns.
 }
 \usage{
-testdt_survey_w
-
 testdt_survey_w
 }
 \description{

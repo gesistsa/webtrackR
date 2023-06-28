@@ -7,6 +7,12 @@ test_that("sum_visits", {
   wt_sum <- sum_visits(wt)
   expect_true("n_visits" %in% names(wt_sum))
   expect_true("panelist_id" %in% names(wt_sum))
+  
+  expect_true(!"all" %in% names(wt_sum))
+  
+  wt_sum_week <- sum_visits(wt, timeframe = "week")
+  expect_true("week" %in% names(wt_sum_week))
+  
   # expect_true(sum_visits(wt), is.null(timeframe_var)) # this does not work, I assume because timeframe_var is not carried outside function
   # also add other cases for timeframe_var
   # check whether grouping variables in wt_sum

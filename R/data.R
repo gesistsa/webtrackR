@@ -7,16 +7,11 @@
 #'
 #' Randomly generated survey data only used for illustrative purposes (wide format)
 "testdt_survey_w"
-#' Same randomly generated survey data, one row per person/wave (long format)
-"testdt_survey_w"
 
 #' Test survey
 #'
-#' Randomly generated survey data only used for illustrative purposes (wide format)
-"testdt_survey_l"
 #' Same randomly generated survey data, one row per person/wave (long format)
 "testdt_survey_l"
-
 
 #' News Types
 #'

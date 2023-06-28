@@ -6,15 +6,11 @@
 \title{Test survey}
 \format{
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1500 rows and 7 columns.
-
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1500 rows and 7 columns.
 }
 \usage{
 testdt_survey_l
-
-testdt_survey_l
 }
 \description{
-Randomly generated survey data only used for illustrative purposes (wide format)
+Same randomly generated survey data, one row per person/wave (long format)
 }
 \keyword{datasets}
