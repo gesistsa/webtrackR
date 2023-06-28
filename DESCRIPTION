@@ -25,7 +25,8 @@ Imports:
     tibble,
     igraph,
     urltools,
-    utils
+    utils,
+    rvest
 LazyData: true
 LazyDataCompression: bzip2
 Suggests: 

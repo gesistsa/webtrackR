@@ -156,6 +156,35 @@ add_previous_visit <- function(wt, level = "url"){
   wt[]
 }
 
+#' Download and add the "title" of a URL
+#' @description Gets the title of a website and adds it as a new variable. See details.
+#' @details The title of a website (the text within the <title> tag of a web sites <head>)
+#' is the text that is shown onn the "tab" when looking at the website in a browser.
+#' It can contain useful information about a URL's content and can be used, for example,
+#' for classification purposes. Note that it may take a while to run this function for a large number of URLs.
+#' @param wt webtrack data object
+#' @importFrom data.table is.data.table shift
+#' @return webtrack data.table with the same columns as wt and a new column called "title",
+#' which will be NA if the title cannot be retrieved.
+#' @examples
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
+#' wt <- add_title(wt)
+#' @export
+add_title <- function(wt) {
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt,vars = c("panelist_id","url","timestamp"))
+  urls <- data.table(url = unique(wt$url))
+  urls[, title := mapply(function(x) {
+    return(
+      tryCatch(
+        html_text(html_node(read_html(x), "head title")),
+        error=function(e) NA))}, url)]
+  closeAllConnections()
+  wt <- wt[urls, on = "url"]
+  wt[]
+}
+
 #' Aggregate duration of consecutive visits to a website
 #' @param wt webtrack data object
 #' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
