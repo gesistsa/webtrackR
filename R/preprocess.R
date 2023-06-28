@@ -283,6 +283,7 @@ create_urldummy <- function(wt,dummy,name){
 #' @param wt webtrack data object
 #' @param data a data.table (or object that can be converted to data.table) which contains variables of panelists
 #' @param cols character vector of columns to add. If NULL, all columns are added
+#' @param join_on which columns to join on. Defaults to "panelist_id".
 #' @return webtrack object with the same columns and joined with panelist survey data
 #' @examples
 #' data("testdt_tracking")
@@ -290,7 +291,7 @@ create_urldummy <- function(wt,dummy,name){
 #' wt <- as.wt_dt(testdt_tracking)
 #' add_panelist_data(wt,testdt_survey_w)
 #' @export
-add_panelist_data <- function(wt,data,cols = NULL){
+add_panelist_data <- function(wt,data,cols = NULL,join_on = "panelist_id"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id"))
   if(!data.table::is.data.table(data)){
@@ -306,6 +307,5 @@ add_panelist_data <- function(wt,data,cols = NULL){
   } else{
     data.table::setattr(wt,"panelist",setdiff(names(data),"panelist_id"))
   }
-
-  data[wt, on = "panelist_id"]
+  test <- data[wt, on = join_on]
 }
