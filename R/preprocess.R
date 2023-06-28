@@ -307,5 +307,5 @@ add_panelist_data <- function(wt,data,cols = NULL,join_on = "panelist_id"){
   } else{
     data.table::setattr(wt,"panelist",setdiff(names(data),"panelist_id"))
   }
-  test <- data[wt, on = join_on]
+  data[wt, on = join_on]
 }
