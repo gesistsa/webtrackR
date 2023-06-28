@@ -20,6 +20,13 @@ test_that("extract_domain", {
   expect_true("domain" %in% names(wt))
 })
 
+test_that("add_title", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking[1:10])
+  wt <- add_title(wt)
+  expect_true("title" %in% names(wt))
+})
+
 test_that("classify_domain", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
