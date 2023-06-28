@@ -31,8 +31,8 @@ Most of the operation such as variable creation, subsetting and joins are inheri
 These operations are applied on the data.
 }
 \examples{
-data("test_data")
-wt <- as.wt_dt(test_data)
+data("testdt_tracking")
+wt <- as.wt_dt(testdt_tracking)
 is.wt_dt(wt)
 }
 \seealso{

@@ -18,8 +18,8 @@ webtrack data.table with the same columns as wt and a new column called url_next
 Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
 }
 \examples{
-data("test_data")
-wt <- as.wt_dt(test_data)
+data("testdt_tracking")
+wt <- as.wt_dt(testdt_tracking)
 wt <- add_next_visit(wt, level = "url")
 wt <- add_next_visit(wt, level = "host")
 wt <- add_next_visit(wt, level = "domain")

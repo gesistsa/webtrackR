@@ -5,8 +5,8 @@
 #' @return incidence audience-outlet network
 #' @seealso to create audience networks see [audience_network]
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' wt <- extract_domain(wt)
 #' audience_incidence(wt)
@@ -21,6 +21,7 @@ audience_incidence <- function(wt,cutoff = 3){
 
   el <- wt[duration >= cutoff, c("panelist_id", "domain")]
   el <- el[, .N, by = c("panelist_id", "domain")]
+  el <- el[!is.na(domain)]
   g <- igraph::graph_from_data_frame(el, directed = FALSE)
   igraph::V(g)$type <- !igraph::bipartite.mapping(g)$type
   A <- igraph::as_incidence_matrix(g)
@@ -35,8 +36,8 @@ audience_incidence <- function(wt,cutoff = 3){
 #' @param alpha significance level
 #' @return audience network as igraph object
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' wt <- extract_domain(wt)
 #' audience_network(wt, type = "pmi", cutoff = 120)

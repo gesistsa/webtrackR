@@ -7,8 +7,8 @@
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called duration
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' # Defining cutoff at 10 minutes and setting critical visits to the cutoff:
 #' wt <- add_duration(wt, cutoff = 600, replace_by = "cutoff")
@@ -26,11 +26,11 @@ add_duration <- function(wt, cutoff = 300, replace_by = "na", replace_val = NULL
   if (replace_by == "na") {
     wt[is.na(duration),duration:=NA]
     wt[duration>cutoff,duration:=NA]
-  } 
+  }
   else if (replace_by == "cutoff") {
     wt[is.na(duration),duration:=cutoff]
     wt[duration>cutoff,duration:=cutoff]
-  } 
+  }
   else if (replace_by == "value") {
     wt[is.na(duration),duration:=replace_val]
     wt[duration>cutoff,duration:=replace_val]
@@ -45,8 +45,8 @@ add_duration <- function(wt, cutoff = 300, replace_by = "na", replace_val = NULL
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called duration
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_session(wt,cutoff = 120)
 #' @export
 add_session <- function(wt, cutoff){
@@ -64,8 +64,8 @@ add_session <- function(wt, cutoff){
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called domain
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_host(wt)
 #' @export
 extract_host <- function(wt){
@@ -83,8 +83,8 @@ extract_host <- function(wt){
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called domain
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_domain(wt)
 #' @export
 extract_domain <- function(wt){
@@ -107,8 +107,8 @@ extract_domain <- function(wt){
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called url_next, host_next or domain_next.
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_next_visit(wt, level = "url")
 #' wt <- add_next_visit(wt, level = "host")
 #' wt <- add_next_visit(wt, level = "domain")
@@ -135,8 +135,8 @@ add_next_visit <- function(wt, level = "url"){
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_previous_visit(wt, level = "url")
 #' wt <- add_previous_visit(wt, level = "host")
 #' wt <- add_previous_visit(wt, level = "domain")
@@ -162,8 +162,8 @@ add_previous_visit <- function(wt, level = "url"){
 #' @importFrom data.table is.data.table shift .N
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' wt <- extract_domain(wt)
 #' # the following step can take longer
@@ -197,8 +197,8 @@ aggregate_duration <- function(wt, keep = FALSE){
 #' @param return.only if not null, only return the specified domain type
 #' @return webtrack data.table with the same columns as wt and a new column called type. If prev_type is TRUE, a column prev_type is added with the type of the visit before the current one. If newsportals are processed, found newsportals have an added "/NEWS" in the domain column. If return.only is used, only rows that contain a specific domain type are returned
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_domain(wt)
 #' wt <- add_duration(wt)
 #' wt <- classify_domains(wt)
@@ -263,8 +263,8 @@ classify_domains <- function(wt,
 #' @param name name of dummy variable to create.
 #' @return webtrack object with the same columns and a new column called "name" including the dummy variable
 #' @examples
-#' data("test_data")
-#' wt <- as.wt_dt(test_data)
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_domain(wt)
 #' code_urls <- c("Ccj4QELzbJe6.com/FrKrkvugBVJWwfSobV")
 #' create_urldummy(wt,dummy = code_urls, name = "test_dummy")
@@ -285,10 +285,10 @@ create_urldummy <- function(wt,dummy,name){
 #' @param cols character vector of columns to add. If NULL, all columns are added
 #' @return webtrack object with the same columns and joined with panelist survey data
 #' @examples
-#' data("test_data")
-#' data("test_survey")
-#' wt <- as.wt_dt(test_data)
-#' add_panelist_data(wt,test_survey)
+#' data("testdt_tracking")
+#' data("testdt_survey_w")
+#' wt <- as.wt_dt(testdt_tracking)
+#' add_panelist_data(wt,testdt_survey_w)
 #' @export
 add_panelist_data <- function(wt,data,cols = NULL){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
