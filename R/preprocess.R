@@ -100,6 +100,30 @@ extract_domain <- function(wt){
   wt[]
 }
 
+#' Drop query/fragment from URL
+#' @description Drops the query and fragment from a URL, i.e., everything after a "?" or "#"
+#' @param wt webtrack data object
+#' @importFrom data.table is.data.table
+#' @return webtrack data.table with the same columns as wt and a new column called url_noquery
+#' @examples
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
+#' wt <- drop_query(wt)
+#' @export
+drop_query <- function(wt){
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt,vars = "url")
+  wt[,tmp_host:=urltools::domain(gsub("@","%40",url))]
+  wt[,tmp_path:=urltools::path(gsub("@","%40",url))]
+  wt[,tmp_path:=gsub("%40","@",tmp_path)]
+  wt[,tmp_scheme:=urltools::scheme(url)]
+  wt[,url_noquery:=paste0(tmp_scheme, "://", tmp_host, "/", tmp_path, recycle0 = T)]
+  wt[,tmp_host:=NULL]
+  wt[,tmp_path:=NULL]
+  wt[,tmp_scheme:=NULL]
+  wt[]
+}
+
 #' Add the next visit as a variable
 #' @description Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
 #' @param wt webtrack data object
