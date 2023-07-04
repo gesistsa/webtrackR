@@ -5,14 +5,6 @@ test_that("add duration", {
   expect_true("duration" %in% names(wt))
 })
 
-test_that("aggregate duration", {
-  data("testdt_tracking")
-  wt <- as.wt_dt(testdt_tracking)
-  wt <- add_duration(wt)
-  wt <- extract_domain(wt)
-  expect_no_error(aggregate_duration(wt[1:10, ]))
-})
-
 test_that("extract_domain", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)

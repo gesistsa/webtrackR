@@ -156,39 +156,6 @@ add_previous_visit <- function(wt, level = "url"){
   wt[]
 }
 
-#' Aggregate duration of consecutive visits to a website
-#' @param wt webtrack data object
-#' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
-#' @importFrom data.table is.data.table shift .N
-#' @return webtrack data.table with the same columns as wt with updated duration
-#' @examples
-#' data("testdt_tracking")
-#' wt <- as.wt_dt(testdt_tracking)
-#' wt <- add_duration(wt)
-#' wt <- extract_domain(wt)
-#' # the following step can take longer
-#' wt <- wt[1:100,]
-#' aggregate_duration(wt)
-#' @export
-aggregate_duration <- function(wt, keep = FALSE){
-  . = .N =  NULL #revisit
-  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("url","panelist_id","timestamp","domain"))
-  grp_vars <- setdiff(names(wt),c("duration","timestamp"))
-  wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
-  wt[, day := as.Date(timestamp)]
-  wt <- wt[,
-           .(visits = .N,
-             duration = sum(as.numeric(duration), na.rm = TRUE),
-             timestamp = min(timestamp)),
-           by = eval(unique(c("visit", "day",grp_vars)))]
-
-  if(!keep){
-    wt[,c("visit","visits","day") := NULL]
-  }
-  wt[]
-}
-
 #' Classify domains according to prespecified classes
 #' @param wt webtrack data object
 #' @param domain_classes a data.table containing a column "domain" and "type". If NULL, an internal list is used
