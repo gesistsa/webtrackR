@@ -17,7 +17,7 @@ which will be NA if the title cannot be retrieved.
 Gets the title of a website and adds it as a new variable. See details.
 }
 \details{
-The title of a website (the text within the <title> tag of a web sites <head>)
+The title of a website (the text within the \if{html}{\out{<title>}} tag of a web sites \if{html}{\out{<head>}})
 is the text that is shown onn the "tab" when looking at the website in a browser.
 It can contain useful information about a URL's content and can be used, for example,
 for classification purposes. Note that it may take a while to run this function for a large number of URLs.
