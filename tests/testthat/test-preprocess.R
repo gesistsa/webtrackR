@@ -23,7 +23,7 @@ test_that("extract_domain", {
 test_that("drop_query", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_domain(wt)
+  wt <- drop_query(wt)
   expect_true("url_noquery" %in% names(wt))
   test_url <- c("https://www.google.com/maps/@25.6726944,-80.4421392,19z")
   expect_true(wt[url == test_url, url] == test_url)
