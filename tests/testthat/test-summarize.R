@@ -56,7 +56,6 @@ test_that("sum_durations", {
   wt_sum_wave <- sum_durations(wt, timeframe = "wave")
   expect_true("wave" %in% names(wt_sum_wave))
 })
-
 test_that("sum_durations errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
@@ -68,14 +67,30 @@ test_that("sum_durations errors", {
   wt[["wave"]] <- NULL
   expect_error(sum_durations(wt, timeframe = "wave"))
 })
-
-test_that("aggregate duration", {
+test_that("sum_activity", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_duration(wt)
-  wt <- extract_domain(wt)
-  expect_no_error(aggregate_duration(wt[1:10, ]))
+  wt_sum <- sum_activity(wt)
+  expect_true("active_dates" %in% names(wt_sum))
+  expect_true("panelist_id" %in% names(wt_sum))
+  expect_true(length(unique(wt_sum$panelist_id)) == length(unique(wt$panelist_id)))
+  wt_sum_week <- sum_activity(wt, timeframe = "week")
+  expect_true("week" %in% names(wt_sum_week))
+  wt_sum_month <- sum_activity(wt, timeframe = "month")
+  expect_true("month" %in% names(wt_sum_month))
+  wt_sum_year <- sum_activity(wt, timeframe = "year")
+  expect_true("year" %in% names(wt_sum_year))
+  wt_sum_wave <- sum_activity(wt, timeframe = "wave")
+  expect_true("wave" %in% names(wt_sum_wave))
 })
+test_that("sum_activity errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(sum_activity(wt, timeframe = "not_a_variable"))
+  wt[["wave"]] <- NULL
+  expect_error(sum_activity(wt, timeframe = "wave"))
+})
+
 test_that("agg_duration", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
