@@ -113,39 +113,6 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = "all", visit_clas
   summary[]
 }
 
-#' Aggregate duration of consecutive visits to a website (OLD - FEEL FREE TO DELETE)
-#' @param wt webtrack data object
-#' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
-#' @importFrom data.table is.data.table shift .N
-#' @return webtrack data.table with the same columns as wt with updated duration
-#' @examples
-#' data("testdt_tracking")
-#' wt <- as.wt_dt(testdt_tracking)
-#' wt <- add_duration(wt, replace_by = "cutoff")
-#' wt <- extract_domain(wt)
-#' # the following step can take longer
-#' wt <- wt[1:100,]
-#' aggregate_duration(wt)
-#' @export
-aggregate_duration <- function(wt, keep = FALSE){
-  . = .N =  NULL #revisit
-  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("url","panelist_id","timestamp","domain"))
-  grp_vars <- setdiff(names(wt),c("duration","timestamp"))
-  wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
-  wt[, day := as.Date(timestamp)]
-  wt <- wt[,
-           .(visits = .N,
-             duration = sum(as.numeric(duration), na.rm = TRUE),
-             timestamp = min(timestamp)),
-           by = eval(unique(c("visit", "day",grp_vars)))]
-
-  if(!keep){
-    wt[,c("visit","visits","day") := NULL]
-  }
-  wt[]
-}
-
 #' Aggregate duration of consecutive visits to a URL
 #' @description Aggregate the duration of consecutive visits by a person to the same URL
 #' @param wt webtrack data object
