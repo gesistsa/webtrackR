@@ -23,7 +23,9 @@ It can contain useful information about a URL's content and can be used, for exa
 for classification purposes. Note that it may take a while to run this function for a large number of URLs.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_title(wt)
+}
 }

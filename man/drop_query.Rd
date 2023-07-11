@@ -12,13 +12,15 @@ drop_query(wt, varname = "url")
 \item{varname}{name of the URL variable from which to drop the query/fragment. Defaults to "url".}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called "\link{varname}_noquery"
+webtrack data.table with the same columns as wt and a new column called "\if{html}{\out{<varname>}}_noquery"
 }
 \description{
 Drops the query and fragment from a URL, i.e., everything after a "?" or "#"
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- drop_query(wt)
+}
 }

@@ -20,10 +20,12 @@ webtrack data.table with the same columns as wt and, if drop set to FALSE, a new
 Drop consecutive visits that are to the same URL within a user-defined timeframe
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
 wt2 <- as.wt_dt(testdt_tracking)[1:1000]
 wt <- data.table::rbindlist(list(wt1, wt2))
 wt <- as.wt_dt(wt)
 wt <- deduplicate(wt)
+}
 }

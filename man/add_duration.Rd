@@ -22,6 +22,7 @@ webtrack data.table (ordered by panelist_id and timestamp) with the same columns
 Approximate the time spent on a visit based on the sequence of timestamps
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
@@ -29,4 +30,5 @@ wt <- add_duration(wt)
 wt <- add_duration(wt, cutoff = 600, replace_by = "cutoff")
 # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
 wt <- add_duration(wt, cutoff = 600, replace_by = "value", replace_val = 300)
+}
 }

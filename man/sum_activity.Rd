@@ -23,7 +23,9 @@ sum_activity allows you to count the number of active days, weeks, months, years
 A period counts as "active" if the person provided at least one visit for that period.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt_sum <- sum_activity(wt, timeframe = "date")
+}
 }

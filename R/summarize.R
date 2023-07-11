@@ -11,13 +11,15 @@
 #' @return a data.table with columns "panelist_id", column indicating the time unit unless "all" was specified,
 #' name indicating the class variable if specified, and "n_visits" indicating the number of visits
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # example of visit classification
 #' wt <- extract_domain(wt)
-#' wt[,google:=ifelse(domain == "google.com", 1, 0)]
-#' wt[,search:=ifelse(grepl("search", url), 1, 0)]
+#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' wt[, search := ifelse(grepl("search", url), 1, 0)]
 #' summary <- sum_visits(wt, timeframe = "month", visit_class = c("google", "search"))
+#' }
 #' @export
 sum_visits <- function(wt, timeframe = "all", visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -67,13 +69,18 @@ sum_visits <- function(wt, timeframe = "all", visit_class = NULL) {
 #' name indicating the class variable if specified, and "duration_visits" indicating the duration of visits
 #' (in seconds, or whatever the unit of the variable specified by "var_duration" parameter)
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # example of visit classification
 #' wt <- extract_domain(wt)
-#' wt[,google:=ifelse(domain == "google.com", 1, 0)]
-#' wt[,search:=ifelse(grepl("search", url), 1, 0)]
-#' summary <- sum_durations(wt, var_duration = NULL, timeframe = "month", visit_class = c("google", "search"))
+#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' wt[, search := ifelse(grepl("search", url), 1, 0)]
+#' summary <- sum_durations(wt,
+#'   var_duration = NULL, timeframe = "month",
+#'   visit_class = c("google", "search")
+#' )
+#' }
 #' @export
 sum_durations <- function(wt, var_duration = NULL, timeframe = "all", visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -123,9 +130,11 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = "all", visit_clas
 #' @importFrom data.table is.data.table shift .N
 #' @return a data.table with columns "panelist_id" and column indicating the number of active time units.
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt_sum <- sum_activity(wt, timeframe = "date")
+#' }
 #' @export
 sum_activity <- function(wt, timeframe = "date") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -166,14 +175,16 @@ sum_activity <- function(wt, timeframe = "date") {
 #' @importFrom data.table is.data.table shift .N
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt, replace_by = "cutoff")
 #' agg_duration(wt)
+#' }
 #' @export
-agg_duration <- function(wt, keep = FALSE, same_day = TRUE, duration_var = "duration"){
+agg_duration <- function(wt, keep = FALSE, same_day = TRUE, duration_var = "duration") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("url","panelist_id","timestamp", duration_var))
+  vars_exist(wt, vars = c("url", "panelist_id", "timestamp", duration_var))
   data.table::setnames(wt, duration_var, "duration")
   wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
   grp_vars <- c("panelist_id", "visit", "url")
@@ -181,13 +192,18 @@ agg_duration <- function(wt, keep = FALSE, same_day = TRUE, duration_var = "dura
     wt[, day := as.Date(timestamp)]
     grp_vars <- c(grp_vars, "day")
   }
-  wt <- wt[, .(visits = .N,
-                    duration = sum(as.numeric(duration), na.rm = TRUE),
-                    timestamp = min(timestamp)), by = grp_vars]
-  wt[,visit:=NULL]
-  if (same_day == TRUE) {wt[,day:=NULL]}
-  if (keep == FALSE) {wt[, visits := NULL]}
+  wt <- wt[, list(
+    visits = .N,
+    duration = sum(as.numeric(duration), na.rm = TRUE),
+    timestamp = min(timestamp)
+  ), by = grp_vars]
+  wt[, visit := NULL]
+  if (same_day == TRUE) {
+    wt[, day := NULL]
+  }
+  if (keep == FALSE) {
+    wt[, visits := NULL]
+  }
   data.table::setnames(wt, "duration", duration_var)
   wt[]
 }
-

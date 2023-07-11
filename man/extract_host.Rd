@@ -18,7 +18,9 @@ webtrack data.table with the same columns as wt and a new column called "\link{u
 Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- extract_host(wt)
+}
 }

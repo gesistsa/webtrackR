@@ -18,9 +18,11 @@ webtrack data.table (ordered by panelist_id and timestamp) with the same columns
 Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_previous_visit(wt, level = "url")
 wt <- add_previous_visit(wt, level = "host")
 wt <- add_previous_visit(wt, level = "domain")
+}
 }

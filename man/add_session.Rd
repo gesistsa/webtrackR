@@ -18,7 +18,9 @@ webtrack data.table (ordered by panelist_id and timestamp) with the same columns
 Define sessions of browsing depending on aq time cutoff for inactivity
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
-wt <- add_session(wt,cutoff = 120)
+wt <- add_session(wt, cutoff = 120)
+}
 }
