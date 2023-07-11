@@ -13,7 +13,7 @@ agg_duration(wt, keep = FALSE, same_day = TRUE, duration_var = "duration")
 
 \item{same_day}{logical. Whether to count visits as consecutive only when on the same day. Defaults to TRUE}
 
-\item{duration_var}{logical. Name of duration variable. Defaults to "duration".}
+\item{duration_var}{character. Name of duration variable. Defaults to "duration".}
 }
 \value{
 webtrack data.table with the same columns as wt with updated duration
