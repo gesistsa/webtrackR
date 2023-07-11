@@ -113,13 +113,16 @@ extract_domain <- function(wt){
 drop_query <- function(wt){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = "url")
-  wt[,tmp_host:=urltools::domain(gsub("@","%40",url))]
-  wt[,tmp_path:=urltools::path(gsub("@","%40",url))]
-  wt[,tmp_path:=gsub("%40","@",tmp_path)]
+  wt[,tmp_url:=gsub("@","%40",url)]
+  wt[,tmp_host:=urltools::domain(tmp_url)]
+  wt[,tmp_path:=urltools::path(tmp_url)]
+  wt[,tmp_path_rec:=ifelse(url!=tmp_url, gsub("%40","@",tmp_path), tmp_path)]
   wt[,tmp_scheme:=urltools::scheme(url)]
-  wt[,url_noquery:=paste0(tmp_scheme, "://", tmp_host, "/", tmp_path, recycle0 = T)]
+  wt[,url_noquery:=paste0(tmp_scheme, "://", tmp_host, "/", tmp_path_rec, recycle0 = T)]
+  wt[,tmp_url:=NULL]
   wt[,tmp_host:=NULL]
   wt[,tmp_path:=NULL]
+  wt[,tmp_path_rec:=NULL]
   wt[,tmp_scheme:=NULL]
   wt[]
 }
