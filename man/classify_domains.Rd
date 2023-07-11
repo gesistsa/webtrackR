@@ -30,9 +30,11 @@ webtrack data.table with the same columns as wt and a new column called type. If
 Classify domains according to prespecified classes
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- extract_domain(wt)
 wt <- add_duration(wt)
 wt <- classify_domains(wt)
+}
 }

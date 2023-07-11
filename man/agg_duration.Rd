@@ -22,8 +22,10 @@ webtrack data.table with the same columns as wt with updated duration
 Aggregate the duration of consecutive visits by a person to the same URL
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt, replace_by = "cutoff")
 agg_duration(wt)
+}
 }

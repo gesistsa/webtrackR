@@ -11,13 +11,15 @@
 #' @return a data.table with columns "panelist_id", column indicating the time unit unless "all" was specified,
 #' name indicating the class variable if specified, and "n_visits" indicating the number of visits
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # example of visit classification
 #' wt <- extract_domain(wt)
-#' wt[,google:=ifelse(domain == "google.com", 1, 0)]
-#' wt[,search:=ifelse(grepl("search", url), 1, 0)]
+#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' wt[, search := ifelse(grepl("search", url), 1, 0)]
 #' summary <- sum_visits(wt, timeframe = "month", visit_class = c("google", "search"))
+#' }
 #' @export
 sum_visits <- function(wt, timeframe = "all", visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -67,13 +69,18 @@ sum_visits <- function(wt, timeframe = "all", visit_class = NULL) {
 #' name indicating the class variable if specified, and "duration_visits" indicating the duration of visits
 #' (in seconds, or whatever the unit of the variable specified by "var_duration" parameter)
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # example of visit classification
 #' wt <- extract_domain(wt)
-#' wt[,google:=ifelse(domain == "google.com", 1, 0)]
-#' wt[,search:=ifelse(grepl("search", url), 1, 0)]
-#' summary <- sum_durations(wt, var_duration = NULL, timeframe = "month", visit_class = c("google", "search"))
+#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' wt[, search := ifelse(grepl("search", url), 1, 0)]
+#' summary <- sum_durations(wt,
+#'   var_duration = NULL, timeframe = "month",
+#'   visit_class = c("google", "search")
+#' )
+#' }
 #' @export
 sum_durations <- function(wt, var_duration = NULL, timeframe = "all", visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -113,37 +120,50 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = "all", visit_clas
   summary[]
 }
 
-#' Aggregate duration of consecutive visits to a website (OLD - FEEL FREE TO DELETE)
-#' @param wt webtrack data object
-#' @param keep logical. if intermediary columns should be kept or not. defaults to FALSE
+#' Summarize activity per person
+#' @description Count number of active time periods (days, weeks, months, years, or waves) per person
+#' @details sum_activity allows you to count the number of active days, weeks, months, years or waves by panelist_id.
+#' A period counts as "active" if the person provided at least one visit for that period.
+#' @param wt webtrack data object.
+#' @param timeframe character. Indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", or "wave".
+#' If set to "wave", webtrack data object must contain a column call "wave". Defaults to "date".
 #' @importFrom data.table is.data.table shift .N
-#' @return webtrack data.table with the same columns as wt with updated duration
+#' @return a data.table with columns "panelist_id" and column indicating the number of active time units.
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
-#' wt <- add_duration(wt, replace_by = "cutoff")
-#' wt <- extract_domain(wt)
-#' # the following step can take longer
-#' wt <- wt[1:100,]
-#' aggregate_duration(wt)
+#' wt_sum <- sum_activity(wt, timeframe = "date")
+#' }
 #' @export
-aggregate_duration <- function(wt, keep = FALSE){
-  . = .N =  NULL #revisit
+sum_activity <- function(wt, timeframe = "date") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("url","panelist_id","timestamp","domain"))
-  grp_vars <- setdiff(names(wt),c("duration","timestamp"))
-  wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
-  wt[, day := as.Date(timestamp)]
-  wt <- wt[,
-           .(visits = .N,
-             duration = sum(as.numeric(duration), na.rm = TRUE),
-             timestamp = min(timestamp)),
-           by = eval(unique(c("visit", "day",grp_vars)))]
-
-  if(!keep){
-    wt[,c("visit","visits","day") := NULL]
+  timeframe <- match.arg(timeframe, c("date", "week", "month", "year", "wave"))
+  vars_exist(wt, vars = c("url", "panelist_id", "timestamp"))
+  if (timeframe == "date") {
+    wt[, `:=`(date = format(timestamp, format = "%F"))]
+    timeframe_var <- "active_dates"
+  } else if (timeframe == "week") {
+    wt[, `:=`(week = format(timestamp, format = "%Y week %W"))]
+    timeframe_var <- "active_weeks"
+  } else if (timeframe == "month") {
+    wt[, `:=`(month = format(timestamp, format = "%Y month %m"))]
+    timeframe_var <- "active_months"
+  } else if (timeframe == "year") {
+    wt[, `:=`(year = format(timestamp, format = "%Y"))]
+    timeframe_var <- "active_years"
+  } else if (timeframe == "wave") {
+    vars_wt <- names(wt)
+    wave <- pmatch("wave", vars_wt)
+    if (is.na(wave)) {
+      stop("couldn't find the column 'wave' in the webtrack data", call. = FALSE)
+    } else {
+      timeframe_var <- "active_waves"
+    }
   }
-  wt[]
+  summary <- wt[, list(temp = length(unique(get(timeframe)))), by = "panelist_id"]
+  data.table::setnames(summary, "temp", timeframe_var)
+  summary[]
 }
 
 #' Aggregate duration of consecutive visits to a URL
@@ -155,14 +175,16 @@ aggregate_duration <- function(wt, keep = FALSE){
 #' @importFrom data.table is.data.table shift .N
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt, replace_by = "cutoff")
 #' agg_duration(wt)
+#' }
 #' @export
-agg_duration <- function(wt, keep = FALSE, same_day = TRUE, duration_var = "duration"){
+agg_duration <- function(wt, keep = FALSE, same_day = TRUE, duration_var = "duration") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("url","panelist_id","timestamp", duration_var))
+  vars_exist(wt, vars = c("url", "panelist_id", "timestamp", duration_var))
   data.table::setnames(wt, duration_var, "duration")
   wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
   grp_vars <- c("panelist_id", "visit", "url")
@@ -170,13 +192,18 @@ agg_duration <- function(wt, keep = FALSE, same_day = TRUE, duration_var = "dura
     wt[, day := as.Date(timestamp)]
     grp_vars <- c(grp_vars, "day")
   }
-  wt <- wt[, .(visits = .N,
-                    duration = sum(as.numeric(duration), na.rm = TRUE),
-                    timestamp = min(timestamp)), by = grp_vars]
-  wt[,visit:=NULL]
-  if (same_day == TRUE) {wt[,day:=NULL]}
-  if (keep == FALSE) {wt[, visits := NULL]}
+  wt <- wt[, list(
+    visits = .N,
+    duration = sum(as.numeric(duration), na.rm = TRUE),
+    timestamp = min(timestamp)
+  ), by = grp_vars]
+  wt[, visit := NULL]
+  if (same_day == TRUE) {
+    wt[, day := NULL]
+  }
+  if (keep == FALSE) {
+    wt[, visits := NULL]
+  }
   data.table::setnames(wt, "duration", duration_var)
   wt[]
 }
-

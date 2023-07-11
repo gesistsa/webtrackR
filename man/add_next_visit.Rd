@@ -12,15 +12,17 @@ add_next_visit(wt, level = "url")
 \item{level}{character. Either "url", "host" or "domain". Defaults to "url".}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called url_next, host_next or domain_next.
+webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_next, host_next or domain_next.
 }
 \description{
 Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_next_visit(wt, level = "url")
 wt <- add_next_visit(wt, level = "host")
 wt <- add_next_visit(wt, level = "domain")
+}
 }

@@ -16,12 +16,13 @@ add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)
 \item{replace_val}{numeric. If replace_by is set to "value", this argument determines what value differences greater than the cutoff, as well as the last visit for an individual are set to.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called duration
+webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 }
 \description{
 Approximate the time spent on a visit based on the sequence of timestamps
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
@@ -29,4 +30,5 @@ wt <- add_duration(wt)
 wt <- add_duration(wt, cutoff = 600, replace_by = "cutoff")
 # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
 wt <- add_duration(wt, cutoff = 600, replace_by = "value", replace_val = 300)
+}
 }

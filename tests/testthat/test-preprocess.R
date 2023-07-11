@@ -3,6 +3,28 @@ test_that("add duration", {
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
   expect_true("duration" %in% names(wt))
+  expect_true(min(wt$duration, na.rm = T) >= 0)
+})
+
+test_that("deduplicate", {
+  data("testdt_tracking")
+  wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
+  wt2 <- as.wt_dt(testdt_tracking)[1:1000]
+  wt <- data.table::rbindlist(list(wt1, wt2))
+  wt <- as.wt_dt(wt)
+  wt_drop <- deduplicate(wt)
+  expect_true("duplicate" %in% names(wt_drop))
+  wt_keep <- deduplicate(wt, drop = TRUE)
+  expect_true(!"duplicate" %in% names(wt_keep))
+})
+
+test_that("deduplicate errors", {
+  data("testdt_tracking")
+  wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
+  wt2 <- as.wt_dt(testdt_tracking)[1:1000]
+  wt <- data.table::rbindlist(list(wt1, wt2))
+  wt <- as.wt_dt(wt)
+  expect_error(deduplicate(wt, within = "char"))
 })
 
 test_that("extract_domain", {
@@ -10,6 +32,25 @@ test_that("extract_domain", {
   wt <- as.wt_dt(testdt_tracking)
   wt <- extract_domain(wt)
   expect_true("domain" %in% names(wt))
+})
+
+test_that("extract_domain errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(extract_domain(wt, varname = "not_a_variable"))
+})
+
+test_that("extract_host", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- extract_host(wt)
+  expect_true("host" %in% names(wt))
+})
+
+test_that("extract_host errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(extract_host(wt, varname = "not_a_variable"))
 })
 
 test_that("drop_query", {

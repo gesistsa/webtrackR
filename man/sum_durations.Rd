@@ -31,11 +31,16 @@ sum_durations allows you to sum the duration of visits by panelist_id for differ
 It further allows to break down the number by any set of "classes" of visits, e.g. the type of the visit's domain.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # example of visit classification
 wt <- extract_domain(wt)
-wt[,google:=ifelse(domain == "google.com", 1, 0)]
-wt[,search:=ifelse(grepl("search", url), 1, 0)]
-summary <- sum_durations(wt, var_duration = NULL, timeframe = "month", visit_class = c("google", "search"))
+wt[, google := ifelse(domain == "google.com", 1, 0)]
+wt[, search := ifelse(grepl("search", url), 1, 0)]
+summary <- sum_durations(wt,
+  var_duration = NULL, timeframe = "month",
+  visit_class = c("google", "search")
+)
+}
 }
