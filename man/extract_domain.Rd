@@ -4,13 +4,15 @@
 \alias{extract_domain}
 \title{Extract domain from url}
 \usage{
-extract_domain(wt)
+extract_domain(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object}
+
+\item{varname}{name of the URL variable from which to extract the domain Defaults to "url".}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called domain
+webtrack data.table with the same columns as wt and a new column called "\link{varname}_domain"
 }
 \description{
 Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).

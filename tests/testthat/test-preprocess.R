@@ -34,6 +34,25 @@ test_that("extract_domain", {
   expect_true("domain" %in% names(wt))
 })
 
+test_that("extract_domain errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(extract_domain(wt, varname = "not_a_variable"))
+})
+
+test_that("extract_host", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- extract_host(wt)
+  expect_true("host" %in% names(wt))
+})
+
+test_that("extract_host errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(extract_host(wt, varname = "not_a_variable"))
+})
+
 test_that("drop_query", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
