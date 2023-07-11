@@ -21,19 +21,21 @@ NULL
 #' wt <- as.wt_dt(testdt_tracking)
 #' is.wt_dt(wt)
 #' @export
-as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS"){
-  stopifnot(is.data.table(x))
-  vars_exist(x,vars = c("panelist_id", "url", "timestamp"))
-  x <- x[,timestamp:=as.POSIXct(timestamp, format = timestamp_format)]
-  data.table::setorder(x,panelist_id,timestamp)
-  class(x) <- c("wt_dt",class(x))
+as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS") {
+  if (!is.data.table(x)) {
+    x <- data.table::as.data.table(x)
+  }
+  vars_exist(x, vars = c("panelist_id", "url", "timestamp"))
+  x <- x[, timestamp := as.POSIXct(timestamp, format = timestamp_format)]
+  data.table::setorder(x, panelist_id, timestamp)
+  class(x) <- c("wt_dt", class(x))
   x
 }
 
 #' @rdname wt_dt
 #' @return logical. TRUE if x is a webtrack data object and FALSE otherwise
 #' @export
-is.wt_dt <- function(x){
+is.wt_dt <- function(x) {
   data.table::is.data.table(x) & "wt_dt" %in% class(x)
 }
 
@@ -41,8 +43,8 @@ is.wt_dt <- function(x){
 #' @keywords internal
 print_wt_dt <- function(x, ...) {
   print_txt <- utils::capture.output(print(tibble::as_tibble(x), ...))
-  print_txt[1] <- sub('A tibble', 'webtrack data', print_txt[1])
-  cat(print_txt, sep = '\n')
+  print_txt[1] <- sub("A tibble", "webtrack data", print_txt[1])
+  cat(print_txt, sep = "\n")
   invisible(x)
 }
 
@@ -59,33 +61,33 @@ print.wt_dt <- function(x, ...) {
 #' @param object object of class wt_dt
 #' @param ... additional parameters for summary
 #' @return No return value, called for side effects
-#'@export
-summary.wt_dt <- function(object,...){
-  tick  <- '\u2714'
-  cross <- '\u2716'
-  symbols <- c(cross,tick)
+#' @export
+summary.wt_dt <- function(object, ...) {
+  tick <- "\u2714"
+  cross <- "\u2716"
+  symbols <- c(cross, tick)
   no_panelist <- length(unique(object[["panelist_id"]]))
   time_window <- range(object[["timestamp"]])
-  idx <- (!is.na(pmatch(c("duration","domain","type"),names(object))))+1
+  idx <- (!is.na(pmatch(c("duration", "domain", "type"), names(object)))) + 1
 
-  #printing
+  # printing
   cat("\n ==== Overview ====\n\n")
-  cat("panelists: ",no_panelist,"\n")
-  cat("time window: ",as.character(time_window[1])," - ", as.character(time_window[2]),"\n")
+  cat("panelists: ", no_panelist, "\n")
+  cat("time window: ", as.character(time_window[1]), " - ", as.character(time_window[2]), "\n")
   cat("\n")
-  cat("[",symbols[idx[1]],"] duration\n",sep="")
-  cat("[",symbols[idx[2]],"] domain\n",sep="")
-  cat("[",symbols[idx[3]],"] type\n",sep="")
+  cat("[", symbols[idx[1]], "] duration\n", sep = "")
+  cat("[", symbols[idx[2]], "] domain\n", sep = "")
+  cat("[", symbols[idx[3]], "] type\n", sep = "")
   cat("\n")
-  if(!is.null(attr(object,"dummy"))){
-    urldummys <- attr(object,"dummy")
-    cat("urldummy variables:",paste(urldummys,collapse=","))
+  if (!is.null(attr(object, "dummy"))) {
+    urldummys <- attr(object, "dummy")
+    cat("urldummy variables:", paste(urldummys, collapse = ","))
   }
-  if(!is.null(attr(object,"panelist"))){
-    panelist <- attr(object,"panelist")
-    cat("panelist variables:",paste(panelist,collapse=","))
+  if (!is.null(attr(object, "panelist"))) {
+    panelist <- attr(object, "panelist")
+    cat("panelist variables:", paste(panelist, collapse = ","))
   }
   cat("\n")
   cat("\n ====== DATA ======\n\n")
-  NextMethod(object,...)
+  NextMethod(object, ...)
 }

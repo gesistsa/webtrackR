@@ -171,8 +171,8 @@ sum_activity <- function(wt, timeframe = "date") {
 #' @param wt webtrack data object
 #' @param keep logical. If number of aggregated visits should be kept as variable. Defaults to FALSE
 #' @param same_day logical. Whether to count visits as consecutive only when on the same day. Defaults to TRUE
-#' @param duration_var logical. Name of duration variable. Defaults to "duration".
-#' @importFrom data.table is.data.table shift .N
+#' @param duration_var character. Name of duration variable. Defaults to "duration".
+#' @importFrom data.table is.data.table shift .N setnames
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
 #' \dontrun{

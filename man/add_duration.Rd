@@ -4,16 +4,16 @@
 \alias{add_duration}
 \title{Add time spent on a visit in seconds}
 \usage{
-add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)
+add_duration(wt, cutoff = 300, replace_by = NA)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
 \item{cutoff}{numeric. If duration is greater than this value, it is reset to na, the cutoff, or a user-defined value. Defaults to 5 minutes (= 300 seconds).}
 
-\item{replace_by}{boolean. This determines whether differences greater than the cutoff, as well as the last visit for an individual, are set to na (default), the cutoff, or a user-defined value}
-
-\item{replace_val}{numeric. If replace_by is set to "value", this argument determines what value differences greater than the cutoff, as well as the last visit for an individual are set to.}
+\item{replace_by}{numeric. This determines whether differences greater than
+the cutoff, as well as the last visit for an individual, are set to NA
+(default), or a numeric value}
 }
 \value{
 webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
@@ -27,8 +27,8 @@ data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
 # Defining cutoff at 10 minutes and setting critical visits to the cutoff:
-wt <- add_duration(wt, cutoff = 600, replace_by = "cutoff")
+wt <- add_duration(wt, cutoff = 600, replace_by = 600)
 # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
-wt <- add_duration(wt, cutoff = 600, replace_by = "value", replace_val = 300)
+wt <- add_duration(wt, cutoff = 600, replace_by = 300)
 }
 }
