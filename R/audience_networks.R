@@ -11,13 +11,13 @@
 #' wt <- extract_domain(wt)
 #' audience_incidence(wt)
 #' @export
-audience_incidence <- function(wt,cutoff = 3){
-  .N = 0 #revisit
-  if(!requireNamespace("igraph", quietly = TRUE)){
+audience_incidence <- function(wt, cutoff = 3) {
+  # .N = 0 #revisit
+  if (!requireNamespace("igraph", quietly = TRUE)) {
     stop("The package 'igraph' is needed for this function.")
   }
   stopifnot("wt is not an wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("panelist_id","domain"))
+  vars_exist(wt, vars = c("panelist_id", "domain"))
 
   el <- wt[duration >= cutoff, c("panelist_id", "domain")]
   el <- el[, .N, by = c("panelist_id", "domain")]
@@ -42,18 +42,17 @@ audience_incidence <- function(wt,cutoff = 3){
 #' wt <- extract_domain(wt)
 #' audience_network(wt, type = "pmi", cutoff = 120)
 #' @export
-audience_network <- function(wt, cutoff = 3, type = "pmi", alpha = 0.05){
+audience_network <- function(wt, cutoff = 3, type = "pmi", alpha = 0.05) {
   A <- audience_incidence(wt, cutoff = cutoff)
-  type <- match.arg(type,c("pmi", "phi", "disparity", "sdsm", "fdsm"))
+  type <- match.arg(type, c("pmi", "phi", "disparity", "sdsm", "fdsm"))
 
   switch(type,
-         pmi = pmi(A,t = alpha),
-         phi = phi(A,p = alpha),
-         disparity = disparity1(A, p = alpha),
-         sdsm = sdsm1(A, p = alpha),
-         fdsm = fdsm1(A, p = alpha)
+    pmi = pmi(A, t = alpha),
+    phi = phi(A, p = alpha),
+    disparity = disparity1(A, p = alpha),
+    sdsm = sdsm1(A, p = alpha),
+    fdsm = fdsm1(A, p = alpha)
   )
-
 }
 
 # network extraction methods ----
@@ -66,7 +65,7 @@ pmi <- function(A, t = 0) {
 }
 
 phi <- function(A, p = 0.05) {
-  if(!requireNamespace("stats", quietly = TRUE)){
+  if (!requireNamespace("stats", quietly = TRUE)) {
     stop("The package 'stats' is needed for this function.")
   }
   D <- (A %*% t(A))
@@ -87,14 +86,14 @@ disparity1 <- function(A, p = 0.05) {
 }
 
 sdsm1 <- function(A, p = 0.05) {
-  if(!requireNamespace("backbone", quietly = TRUE)){
+  if (!requireNamespace("backbone", quietly = TRUE)) {
     stop("The package 'backbone' is needed for this function.")
   }
   suppressMessages(backbone::sdsm(A, class = "igraph", alpha = p))
 }
 
 fdsm1 <- function(A, p = 0.05) {
-  if(!requireNamespace("backbone", quietly = TRUE)){
+  if (!requireNamespace("backbone", quietly = TRUE)) {
     stop("The package 'backbone' is needed for this function.")
   }
   suppressMessages(backbone::sdsm(A, class = "igraph", alpha = p))

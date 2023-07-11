@@ -2,8 +2,9 @@
 #' @description Approximate the time spent on a visit based on the sequence of timestamps
 #' @param wt webtrack data object
 #' @param cutoff numeric. If duration is greater than this value, it is reset to na, the cutoff, or a user-defined value. Defaults to 5 minutes (= 300 seconds).
-#' @param replace_by boolean. This determines whether differences greater than the cutoff, as well as the last visit for an individual, are set to na (default), the cutoff, or a user-defined value
-#' @param replace_val numeric. If replace_by is set to "value", this argument determines what value differences greater than the cutoff, as well as the last visit for an individual are set to.
+#' @param replace_by numeric. This determines whether differences greater than
+#' the cutoff, as well as the last visit for an individual, are set to NA
+#' (default), or a numeric value
 #' @importFrom data.table is.data.table shift
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 #' @examples
@@ -12,30 +13,19 @@
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' # Defining cutoff at 10 minutes and setting critical visits to the cutoff:
-#' wt <- add_duration(wt, cutoff = 600, replace_by = "cutoff")
+#' wt <- add_duration(wt, cutoff = 600, replace_by = 600)
 #' # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
-#' wt <- add_duration(wt, cutoff = 600, replace_by = "value", replace_val = 300)
+#' wt <- add_duration(wt, cutoff = 600, replace_by = 300)
 #' }
 #' @export
-add_duration <- function(wt, cutoff = 300, replace_by = "na", replace_val = NULL) {
+add_duration <- function(wt, cutoff = 300, replace_by = NA) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  stopifnot("replace_val must be NULL or numeric" = (is.null(replace_val) | is.numeric(replace_val)))
-  if (replace_by == "value") {
-    stopifnot("if replace_by is set to 'value' replace_val must not be null" = is.numeric(replace_val))
-  }
+  stopifnot("replace_by must be NA or greater zero" = (is.na(replace_by) | replace_by > 0))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
   data.table::setorder(wt, panelist_id, timestamp)
   wt[, duration := as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp), by = "panelist_id"]
-  if (replace_by == "na") {
-    wt[is.na(duration), duration := NA]
-    wt[duration > cutoff, duration := NA]
-  } else if (replace_by == "cutoff") {
-    wt[is.na(duration), duration := cutoff]
-    wt[duration > cutoff, duration := cutoff]
-  } else if (replace_by == "value") {
-    wt[is.na(duration), duration := replace_val]
-    wt[duration > cutoff, duration := replace_val]
-  }
+  wt[is.na(duration), duration := replace_by]
+  wt[duration > cutoff, duration := replace_by]
   wt[]
 }
 
@@ -67,7 +57,7 @@ add_session <- function(wt, cutoff) {
 #' @param wt webtrack data object
 #' @param within numeric. If the consecutive visit happens within than this time difference (in seconds), it is flagged as a duplicate. Defaults to 1.
 #' @param drop numeric. If duplicate visits should be dropped (TRUE), or just flagged with a new variable (FALSE). Defaults to FALSE.
-#' @importFrom data.table is.data.table shift
+#' @importFrom data.table is.data.table shift setorder
 #' @return webtrack data.table with the same columns as wt and, if drop set to FALSE, a new column called "duplicate"
 #' @examples
 #' \dontrun{
@@ -83,7 +73,7 @@ deduplicate <- function(wt, within = 1, drop = FALSE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   stopifnot("'within' must be numeric" = is.numeric(within))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
-  data.table::setorder(wt, panelist_id, timestamp)
+  setorder(wt, panelist_id, timestamp)
   wt[, timestamp_next := shift(timestamp, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   wt <- add_next_visit(wt, level = "url")
   wt[, duplicate := ifelse(((timestamp_next - timestamp <= within) & (url == url_next)), TRUE, FALSE), by = "panelist_id"]
@@ -298,7 +288,7 @@ classify_domains <- function(wt,
                              prev_type = TRUE,
                              preprocess_newsportals = FALSE,
                              return.only = NULL) {
-  i.type <- NULL # revisit
+  # i.type <- NULL # revisit
 
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("url", "domain"))
@@ -386,19 +376,19 @@ create_urldummy <- function(wt, dummy, name) {
 #' @export
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt, vars = c("panelist_id"))
+  vars_exist(wt, vars = c(join_on))
   if (!data.table::is.data.table(data)) {
     data <- data.table::as.data.table(data)
   }
-  vars_exist(data, vars = c("panelist_id"))
+  vars_exist(data, vars = c(join_on))
   if (!is.null(cols)) {
     if (!all(cols %in% names(data))) {
       stop("couldn't locate all cols in data")
     }
-    data <- data[, c("panelist_id", cols), with = FALSE]
+    data <- data[, c(join_on, cols), with = FALSE]
     data.table::setattr(wt, "panelist", cols)
   } else {
-    data.table::setattr(wt, "panelist", setdiff(names(data), "panelist_id"))
+    data.table::setattr(wt, "panelist", setdiff(names(data), join_on))
   }
   data[wt, on = join_on]
 }
