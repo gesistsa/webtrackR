@@ -61,18 +61,23 @@ add_session <- function(wt, cutoff){
 #' Extract host from url
 #' @description Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
 #' @param wt webtrack data object
+#' @param varname name of the URL variable from which to extract the host. Defaults to "url".
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called domain
+#' @return webtrack data.table with the same columns as wt and a new column called "[url]_domain"
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_host(wt)
 #' @export
-extract_host <- function(wt){
+extract_host <- function(wt, varname = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = "url")
-  wt[,tmp:=urltools::domain(gsub("@","%40",url))]
-  wt[,host:=urltools::domain(tmp)]
+  vars_exist(wt,vars = varname)
+  wt[,tmp:=urltools::domain(gsub("@","%40",get(varname)))]
+  if (varname == "url") {
+    wt[,host:=urltools::domain(tmp)]
+  } else {
+    wt[,paste0(varname, "_host"):=urltools::domain(tmp)]
+  }
   wt[,tmp:=NULL]
   wt[]
 }
@@ -80,20 +85,25 @@ extract_host <- function(wt){
 #' Extract domain from url
 #' @description Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).
 #' @param wt webtrack data object
+#' @param varname name of the URL variable from which to extract the domain Defaults to "url".
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called domain
+#' @return webtrack data.table with the same columns as wt and a new column called "[varname]_domain"
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_domain(wt)
 #' @export
-extract_domain <- function(wt){
+extract_domain <- function(wt, varname = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = "url")
-  wt[,host:=urltools::domain(gsub("@","%40",url))]
+  vars_exist(wt,vars = varname)
+  wt[,host:=urltools::domain(gsub("@","%40",get(varname)))]
   wt[,suffix:=urltools::suffix_extract(host)[["suffix"]]]
   wt[,domain_name:=urltools::suffix_extract(host)[["domain"]]]
-  wt[,domain:=ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
+  if (varname == "url") {
+    wt[,domain:=ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
+  } else {
+    wt[,paste0(varname, "_domain"):=ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
+  }
   wt[,host:=NULL]
   wt[,suffix:=NULL]
   wt[,domain_name:=NULL]
@@ -103,21 +113,22 @@ extract_domain <- function(wt){
 #' Drop query/fragment from URL
 #' @description Drops the query and fragment from a URL, i.e., everything after a "?" or "#"
 #' @param wt webtrack data object
+#' @param varname name of the URL variable from which to drop the query/fragment. Defaults to "url".
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called url_noquery
+#' @return webtrack data.table with the same columns as wt and a new column called "[varname]_noquery"
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- drop_query(wt)
 #' @export
-drop_query <- function(wt){
+drop_query <- function(wt, varname = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = "url")
-  wt[,tmp_host:=urltools::domain(gsub("@","%40",url))]
-  wt[,tmp_path:=urltools::path(gsub("@","%40",url))]
+  vars_exist(wt,vars = varname)
+  wt[,tmp_host:=urltools::domain(gsub("@","%40",get(varname)))]
+  wt[,tmp_path:=urltools::path(gsub("@","%40",get(varname)))]
   wt[,tmp_path:=gsub("%40","@",tmp_path)]
-  wt[,tmp_scheme:=urltools::scheme(url)]
-  wt[,url_noquery:=paste0(tmp_scheme, "://", tmp_host, "/", tmp_path, recycle0 = T)]
+  wt[,tmp_scheme:=urltools::scheme(get(varname))]
+  wt[,paste0(varname, "_noquery"):=paste0(tmp_scheme, "://", tmp_host, "/", tmp_path, recycle0 = T)]
   wt[,tmp_host:=NULL]
   wt[,tmp_path:=NULL]
   wt[,tmp_scheme:=NULL]
@@ -197,7 +208,7 @@ add_previous_visit <- function(wt, level = "url"){
 #' @export
 add_title <- function(wt) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("panelist_id","url","timestamp"))
+  vars_exist(wt,vars = c("panelist_id", "url"))
   urls <- data.table(url = unique(wt$url))
   urls[, title := mapply(function(x) {
     return(

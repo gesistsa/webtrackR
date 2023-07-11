@@ -4,13 +4,15 @@
 \alias{drop_query}
 \title{Drop query/fragment from URL}
 \usage{
-drop_query(wt)
+drop_query(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object}
+
+\item{varname}{name of the URL variable from which to drop the query/fragment. Defaults to "url".}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called url_noquery
+webtrack data.table with the same columns as wt and a new column called "\link{varname}_noquery"
 }
 \description{
 Drops the query and fragment from a URL, i.e., everything after a "?" or "#"

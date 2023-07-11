@@ -4,13 +4,15 @@
 \alias{extract_host}
 \title{Extract host from url}
 \usage{
-extract_host(wt)
+extract_host(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object}
+
+\item{varname}{name of the URL variable from which to extract the host. Defaults to "url".}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called domain
+webtrack data.table with the same columns as wt and a new column called "\link{url}_domain"
 }
 \description{
 Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
