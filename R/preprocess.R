@@ -5,7 +5,7 @@
 #' @param replace_by boolean. This determines whether differences greater than the cutoff, as well as the last visit for an individual, are set to na (default), the cutoff, or a user-defined value
 #' @param replace_val numeric. If replace_by is set to "value", this argument determines what value differences greater than the cutoff, as well as the last visit for an individual are set to.
 #' @importFrom data.table is.data.table shift
-#' @return webtrack data.table with the same columns as wt and a new column called duration
+#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -22,6 +22,7 @@ add_duration <- function(wt, cutoff = 300, replace_by = "na", replace_val = NULL
     stopifnot("if replace_by is set to 'value' replace_val must not be null" = is.numeric(replace_val))
   }
   vars_exist(wt,vars = c("panelist_id","timestamp"))
+  data.table::setorder(wt, panelist_id, timestamp)
   wt[,duration:=as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA)-timestamp),by="panelist_id"]
   if (replace_by == "na") {
     wt[is.na(duration),duration:=NA]
@@ -43,7 +44,7 @@ add_duration <- function(wt, cutoff = 300, replace_by = "na", replace_val = NULL
 #' @param wt webtrack data object
 #' @param cutoff numeric. If the consecutive visit happens later than this value (in seconds), a new browsing session is defined
 #' @importFrom data.table is.data.table shift
-#' @return webtrack data.table with the same columns as wt and a new column called duration
+#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -53,8 +54,41 @@ add_session <- function(wt, cutoff){
   stopifnot("cutoff argument is missing" = !missing(cutoff))
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id","timestamp"))
+  data.table::setorder(wt, panelist_id, timestamp)
   wt[as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA)-timestamp) > cutoff,session:=1:.N,by="panelist_id"]
   data.table::setnafill(wt, type = "nocb", cols = "session")
+  wt[]
+}
+
+#' Deduplicate visits
+#' @description Drop consecutive visits that are to the same URL within a user-defined timeframe
+#' @param wt webtrack data object
+#' @param within numeric. If the consecutive visit happens within than this time difference (in seconds), it is flagged as a duplicate. Defaults to 1.
+#' @param drop numeric. If duplicate visits should be dropped (TRUE), or just flagged with a new variable (FALSE). Defaults to FALSE.
+#' @importFrom data.table is.data.table shift
+#' @return webtrack data.table with the same columns as wt and, if drop set to FALSE, a new column called "duplicate"
+#' @examples
+#' data("testdt_tracking")
+#' wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
+#' wt2 <- as.wt_dt(testdt_tracking)[1:1000]
+#' wt <- data.table::rbindlist(list(wt1, wt2))
+#' wt <- as.wt_dt(wt)
+#' wt <- deduplicate(wt)
+#' @export
+deduplicate <- function(wt, within = 1, drop = FALSE){
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  stopifnot("'within' must be numeric" = is.numeric(within))
+  vars_exist(wt,vars = c("panelist_id","timestamp"))
+  data.table::setorder(wt, panelist_id, timestamp)
+  wt[,timestamp_next:=shift(timestamp, n = 1, type = "lead", fill = NA),by="panelist_id"]
+  wt <- add_next_visit(wt, level = "url")
+  wt[,duplicate:=ifelse(((timestamp_next - timestamp <= within) & (url == url_next)), TRUE, FALSE), by="panelist_id"]
+  if (drop == TRUE) {
+    wt <- wt[duplicate == FALSE]
+    wt[,duplicate:=NULL]
+  }
+  wt[,url_next:=NULL]
+  wt[,timestamp_next:=NULL]
   wt[]
 }
 
@@ -132,7 +166,7 @@ drop_query <- function(wt){
 #' @param wt webtrack data object
 #' @param level character. Either "url", "host" or "domain". Defaults to "url".
 #' @importFrom data.table is.data.table shift
-#' @return webtrack data.table with the same columns as wt and a new column called url_next, host_next or domain_next.
+#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_next, host_next or domain_next.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -143,6 +177,7 @@ drop_query <- function(wt){
 add_next_visit <- function(wt, level = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id","timestamp"))
+  data.table::setorder(wt, panelist_id, timestamp)
   if (level == "url") {
     wt[,url_next:=shift(url, n = 1, type = "lead", fill = NA),by="panelist_id"]
   } else if (level == "host") {
@@ -160,7 +195,7 @@ add_next_visit <- function(wt, level = "url"){
 #' @param wt webtrack data object
 #' @param level character. Either "url", "host" or "domain". Defaults to "url".
 #' @importFrom data.table is.data.table shift
-#' @return webtrack data.table with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
+#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -171,6 +206,7 @@ add_next_visit <- function(wt, level = "url"){
 add_previous_visit <- function(wt, level = "url"){
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt,vars = c("panelist_id","timestamp"))
+  data.table::setorder(wt, panelist_id, timestamp)
   if (level == "url") {
     wt[,url_previous:=shift(url, n = 1, type = "lag", fill = NA),by="panelist_id"]
   } else if (level == "host") {

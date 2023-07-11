@@ -12,7 +12,7 @@ add_previous_visit(wt, level = "url")
 \item{level}{character. Either "url", "host" or "domain". Defaults to "url".}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
+webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
 }
 \description{
 Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
