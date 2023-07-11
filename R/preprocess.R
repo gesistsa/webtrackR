@@ -128,15 +128,15 @@ extract_host <- function(wt, varname = "url") {
 extract_domain <- function(wt, varname = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
-  wt[, host := urltools::domain(gsub("@", "%40", get(varname)))]
-  wt[, suffix := urltools::suffix_extract(host)[["suffix"]]]
-  wt[, domain_name := urltools::suffix_extract(host)[["domain"]]]
+  wt[, tmp := urltools::domain(gsub("@", "%40", get(varname)))]
+  wt[, suffix := urltools::suffix_extract(tmp)[["suffix"]]]
+  wt[, domain_name := urltools::suffix_extract(tmp)[["domain"]]]
   if (varname == "url") {
     wt[, domain := ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
   } else {
     wt[, paste0(varname, "_domain") := ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
   }
-  wt[, host := NULL]
+  wt[, tmp := NULL]
   wt[, suffix := NULL]
   wt[, domain_name := NULL]
   wt[]
@@ -340,6 +340,7 @@ classify_domains <- function(wt,
 #' @param wt webtrack data object
 #' @param dummy a vector of urls that should be dummy coded
 #' @param name name of dummy variable to create.
+#' @importFrom data.table setnames setattr
 #' @return webtrack object with the same columns and a new column called "name" including the dummy variable
 #' @examples
 #' \dontrun{
@@ -354,8 +355,8 @@ create_urldummy <- function(wt, dummy, name) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("url"))
   wt[, dummy := data.table::fifelse(url %in% dummy, TRUE, FALSE)]
-  data.table::setnames(wt, "dummy", name)
-  data.table::setattr(wt, "dummy", c(attr(wt, "dummy"), name))
+  setnames(wt, "dummy", name)
+  setattr(wt, "dummy", c(attr(wt, "dummy"), name))
   wt[]
 }
 
