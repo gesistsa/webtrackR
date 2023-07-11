@@ -12,7 +12,7 @@ add_session(wt, cutoff)
 \item{cutoff}{numeric. If the consecutive visit happens later than this value (in seconds), a new browsing session is defined}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called duration
+webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 }
 \description{
 Define sessions of browsing depending on aq time cutoff for inactivity
