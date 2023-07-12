@@ -1,8 +1,10 @@
-#' Create incidence matrix for audience-outlet network
+#' Create incidence matrix for two-mode networks including audiences
 #' @details The incidence matrix is a matrix A with entries  `A[i,j]=1` if panelist i visited outlet j at least once.
 #' @param wt webtrack data object
+#' @param mode2 character. name of column that includes the second mode (e.g.
+#' 'domain' or 'host')
 #' @param cutoff visits below this cutoff will not be considered as a visit
-#' @return incidence audience-outlet network
+#' @return incidence matrix of a two-mode network
 #' @seealso to create audience networks see [audience_network]
 #' @examples
 #' data("testdt_tracking")
@@ -11,17 +13,18 @@
 #' wt <- extract_domain(wt)
 #' audience_incidence(wt)
 #' @export
-audience_incidence <- function(wt, cutoff = 3) {
+audience_incidence <- function(wt, mode2 = "domain", cutoff = 3) {
   # .N = 0 #revisit
   if (!requireNamespace("igraph", quietly = TRUE)) {
     stop("The package 'igraph' is needed for this function.")
   }
   stopifnot("wt is not an wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt, vars = c("panelist_id", "domain"))
+  vars_exist(wt, vars = c("panelist_id", mode2))
 
-  el <- wt[duration >= cutoff, c("panelist_id", "domain")]
-  el <- el[, .N, by = c("panelist_id", "domain")]
-  el <- el[!is.na(domain)]
+  el <- wt[duration >= cutoff]
+  el <- el[, c("panelist_id", mode2), with = FALSE]
+  el <- el[, .N, by = c("panelist_id", mode2)]
+  # el <- el[!is.na(domain)]
   g <- igraph::graph_from_data_frame(el, directed = FALSE)
   igraph::V(g)$type <- !igraph::bipartite.mapping(g)$type
   A <- igraph::as_incidence_matrix(g)
@@ -31,6 +34,8 @@ audience_incidence <- function(wt, cutoff = 3) {
 #' Create audience networks
 #' @description audience network
 #' @param wt webtrack data object
+#' @param mode2 character. name of column that includes the second mode (e.g.
+#' 'domain' or 'host')
 #' @param cutoff visits below this cutoff will not be considered as a visit
 #' @param type one of "pmi", "phi", "disparity", "sdsm, "or "fdsm".
 #' @param alpha significance level
@@ -42,8 +47,8 @@ audience_incidence <- function(wt, cutoff = 3) {
 #' wt <- extract_domain(wt)
 #' audience_network(wt, type = "pmi", cutoff = 120)
 #' @export
-audience_network <- function(wt, cutoff = 3, type = "pmi", alpha = 0.05) {
-  A <- audience_incidence(wt, cutoff = cutoff)
+audience_network <- function(wt, mode2 = "domain", cutoff = 3, type = "pmi", alpha = 0.05) {
+  A <- audience_incidence(wt, mode2 = mode2, cutoff = cutoff)
   type <- match.arg(type, c("pmi", "phi", "disparity", "sdsm", "fdsm"))
 
   switch(type,

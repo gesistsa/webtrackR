@@ -4,10 +4,13 @@
 \alias{audience_network}
 \title{Create audience networks}
 \usage{
-audience_network(wt, cutoff = 3, type = "pmi", alpha = 0.05)
+audience_network(wt, mode2 = "domain", cutoff = 3, type = "pmi", alpha = 0.05)
 }
 \arguments{
 \item{wt}{webtrack data object}
+
+\item{mode2}{character. name of column that includes the second mode (e.g.
+'domain' or 'host')}
 
 \item{cutoff}{visits below this cutoff will not be considered as a visit}
 
