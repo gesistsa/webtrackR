@@ -74,15 +74,15 @@ deduplicate <- function(wt, within = 1, drop = FALSE) {
   stopifnot("'within' must be numeric" = is.numeric(within))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
   setorder(wt, panelist_id, timestamp)
-  wt[, timestamp_next := shift(timestamp, n = 1, type = "lead", fill = NA), by = "panelist_id"]
-  wt <- add_next_visit(wt, level = "url")
+  wt[, tmp_timestamp_next := shift(timestamp, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+  wt[, tmp_url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   wt[, duplicate := ifelse(((timestamp_next - timestamp <= within) & (url == url_next)), TRUE, FALSE), by = "panelist_id"]
   if (drop == TRUE) {
     wt <- wt[duplicate == FALSE]
     wt[, duplicate := NULL]
   }
-  wt[, url_next := NULL]
-  wt[, timestamp_next := NULL]
+  wt[, tmp_url_next := NULL]
+  wt[, tmp_timestamp_next := NULL]
   wt[]
 }
 
@@ -102,13 +102,13 @@ deduplicate <- function(wt, within = 1, drop = FALSE) {
 extract_host <- function(wt, varname = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
-  wt[, tmp := urltools::domain(gsub("@", "%40", get(varname)))]
+  wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
   if (varname == "url") {
-    wt[, host := urltools::domain(tmp)]
+    wt[, host := urltools::domain(tmp_host)]
   } else {
-    wt[, paste0(varname, "_host") := urltools::domain(tmp)]
+    wt[, paste0(varname, "_host") := urltools::domain(tmp_host)]
   }
-  wt[, tmp := NULL]
+  wt[, tmp_host := NULL]
   wt[]
 }
 
@@ -128,17 +128,17 @@ extract_host <- function(wt, varname = "url") {
 extract_domain <- function(wt, varname = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
-  wt[, tmp := urltools::domain(gsub("@", "%40", get(varname)))]
-  wt[, suffix := urltools::suffix_extract(tmp)[["suffix"]]]
-  wt[, domain_name := urltools::suffix_extract(tmp)[["domain"]]]
+  wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
+  wt[, tmp_suffix := urltools::suffix_extract(tmp_host)[["suffix"]]]
+  wt[, tmp_domain_name := urltools::suffix_extract(tmp_host)[["domain"]]]
   if (varname == "url") {
-    wt[, domain := ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
+    wt[, domain := ifelse((!is.na(tmp_domain_name) & !is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
   } else {
-    wt[, paste0(varname, "_domain") := ifelse((!is.na(domain_name) & !is.na(suffix)), paste0(domain_name, ".", suffix), NA)]
+    wt[, paste0(varname, "_domain") := ifelse((!is.na(tmp_domain_name) & !is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
   }
-  wt[, tmp := NULL]
+  wt[, tmp_host := NULL]
   wt[, suffix := NULL]
-  wt[, domain_name := NULL]
+  wt[, tmp_domain_name := NULL]
   wt[]
 }
 
