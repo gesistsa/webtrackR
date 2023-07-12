@@ -12,21 +12,41 @@ NULL
 
 # Construction ------------------------------------------------------------
 
+#' Convert a data.frame containing webtrack data to a wt_dt object
 #' @rdname wt_dt
-#' @param x [data.table] containing the correct set of variables (panelist_id,url and timestamp)
+#' @param x data.frame containing the needed set of variables (panelist_id,url
+#' and timestamp) but not necessarily named as such.
 #' @param timestamp_format string. Specify the raw timestamp's formatting. Defaults to "%Y-%m-%d %H:%M:%OS".
+#' @param varnames named vector of variable names that contain information "panelist_id", "url", "timestamp".
 #' @return a webtrack data object
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' is.wt_dt(wt)
 #' @export
-as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS") {
-  if (!is.data.table(x)) {
+as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS",
+                     varnames = c(panelist_id = "panelist_id", url = "url", timestamp = "timestamp")) {
+  standard_vars <- c("panelist_id", "url", "timestamp")
+  if (!inherits(x, "data.frame")) {
+    stop("x must be a data.frame comparable object (tibble,data.table,..)")
+  }
+  if (!all(names(varnames) %in% standard_vars)) {
+    stop("varnames need to include mappings for 'panelist_id', 'url', and 'timestamp'")
+  }
+  if (!all(standard_vars %in% names(varnames))) {
+    idx <- which(!standard_vars %in% names(varnames))
+    named_standard_vars <- standard_vars
+    names(named_standard_vars) <- standard_vars
+    varnames <- c(varnames, named_standard_vars[idx])
+  }
+
+  if (!data.table::is.data.table(x)) {
     x <- data.table::as.data.table(x)
   }
-  vars_exist(x, vars = c("panelist_id", "url", "timestamp"))
-  x <- x[, timestamp := as.POSIXct(timestamp, format = timestamp_format)]
+  vars_exist(x, vars = varnames)
+  x[, varnames[["timestamp"]] := as.POSIXct(get(varnames[["timestamp"]]), format = timestamp_format)]
+
+  data.table::setnames(x, unname(varnames), names(varnames))
   data.table::setorder(x, panelist_id, timestamp)
   class(x) <- c("wt_dt", class(x))
   x

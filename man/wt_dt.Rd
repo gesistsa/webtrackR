@@ -6,14 +6,21 @@
 \alias{is.wt_dt}
 \title{An S3 class, based on \link{data.table}, to store webtrack data}
 \usage{
-as.wt_dt(x, timestamp_format = "\%Y-\%m-\%d \%H:\%M:\%OS")
+as.wt_dt(
+  x,
+  timestamp_format = "\%Y-\%m-\%d \%H:\%M:\%OS",
+  varnames = c(panelist_id = "panelist_id", url = "url", timestamp = "timestamp")
+)
 
 is.wt_dt(x)
 }
 \arguments{
-\item{x}{\link{data.table} containing the correct set of variables (panelist_id,url and timestamp)}
+\item{x}{data.frame containing the needed set of variables (panelist_id,url
+and timestamp) but not necessarily named as such.}
 
 \item{timestamp_format}{string. Specify the raw timestamp's formatting. Defaults to "\%Y-\%m-\%d \%H:\%M:\%OS".}
+
+\item{varnames}{named vector of variable names that contain information "panelist_id", "url", "timestamp".}
 }
 \value{
 a webtrack data object
@@ -22,6 +29,8 @@ logical. TRUE if x is a webtrack data object and FALSE otherwise
 }
 \description{
 An S3 class, based on \link{data.table}, to store webtrack data
+
+Convert a data.frame containing webtrack data to a wt_dt object
 }
 \details{
 A \code{wt_dt} table is a \link{data.table}.

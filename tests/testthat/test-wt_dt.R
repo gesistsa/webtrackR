@@ -16,13 +16,13 @@ test_that("summary", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   sum <- utils::capture.output(summary(wt))
-  expect_true(any(grepl("Overview",sum)))
-  expect_true(any(grepl("DATA",sum)))
+  expect_true(any(grepl("Overview", sum)))
+  expect_true(any(grepl("DATA", sum)))
 })
 
 test_that("print", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   sum <- utils::capture.output(print(wt))
-  expect_true(any(grepl("webtrack data",sum)))
+  expect_true(any(grepl("webtrack data", sum)))
 })

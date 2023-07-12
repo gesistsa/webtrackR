@@ -4,13 +4,13 @@
 #' @param wt webtrack data as data.table object
 #' @param vars character vector of variables
 #' @return A data.table object
-vars_exist <- function(wt,vars = c("panelist_id", "url", "timestamp")){
+vars_exist <- function(wt, vars = c("panelist_id", "url", "timestamp")) {
   vars_wt <- names(wt)
-  idx <- pmatch(vars,vars_wt)
-  if(any(is.na(idx))){
+  idx <- pmatch(vars, vars_wt)
+  if (any(is.na(idx))) {
     not_found <- is.na(idx)
-    err <- paste0(vars[not_found],collapse = ",")
-    stop(paste0("couldn't find the column(s): ",err, " in the webtrack data"),call. = FALSE)
+    err <- paste0(vars[not_found], collapse = ",")
+    stop(paste0("couldn't find the column(s): ", err, " in the webtrack data"), call. = FALSE)
   }
   invisible(NULL)
 }
@@ -40,4 +40,3 @@ vars_exist <- function(wt,vars = c("panelist_id", "url", "timestamp")){
 #     return(TRUE)
 #   }
 # }
-
