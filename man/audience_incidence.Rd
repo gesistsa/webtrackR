@@ -21,7 +21,7 @@ incidence matrix of a two-mode network
 Create incidence matrix for two-mode networks including audiences
 }
 \details{
-The incidence matrix is a matrix A with entries  \code{A[i,j]=1} if panelist i visited outlet j at least once.
+The incidence matrix is a matrix A with entries  \code{A[i,j]=1} if panelist i visited website j at least once.
 }
 \examples{
 data("testdt_tracking")
