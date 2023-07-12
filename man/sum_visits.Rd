@@ -31,7 +31,7 @@ It further allows to break down the number by any set of "classes" of visits, e.
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # example of visit classification
-wt <- extract_domain(wt)
+wt <- extract_domain(wt, drop_na = T)
 wt[, google := ifelse(domain == "google.com", 1, 0)]
 wt[, search := ifelse(grepl("search", url), 1, 0)]
 summary <- sum_visits(wt, timeframe = "month", visit_class = c("google", "search"))

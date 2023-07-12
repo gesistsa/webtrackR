@@ -4,12 +4,14 @@
 \alias{extract_domain}
 \title{Extract domain from url}
 \usage{
-extract_domain(wt, varname = "url")
+extract_domain(wt, varname = "url", drop_na = TRUE)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
 \item{varname}{name of the URL variable from which to extract the domain Defaults to "url".}
+
+\item{drop_na}{boolean. Whether rows for which no domain can be extracted should be dropped from the data. Defaults to TRUE.}
 }
 \value{
 webtrack data.table with the same columns as wt and a new column called "\if{html}{\out{<varname>}}_domain"

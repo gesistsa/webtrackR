@@ -4,12 +4,14 @@
 \alias{extract_host}
 \title{Extract host from url}
 \usage{
-extract_host(wt, varname = "url")
+extract_host(wt, varname = "url", drop_na = TRUE)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
-\item{varname}{name of the URL variable from which to extract the host. Defaults to "url".}
+\item{varname}{character. name of the URL variable from which to extract the host. Defaults to "url".}
+
+\item{drop_na}{boolean. Whether rows for which no host can be extracted should be dropped from the data. Defaults to TRUE.}
 }
 \value{
 webtrack data.table with the same columns as wt and a new column called "\link{url}_domain"

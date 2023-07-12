@@ -76,7 +76,7 @@ deduplicate <- function(wt, within = 1, drop = FALSE) {
   setorder(wt, panelist_id, timestamp)
   wt[, tmp_timestamp_next := shift(timestamp, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   wt[, tmp_url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
-  wt[, duplicate := ifelse(((timestamp_next - timestamp <= within) & (url == url_next)), TRUE, FALSE), by = "panelist_id"]
+  wt[, duplicate := ifelse(((tmp_timestamp_next - timestamp <= within) & (url == url_next)), TRUE, FALSE), by = "panelist_id"]
   if (drop == TRUE) {
     wt <- wt[duplicate == FALSE]
     wt[, duplicate := NULL]
