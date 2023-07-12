@@ -2,20 +2,23 @@
 % Please edit documentation in R/audience_networks.R
 \name{audience_incidence}
 \alias{audience_incidence}
-\title{Create incidence matrix for audience-website network}
+\title{Create incidence matrix for two-mode networks including audiences}
 \usage{
-audience_incidence(wt, cutoff = 3)
+audience_incidence(wt, mode2 = "domain", cutoff = 3)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
+\item{mode2}{character. name of column that includes the second mode (e.g.
+'domain' or 'host')}
+
 \item{cutoff}{visits below this cutoff will not be considered as a visit}
 }
 \value{
-incidence audience-website network
+incidence matrix of a two-mode network
 }
 \description{
-Create incidence matrix for audience-website network
+Create incidence matrix for two-mode networks including audiences
 }
 \details{
 The incidence matrix is a matrix A with entries  \code{A[i,j]=1} if panelist i visited website j at least once.
