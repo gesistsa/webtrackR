@@ -21,6 +21,6 @@ Define sessions of browsing depending on aq time cutoff for inactivity
 \dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
-wt <- add_session(wt, cutoff = 120)
+wt <- add_session(wt, cutoff = 1800)
 }
 }

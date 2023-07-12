@@ -4,12 +4,14 @@
 \alias{drop_query}
 \title{Drop query/fragment from URL}
 \usage{
-drop_query(wt, varname = "url")
+drop_query(wt, varname = "url", drop_na = TRUE)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
 \item{varname}{name of the URL variable from which to drop the query/fragment. Defaults to "url".}
+
+\item{drop_na}{boolean. Whether rows for which the URL cannot be split into its components should be dropped from the data. Defaults to TRUE.}
 }
 \value{
 webtrack data.table with the same columns as wt and a new column called "\if{html}{\out{<varname>}}_noquery"
