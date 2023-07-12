@@ -89,7 +89,8 @@ deduplicate <- function(wt, within = 1, drop = FALSE) {
 #' Extract host from url
 #' @description Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
 #' @param wt webtrack data object
-#' @param varname name of the URL variable from which to extract the host. Defaults to "url".
+#' @param varname character. name of the URL variable from which to extract the host. Defaults to "url".
+#' @param drop_na boolean. Whether rows for which no host can be extracted should be dropped from the data. Defaults to TRUE.
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called "[url]_domain"
 #' @examples
@@ -99,7 +100,7 @@ deduplicate <- function(wt, within = 1, drop = FALSE) {
 #' wt <- extract_host(wt)
 #' }
 #' @export
-extract_host <- function(wt, varname = "url") {
+extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
@@ -109,6 +110,13 @@ extract_host <- function(wt, varname = "url") {
     wt[, paste0(varname, "_host") := urltools::domain(tmp_host)]
   }
   wt[, tmp_host := NULL]
+  n_na <- nrow(wt[is.na(host)])
+  if (drop_na == TRUE) {
+    wt <- wt[!is.na(host)]
+    warning(paste0("Host could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+  } else {
+    warning(paste0("Host could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+  }
   wt[]
 }
 
@@ -116,6 +124,7 @@ extract_host <- function(wt, varname = "url") {
 #' @description Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).
 #' @param wt webtrack data object
 #' @param varname name of the URL variable from which to extract the domain Defaults to "url".
+#' @param drop_na boolean. Whether rows for which no domain can be extracted should be dropped from the data. Defaults to TRUE.
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called "<varname>_domain"
 #' @examples
@@ -125,20 +134,27 @@ extract_host <- function(wt, varname = "url") {
 #' wt <- extract_domain(wt)
 #' }
 #' @export
-extract_domain <- function(wt, varname = "url") {
+extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
   wt[, tmp_suffix := urltools::suffix_extract(tmp_host)[["suffix"]]]
   wt[, tmp_domain_name := urltools::suffix_extract(tmp_host)[["domain"]]]
   if (varname == "url") {
-    wt[, domain := ifelse((!is.na(tmp_domain_name) & !is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
+    wt[, domain := ifelse((!is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
   } else {
-    wt[, paste0(varname, "_domain") := ifelse((!is.na(tmp_domain_name) & !is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
+    wt[, paste0(varname, "_domain") := ifelse((!is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
   }
   wt[, tmp_host := NULL]
   wt[, suffix := NULL]
   wt[, tmp_domain_name := NULL]
+  n_na <- nrow(wt[is.na(domain)])
+  if (drop_na == TRUE) {
+    wt <- wt[!is.na(domain)]
+    warning(paste0("Domain could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+  } else {
+    warning(paste0("Domain could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+  }
   wt[]
 }
 
@@ -146,6 +162,7 @@ extract_domain <- function(wt, varname = "url") {
 #' @description Drops the query and fragment from a URL, i.e., everything after a "?" or "#"
 #' @param wt webtrack data object
 #' @param varname name of the URL variable from which to drop the query/fragment. Defaults to "url".
+#' @param drop_na boolean. Whether rows for which the URL cannot be split into its components should be dropped from the data. Defaults to TRUE.
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called "<varname>_noquery"
 #' @examples
@@ -155,16 +172,15 @@ extract_domain <- function(wt, varname = "url") {
 #' wt <- drop_query(wt)
 #' }
 #' @export
-drop_query <- function(wt, varname = "url") {
+drop_query <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-
   vars_exist(wt, vars = varname)
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
   wt[, tmp_path := urltools::path(gsub("@", "%40", get(varname)))]
   wt[, tmp_path := gsub("%40", "@", tmp_path)]
   wt[, tmp_scheme := urltools::scheme(get(varname))]
+  # data.table::setnafill(wt, type = "const", cols = c("tmp_scheme"), fill = "")
   wt[, paste0(varname, "_noquery") := paste0(tmp_scheme, "://", tmp_host, "/", tmp_path, recycle0 = T)]
-
   wt[, tmp_host := NULL]
   wt[, tmp_path := NULL]
   wt[, tmp_scheme := NULL]
@@ -193,10 +209,10 @@ add_next_visit <- function(wt, level = "url") {
   if (level == "url") {
     wt[, url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
-    wt <- extract_host(wt)
+    wt <- extract_host(wt, varname = "url", drop_na = F)
     wt[, host_next := shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   } else if (level == "domain") {
-    wt <- extract_domain(wt)
+    wt <- extract_domain(wt, varname = "url", drop_na = F)
     wt[, domain_next := shift(domain, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   }
   wt[]
@@ -224,10 +240,10 @@ add_previous_visit <- function(wt, level = "url") {
   if (level == "url") {
     wt[, url_previous := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
-    wt <- extract_host(wt)
+    wt <- extract_host(wt, varname = "url", drop_na = F)
     wt[, host_previous := shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
   } else if (level == "domain") {
-    wt <- extract_domain(wt)
+    wt <- extract_domain(wt, varname = "url", drop_na = F)
     wt[, domain_previous := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
   }
   wt[]
