@@ -48,7 +48,7 @@ domain_list$host <- domain_list$domain
 wt_hosts <- extract_host(wt, drop_na = F)
 wt_classes <- classify_visits(wt_hosts, classes = domain_list, match_by = "host")
 data("domain_list")
-regex_list = domain_list[type == "newsportals"]
+regex_list <- domain_list[type == "newsportals"]
 wt_classes <- classify_visits(wt, classes = regex_list, match_by = "regex", regex_on = "domain")
 }
 }
