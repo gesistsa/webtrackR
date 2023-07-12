@@ -50,7 +50,7 @@ classify_visits <- function(wt, classes, match_by = "domain",
     stopifnot("couldn't find the column set in regex_on in the classes data" = regex_on %in% names(classes))
     wt <- drop_query(wt)
     wt <- wt[, tmp_index := 1:.N]
-    tmp_wt <- wt[, .(tmp_index, url_noquery)]
+    tmp_wt <- wt[, list(tmp_index, url_noquery)]
     pattern <- paste(classes[[regex_on]], collapse = "|")
     tmp_wt_matched <- tmp_wt[grepl(pattern, url_noquery)]
     tmp_wt_matched <- tmp_wt_matched[, match := regmatches(url_noquery, regexpr(pattern, url_noquery))]
