@@ -146,7 +146,7 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
     wt[, paste0(varname, "_domain") := ifelse((!is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
   }
   wt[, tmp_host := NULL]
-  wt[, suffix := NULL]
+  wt[, tmp_suffix := NULL]
   wt[, tmp_domain_name := NULL]
   n_na <- nrow(wt[is.na(domain)])
   if (drop_na == TRUE) {
