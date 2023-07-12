@@ -1,8 +1,8 @@
-#' Create incidence matrix for audience-outlet network
-#' @details The incidence matrix is a matrix A with entries  `A[i,j]=1` if panelist i visited outlet j at least once.
+#' Create incidence matrix for audience-website network
+#' @details The incidence matrix is a matrix A with entries  `A[i,j]=1` if panelist i visited website j at least once.
 #' @param wt webtrack data object
 #' @param cutoff visits below this cutoff will not be considered as a visit
-#' @return incidence audience-outlet network
+#' @return incidence audience-website network
 #' @seealso to create audience networks see [audience_network]
 #' @examples
 #' data("testdt_tracking")

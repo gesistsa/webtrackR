@@ -2,7 +2,7 @@
 % Please edit documentation in R/audience_networks.R
 \name{audience_incidence}
 \alias{audience_incidence}
-\title{Create incidence matrix for audience-outlet network}
+\title{Create incidence matrix for audience-website network}
 \usage{
 audience_incidence(wt, cutoff = 3)
 }
@@ -12,13 +12,13 @@ audience_incidence(wt, cutoff = 3)
 \item{cutoff}{visits below this cutoff will not be considered as a visit}
 }
 \value{
-incidence audience-outlet network
+incidence audience-website network
 }
 \description{
-Create incidence matrix for audience-outlet network
+Create incidence matrix for audience-website network
 }
 \details{
-The incidence matrix is a matrix A with entries  \code{A[i,j]=1} if panelist i visited outlet j at least once.
+The incidence matrix is a matrix A with entries  \code{A[i,j]=1} if panelist i visited website j at least once.
 }
 \examples{
 data("testdt_tracking")
