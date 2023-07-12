@@ -210,7 +210,7 @@ add_next_visit <- function(wt, level = "url") {
     wt[, url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
     if (!"host" %in% names(wt)) {
-      wt <- extract_host(wt, varname = "url", drop_na = F)
+      suppressWarnings(wt <- extract_host(wt, varname = "url", drop_na = F))
       wt[, host_next := shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
       wt[, host := NULL]
     } else {
@@ -218,7 +218,7 @@ add_next_visit <- function(wt, level = "url") {
     }
   } else if (level == "domain") {
     if (!"domain" %in% names(wt)) {
-      wt <- extract_domain(wt, varname = "url", drop_na = F)
+      suppressWarnings(wt <- extract_domain(wt, varname = "url", drop_na = F))
       wt[, domain_next := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
       wt[, domain := NULL]
     } else {
