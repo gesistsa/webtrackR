@@ -33,22 +33,22 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA) {
 #' @description Define sessions of browsing depending on aq time cutoff for inactivity
 #' @param wt webtrack data object
 #' @param cutoff numeric. If the consecutive visit happens later than this value (in seconds), a new browsing session is defined
-#' @importFrom data.table is.data.table shift
+#' @importFrom data.table is.data.table shift setorder setnafill
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
-#' wt <- add_session(wt, cutoff = 120)
+#' wt <- add_session(wt, cutoff = 1800)
 #' }
 #' @export
 add_session <- function(wt, cutoff) {
   stopifnot("cutoff argument is missing" = !missing(cutoff))
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
-  data.table::setorder(wt, panelist_id, timestamp)
+  setorder(wt, panelist_id, timestamp)
   wt[as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp) > cutoff, session := 1:.N, by = "panelist_id"]
-  data.table::setnafill(wt, type = "nocb", cols = "session")
+  setnafill(wt, type = "nocb", cols = "session")
   wt[]
 }
 
@@ -175,7 +175,7 @@ drop_query <- function(wt, varname = "url") {
 #' @description Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
 #' @param wt webtrack data object
 #' @param level character. Either "url", "host" or "domain". Defaults to "url".
-#' @importFrom data.table is.data.table shift
+#' @importFrom data.table is.data.table shift setorder
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_next, host_next or domain_next.
 #' @examples
 #' \dontrun{
@@ -189,7 +189,7 @@ drop_query <- function(wt, varname = "url") {
 add_next_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
-  data.table::setorder(wt, panelist_id, timestamp)
+  setorder(wt, panelist_id, timestamp)
   if (level == "url") {
     wt[, url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
@@ -206,7 +206,7 @@ add_next_visit <- function(wt, level = "url") {
 #' @description Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
 #' @param wt webtrack data object
 #' @param level character. Either "url", "host" or "domain". Defaults to "url".
-#' @importFrom data.table is.data.table shift
+#' @importFrom data.table is.data.table shift setorder
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
 #' @examples
 #' \dontrun{
@@ -220,7 +220,7 @@ add_next_visit <- function(wt, level = "url") {
 add_previous_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
-  data.table::setorder(wt, panelist_id, timestamp)
+  setorder(wt, panelist_id, timestamp)
   if (level == "url") {
     wt[, url_previous := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
