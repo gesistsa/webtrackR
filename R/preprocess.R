@@ -209,11 +209,21 @@ add_next_visit <- function(wt, level = "url") {
   if (level == "url") {
     wt[, url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
-    wt <- extract_host(wt, varname = "url", drop_na = F)
-    wt[, host_next := shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+    if (!"host" %in% names(wt)) {
+      wt <- extract_host(wt, varname = "url", drop_na = F)
+      wt[, host_next := shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+      wt[, host := NULL]
+    } else {
+      wt[, host_next := shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+    }
   } else if (level == "domain") {
-    wt <- extract_domain(wt, varname = "url", drop_na = F)
-    wt[, domain_next := shift(domain, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+    if (!"domain" %in% names(wt)) {
+      wt <- extract_domain(wt, varname = "url", drop_na = F)
+      wt[, domain_next := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, domain := NULL]
+    } else {
+      wt[, domain_next := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    }
   }
   wt[]
 }
@@ -240,11 +250,21 @@ add_previous_visit <- function(wt, level = "url") {
   if (level == "url") {
     wt[, url_previous := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
-    wt <- extract_host(wt, varname = "url", drop_na = F)
-    wt[, host_previous := shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    if (!"host" %in% names(wt)) {
+      wt <- extract_host(wt, varname = "url", drop_na = F)
+      wt[, host_previous := shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, host := NULL]
+    } else {
+      wt[, host_previous := shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    }
   } else if (level == "domain") {
-    wt <- extract_domain(wt, varname = "url", drop_na = F)
-    wt[, domain_previous := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    if (!"domain" %in% names(wt)) {
+      wt <- extract_domain(wt, varname = "url", drop_na = F)
+      wt[, domain_previous := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, domain := NULL]
+    } else {
+      wt[, domain_previous := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    }
   }
   wt[]
 }
