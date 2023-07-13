@@ -113,9 +113,13 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   n_na <- nrow(wt[is.na(host)])
   if (drop_na == TRUE) {
     wt <- wt[!is.na(host)]
-    warning(paste0("Host could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+    if (n_na > 0) {
+      warning(paste0("Host could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+    }
   } else {
-    warning(paste0("Host could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+    if (n_na > 0) {
+      warning(paste0("Host could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+    }
   }
   wt[]
 }
@@ -151,9 +155,13 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
   n_na <- nrow(wt[is.na(domain)])
   if (drop_na == TRUE) {
     wt <- wt[!is.na(domain)]
-    warning(paste0("Domain could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+    if (n_na > 0) {
+      warning(paste0("Domain could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+    }
   } else {
-    warning(paste0("Domain could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+    if (n_na > 0) {
+      warning(paste0("Domain could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+    }
   }
   wt[]
 }
