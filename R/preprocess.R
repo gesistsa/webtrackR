@@ -179,7 +179,9 @@ drop_query <- function(wt, varname = "url", drop_na = TRUE) {
   wt[, tmp_path := urltools::path(gsub("@", "%40", get(varname)))]
   wt[, tmp_path := gsub("%40", "@", tmp_path)]
   wt[, tmp_scheme := urltools::scheme(get(varname))]
-  # data.table::setnafill(wt, type = "const", cols = c("tmp_scheme"), fill = "")
+  wt[is.na(tmp_host), tmp_host := ""]
+  wt[is.na(tmp_path), tmp_path := ""]
+  wt[is.na(tmp_scheme), tmp_scheme := ""]
   wt[, paste0(varname, "_noquery") := paste0(tmp_scheme, "://", tmp_host, "/", tmp_path, recycle0 = T)]
   wt[, tmp_host := NULL]
   wt[, tmp_path := NULL]
