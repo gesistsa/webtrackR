@@ -283,6 +283,40 @@ add_title <- function(wt) {
   wt[]
 }
 
+#' Identify social media referrals
+#' @description Identifies whether a web visit was referred to from social media. See details.
+#' @details To identify referrals, we rely on the method described as most valid in Schmidt et al.:
+#' When the domain preceding a visit was to the platform in question,
+#' and the query string of the visit's URL contains a certain pattern, we count it as a referred visit.
+#' For Facebook, the pattern has been identified by Schmidt et al. as 'fbclid=', although this can change in future.
+#' @param wt webtrack data object
+#' @param platform_domains character. A vector of platform domains for which referrers should be identified. Order and length must correspondent to 'patterns' vector.
+#' @param patterns character. A vector of patterns for which referrers should be identified. Order and length must correspondent to 'platform_domains' vector.
+#' @importFrom data.table is.data.table
+#' @return webtrack data.table with the same columns as wt and a new column called 'referral'.
+#' @examples
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
+#' wt <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
+#' wt <- add_referral(wt, platform_domains = c("facebook.com", "twitter.com"), patterns = c("fbclid=", "utm_source=twitter"))
+#' @export
+add_referral <- function(wt, platform_domains, patterns) {
+
+  stopifnot("Input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt,vars = c("panelist_id","url", "timestamp"))
+  stopifnot("Number of platform_domains must be identical to number of patterns" = length(platform_domains) == length(patterns))
+
+  wt <- add_previous_visit(wt, level = "domain")
+  wt[,referral:=NA]
+  for (i in 1:length(platform_domains)) {
+    wt[,referral:=ifelse(grepl(patterns[i], url) &
+                           domain_previous == platform_domains[i] &
+                           is.na(referral), platform_domains[i], referral)]
+  }
+  wt[,domain_previous := NULL]
+  wt[]
+}
+
 #' Create an urldummy variable from a data.table object
 #' @param wt webtrack data object
 #' @param dummy a vector of urls that should be dummy coded
@@ -306,6 +340,8 @@ create_urldummy <- function(wt, dummy, name) {
   setattr(wt, "dummy", c(attr(wt, "dummy"), name))
   wt[]
 }
+
+
 
 #' Add panelist features to webtrack data
 #' Add characteristics of panelists (e.g. from a survey) to the webtrack data
