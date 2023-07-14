@@ -56,7 +56,7 @@ test_that("extract_host errors", {
 test_that("extract_path", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_pth(wt)
+  wt <- extract_path(wt)
   expect_true("path" %in% names(wt))
 })
 

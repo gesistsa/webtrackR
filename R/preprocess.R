@@ -176,7 +176,7 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
 #' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
-#' wt <- extract_domain(wt)
+#' wt <- extract_path(wt)
 #' }
 #' @export
 extract_path <- function(wt, varname = "url", drop_na = TRUE) {
