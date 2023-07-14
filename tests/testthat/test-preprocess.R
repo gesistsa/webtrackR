@@ -69,7 +69,21 @@ test_that("add_title", {
   expect_true("title" %in% names(wt))
 })
 
+test_that("add_referral", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
+  expect_true("referral" %in% names(wt))
+  expect_true(!"domain_previous" %in% names(wt))
+})
 
+test_that("add_referral errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(add_referral(wt))
+  expect_error(add_referral(wt, platform_domains = "facebook.com"))
+  expect_error(add_referral(wt, platform_domains = c("facebook.com", "twitter.com"), pattern = "some"))
+})
 
 test_that("urldummy", {
   data("testdt_tracking")
