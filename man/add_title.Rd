@@ -4,10 +4,14 @@
 \alias{add_title}
 \title{Download and add the "title" of a URL}
 \usage{
-add_title(wt)
+add_title(wt, lang = "en-US,en-GB,en")
 }
 \arguments{
 \item{wt}{webtrack data object}
+
+\item{lang}{character (a language tag). Language accepted by the request. Defaults to "en-US,en-GB,en".
+Note that you are likely to still obtain titles different from the ones seen originally by the user,
+because the language also depend on the user's IP and device settings.}
 }
 \value{
 webtrack data.table with the same columns as wt and a new column called "title",
@@ -25,7 +29,8 @@ for classification purposes. Note that it may take a while to run this function 
 \examples{
 \dontrun{
 data("testdt_tracking")
-wt <- as.wt_dt(testdt_tracking)
-wt <- add_title(wt)
+wt <- as.wt_dt(testdt_tracking)[1:10]
+wt_titles <- add_title(wt)
+wt_titles <- add_title(wt, lang = "de")
 }
 }

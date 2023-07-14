@@ -286,27 +286,35 @@ add_previous_visit <- function(wt, level = "url") {
 #' It can contain useful information about a URL's content and can be used, for example,
 #' for classification purposes. Note that it may take a while to run this function for a large number of URLs.
 #' @param wt webtrack data object
-#' @importFrom data.table is.data.table shift
+#' @param lang character (a language tag). Language accepted by the request. Defaults to "en-US,en-GB,en".
+#' Note that you are likely to still obtain titles different from the ones seen originally by the user,
+#' because the language also depend on the user's IP and device settings.
+#' @importFrom data.table is.data.table
+#' @importFrom rvest html_text html_node read_html
+#' @importFrom httr GET
 #' @return webtrack data.table with the same columns as wt and a new column called "title",
 #' which will be NA if the title cannot be retrieved.
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
-#' wt <- as.wt_dt(testdt_tracking)
-#' wt <- add_title(wt)
+#' wt <- as.wt_dt(testdt_tracking)[1:10]
+#' wt_titles <- add_title(wt)
+#' wt_titles <- add_title(wt, lang = "de")
 #' }
 #' @export
-add_title <- function(wt) {
+add_title <- function(wt, lang = "en-US,en-GB,en") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "url"))
   urls <- data.table(url = unique(wt$url))
   urls[, title := mapply(function(x) {
     return(
       tryCatch(
-        rvest::html_text(rvest::html_node(rvest::read_html(x), "head title")),
-        error = function(e) NA
-      )
-    )
+        html_text(html_node(read_html(
+          GET(x, add_headers(.headers = c(
+            'user_agent'= 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246',
+            'Accept-language' = lang)))),
+          "head title")),
+        error = function(e) NA))
   }, url)]
   closeAllConnections()
   wt <- wt[urls, on = "url"]
