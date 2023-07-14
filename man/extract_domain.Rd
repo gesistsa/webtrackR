@@ -14,7 +14,7 @@ extract_domain(wt, varname = "url", drop_na = TRUE)
 \item{drop_na}{boolean. Whether rows for which no domain can be extracted should be dropped from the data. Defaults to TRUE.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called "\if{html}{\out{<varname>}}_domain"
+webtrack data.table with the same columns as wt and a new column called 'domain' (or, if varname not equal to 'url', '\if{html}{\out{<varname>}}_domain')
 }
 \description{
 Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).

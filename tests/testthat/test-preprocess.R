@@ -53,6 +53,19 @@ test_that("extract_host errors", {
   expect_error(extract_host(wt, varname = "not_a_variable"))
 })
 
+test_that("extract_path", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- extract_pth(wt)
+  expect_true("path" %in% names(wt))
+})
+
+test_that("extract_path errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(extract_path(wt, varname = "not_a_variable"))
+})
+
 test_that("drop_query", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)

@@ -92,7 +92,7 @@ deduplicate <- function(wt, within = 1, drop = FALSE) {
 #' @param varname character. name of the URL variable from which to extract the host. Defaults to "url".
 #' @param drop_na boolean. Whether rows for which no host can be extracted should be dropped from the data. Defaults to TRUE.
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called "[url]_domain"
+#' @return webtrack data.table with the same columns as wt and a new column called 'host' (or, if varname not equal to 'url', '<varname>_host')
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
@@ -130,7 +130,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' @param varname name of the URL variable from which to extract the domain Defaults to "url".
 #' @param drop_na boolean. Whether rows for which no domain can be extracted should be dropped from the data. Defaults to TRUE.
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called "<varname>_domain"
+#' @return webtrack data.table with the same columns as wt and a new column called 'domain' (or, if varname not equal to 'url', '<varname>_domain')
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
@@ -163,6 +163,30 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
       warning(paste0("Domain could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
     }
   }
+  wt[]
+}
+
+#' Extract path from url
+#' @description Extracts the path from urls.
+#' @param wt webtrack data object
+#' @param varname name of the URL variable from which to extract the domain Defaults to "url".
+#' @importFrom data.table is.data.table
+#' @return webtrack data.table with the same columns as wt and a new column called 'path' (or, if varname not equal to 'url', '<varname>_path')
+#' @examples
+#' \dontrun{
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
+#' wt <- extract_domain(wt)
+#' }
+#' @export
+extract_path <- function(wt, varname = "url", drop_na = TRUE) {
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt, vars = varname)
+  wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
+  wt[, tmp_path := urltools::path(gsub("@", "%40", get(varname)))]
+  wt[, path := gsub("%40", "@", tmp_path)]
+  wt[, tmp_host := NULL]
+  wt[, tmp_path := NULL]
   wt[]
 }
 
