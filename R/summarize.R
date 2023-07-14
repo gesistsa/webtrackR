@@ -69,6 +69,8 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 #' - If only some of the rows of a time frame are NA on the duration column, the function will ignore those NA rows.
 #' - If there were no visits to a class (i.e., a value of the 'visit_class' column) for a time frame, the summarized duration for that time frame will be zero; if there were visits, but NA on duration, the summarized duration will be NA.
 #' @param wt webtrack data object.
+#' @param var_duration character. Name of the duration variable if already present. Defaults to NULL,
+#' in which case duration will be approximated with add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)
 #' @param timeframe character. indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", "wave" or NULL.
 #' If set to "wave", webtrack data object must contain a column call "wave". Defaults to NULL, in which case the output contains number of visits for the entire time.
 #' @param visit_class character. Column that contains a classification of visits. For each value in this column,

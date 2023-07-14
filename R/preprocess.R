@@ -291,7 +291,7 @@ add_previous_visit <- function(wt, level = "url") {
 #' because the language also depend on the user's IP and device settings.
 #' @importFrom data.table is.data.table
 #' @importFrom rvest html_text html_node read_html
-#' @importFrom httr GET
+#' @importFrom httr GET add_headers
 #' @return webtrack data.table with the same columns as wt and a new column called "title",
 #' which will be NA if the title cannot be retrieved.
 #' @examples
