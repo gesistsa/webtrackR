@@ -26,7 +26,8 @@ Imports:
     igraph,
     urltools,
     utils,
-    rvest
+    rvest,
+    httr
 LazyData: true
 LazyDataCompression: bzip2
 Suggests: 
