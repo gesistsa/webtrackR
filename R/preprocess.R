@@ -179,7 +179,7 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
 #' wt <- extract_path(wt)
 #' }
 #' @export
-extract_path <- function(wt, varname = "url", drop_na = TRUE) {
+extract_path <- function(wt, varname = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
