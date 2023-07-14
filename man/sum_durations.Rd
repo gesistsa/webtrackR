@@ -9,6 +9,9 @@ sum_durations(wt, var_duration = NULL, timeframe = NULL, visit_class = NULL)
 \arguments{
 \item{wt}{webtrack data object.}
 
+\item{var_duration}{character. Name of the duration variable if already present. Defaults to NULL,
+in which case duration will be approximated with add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)}
+
 \item{timeframe}{character. indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", "wave" or NULL.
 If set to "wave", webtrack data object must contain a column call "wave". Defaults to NULL, in which case the output contains number of visits for the entire time.}
 
