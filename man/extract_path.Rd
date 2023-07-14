@@ -4,7 +4,7 @@
 \alias{extract_path}
 \title{Extract path from url}
 \usage{
-extract_path(wt, varname = "url", drop_na = TRUE)
+extract_path(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object}
@@ -21,6 +21,6 @@ Extracts the path from urls.
 \dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
-wt <- extract_domain(wt)
+wt <- extract_path(wt)
 }
 }
