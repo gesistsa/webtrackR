@@ -14,7 +14,7 @@ extract_host(wt, varname = "url", drop_na = TRUE)
 \item{drop_na}{boolean. Whether rows for which no host can be extracted should be dropped from the data. Defaults to TRUE.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called "\link{url}_domain"
+webtrack data.table with the same columns as wt and a new column called 'host' (or, if varname not equal to 'url', '\if{html}{\out{<varname>}}_host')
 }
 \description{
 Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
