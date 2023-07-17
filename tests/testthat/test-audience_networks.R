@@ -12,6 +12,7 @@ test_that("audience_networks", {
   library(igraph)
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
+  wt[, device := "desktop"] # delete this with new example data
   wt <- add_duration(wt)
   wt <- extract_domain(wt)
   pmi <- audience_network(wt, type = "pmi", cutoff = 120)
