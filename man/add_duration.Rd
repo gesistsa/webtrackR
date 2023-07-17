@@ -4,7 +4,14 @@
 \alias{add_duration}
 \title{Add time spent on a visit in seconds}
 \usage{
-add_duration(wt, cutoff = 300, replace_by = NA)
+add_duration(
+  wt,
+  cutoff = 300,
+  replace_by = NA,
+  last_replace_by = NA,
+  device_switch_na = F,
+  device_var = NULL
+)
 }
 \arguments{
 \item{wt}{webtrack data object}
@@ -12,8 +19,19 @@ add_duration(wt, cutoff = 300, replace_by = NA)
 \item{cutoff}{numeric. If duration is greater than this value, it is reset to na, the cutoff, or a user-defined value. Defaults to 5 minutes (= 300 seconds).}
 
 \item{replace_by}{numeric. This determines whether differences greater than
-the cutoff, as well as the last visit for an individual, are set to NA
-(default), or a numeric value}
+the cutoff are set to NA (default), or a numeric value}
+
+\item{last_replace_by}{numeric. This determines the last visit for an individual,
+is set to NA (default) or a numeric value}
+
+\item{device_switch_na}{boolean. Relevant only if panelists have data from several devices.
+When visits are ordered by timestamp sequence, a next visit can happen on a different device.
+This makes it less likely that the next visit happened directly after the visit,
+and it may be preferable to set the duration of the visit to NA (TRUE)
+rather than the difference to the next timestamp (FALSE). Defaults to FALSE.}
+
+\item{device_var}{character. Column indicating the device.
+Required if 'device_switch_na' set to TRUE. Defaults to NULL.}
 }
 \value{
 webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
@@ -30,5 +48,10 @@ wt <- add_duration(wt)
 wt <- add_duration(wt, cutoff = 600, replace_by = 600)
 # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
 wt <- add_duration(wt, cutoff = 600, replace_by = 300)
+wt[, index := 1:.N, by=panelist_id]
+wt[, n := .N, by=panelist_id]
+wt[, device := ifelse(index < n/2, "desktop", "mobile")]
+wt[, index := NULL]
+wt[, n := NULL]
 }
 }
