@@ -98,17 +98,3 @@ test_that("sum_activity errors", {
   wt[["wave"]] <- NULL
   expect_error(sum_activity(wt, timeframe = "wave"))
 })
-
-test_that("agg_duration", {
-  data("testdt_tracking")
-  wt <- as.wt_dt(testdt_tracking)
-  wt <- add_duration(wt, replace_by = 300)
-  wt_sum <- agg_duration(wt[1:100, ], keep = TRUE)
-  expect_true("visits" %in% names(wt_sum))
-})
-test_that("agg_duration errors", {
-  data("testdt_tracking")
-  wt <- as.wt_dt(testdt_tracking)
-  expect_error(agg_duration(wt[1:100, ]))
-  expect_error(agg_duration(wt[1:100, ], duration_var = "not_a_variable"))
-})

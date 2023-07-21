@@ -26,10 +26,15 @@ test_that("deduplicate", {
   wt2 <- as.wt_dt(testdt_tracking)[1:1000]
   wt <- data.table::rbindlist(list(wt1, wt2))
   wt <- as.wt_dt(wt)
-  wt_drop <- deduplicate(wt)
+  wt_drop <- deduplicate(wt, method = "flag")
   expect_true("duplicate" %in% names(wt_drop))
-  wt_keep <- deduplicate(wt, drop = TRUE)
+  wt_keep <- deduplicate(wt, method = "drop")
   expect_true(!"duplicate" %in% names(wt_keep))
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- add_duration(wt, replace_by = 300)
+  wt_sum <- deduplicate(wt[1:100, ], method = "aggregate",
+                        duration_var = "duration", keep_nvisits = TRUE)
+  expect_true("visits" %in% names(wt_sum))
 })
 
 test_that("deduplicate errors", {
@@ -38,7 +43,7 @@ test_that("deduplicate errors", {
   wt2 <- as.wt_dt(testdt_tracking)[1:1000]
   wt <- data.table::rbindlist(list(wt1, wt2))
   wt <- as.wt_dt(wt)
-  expect_error(deduplicate(wt, within = "char"))
+  expect_error(deduplicate(wt[1:100, ], method = "aggregate", duration_var = "not_a_variable"))
 })
 
 test_that("extract_domain", {
