@@ -40,18 +40,9 @@ webtrack data.table (ordered by panelist_id and timestamp) with the same columns
 Approximate the time spent on a visit based on the sequence of timestamps
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
-# Defining cutoff at 10 minutes and setting critical visits to the cutoff:
-wt <- add_duration(wt, cutoff = 600, replace_by = 600)
-# Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
+# Defining cutoff at 10 minutes and setting critical visits to 5 minutes
 wt <- add_duration(wt, cutoff = 600, replace_by = 300)
-wt[, index := 1:.N, by = panelist_id]
-wt[, n := .N, by = panelist_id]
-wt[, device := ifelse(index < n / 2, "desktop", "mobile")]
-wt[, index := NULL]
-wt[, n := NULL]
-}
 }

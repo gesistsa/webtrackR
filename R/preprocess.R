@@ -16,20 +16,11 @@
 #' @importFrom data.table is.data.table shift setorder setnames
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
-#' # Defining cutoff at 10 minutes and setting critical visits to the cutoff:
-#' wt <- add_duration(wt, cutoff = 600, replace_by = 600)
-#' # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
+#' # Defining cutoff at 10 minutes and setting critical visits to 5 minutes
 #' wt <- add_duration(wt, cutoff = 600, replace_by = 300)
-#' wt[, index := 1:.N, by = panelist_id]
-#' wt[, n := .N, by = panelist_id]
-#' wt[, device := ifelse(index < n / 2, "desktop", "mobile")]
-#' wt[, index := NULL]
-#' wt[, n := NULL]
-#' }
 #' @export
 add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA,
                          device_switch_na = F, device_var = NULL) {
@@ -62,11 +53,9 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
 #' @importFrom data.table is.data.table shift setorder setnafill
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_session(wt, cutoff = 1800)
-#' }
 #' @export
 add_session <- function(wt, cutoff) {
   stopifnot("cutoff argument is missing" = !missing(cutoff))
@@ -102,13 +91,11 @@ add_session <- function(wt, cutoff) {
 #' @importFrom data.table is.data.table shift .N setnames setorder
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt, cutoff = 300, replace_by = 300)
 #' deduplicate(wt, method = "drop")
-#' deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
-#' }
+#' # deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
 #' @export
 deduplicate <- function(wt, method = "flag", within = 1, duration_var = NULL,
                         keep_nvisits = FALSE, same_day = TRUE) {
@@ -168,11 +155,9 @@ deduplicate <- function(wt, method = "flag", within = 1, duration_var = NULL,
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called 'host' (or, if varname not equal to 'url', '<varname>_host')
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_host(wt)
-#' }
 #' @export
 extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -206,11 +191,9 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called 'domain' (or, if varname not equal to 'url', '<varname>_domain')
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_domain(wt)
-#' }
 #' @export
 extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -247,11 +230,9 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called 'path' (or, if varname not equal to 'url', '<varname>_path')
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_path(wt)
-#' }
 #' @export
 extract_path <- function(wt, varname = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -272,11 +253,9 @@ extract_path <- function(wt, varname = "url") {
 #' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called "<varname>_noquery"
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- drop_query(wt)
-#' }
 #' @export
 drop_query <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -302,13 +281,9 @@ drop_query <- function(wt, varname = "url", drop_na = TRUE) {
 #' @importFrom data.table is.data.table shift setorder
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_next, host_next or domain_next.
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_next_visit(wt, level = "url")
-#' wt <- add_next_visit(wt, level = "host")
-#' wt <- add_next_visit(wt, level = "domain")
-#' }
 #' @export
 add_next_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -343,13 +318,9 @@ add_next_visit <- function(wt, level = "url") {
 #' @importFrom data.table is.data.table shift setorder
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_previous_visit(wt, level = "url")
-#' wt <- add_previous_visit(wt, level = "host")
-#' wt <- add_previous_visit(wt, level = "domain")
-#' }
 #' @export
 add_previous_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -468,13 +439,11 @@ add_referral <- function(wt, platform_domains, patterns) {
 #' @importFrom data.table setnames setattr
 #' @return webtrack object with the same columns and a new column called "name" including the dummy variable
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- extract_domain(wt)
-#' code_urls <- c("Ccj4QELzbJe6.com/FrKrkvugBVJWwfSobV")
+#' code_urls <- "https://dkr1.ssisurveys.com/tzktsxomta"
 #' create_urldummy(wt, dummy = code_urls, name = "test_dummy")
-#' }
 #' @export
 create_urldummy <- function(wt, dummy, name) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -495,12 +464,10 @@ create_urldummy <- function(wt, dummy, name) {
 #' @param join_on which columns to join on. Defaults to "panelist_id".
 #' @return webtrack object with the same columns and joined with panelist survey data
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' data("testdt_survey_w")
 #' wt <- as.wt_dt(testdt_tracking)
 #' add_panelist_data(wt, testdt_survey_w)
-#' }
 #' @export
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))

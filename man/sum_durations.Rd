@@ -37,13 +37,11 @@ Note:
 }
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
-wt <- extract_domain(wt, drop_na = T)
+wt <- extract_domain(wt, drop_na = TRUE)
 wt[, google := ifelse(domain == "google.com", 1, 0)]
 wt_summ <- sum_durations(wt)
 wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = NULL)
 wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = "google")
-}
 }

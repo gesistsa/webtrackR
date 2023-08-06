@@ -27,13 +27,11 @@ sum_visits allows you to summarize the number of visits by panelist_id for diffe
 It further allows to break down the number by any "classes" of visits.
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
-wt <- extract_domain(wt, drop_na = T)
+wt <- extract_domain(wt, drop_na = TRUE)
 wt[, google := ifelse(domain == "google.com", 1, 0)]
 wt_summ <- sum_visits(wt, timeframe = NULL, visit_class = NULL)
 wt_summ <- sum_visits(wt, timeframe = "week", visit_class = NULL)
 wt_summ <- sum_visits(wt, timeframe = "week", visit_class = "google")
-}
 }

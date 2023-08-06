@@ -20,9 +20,7 @@ webtrack data.table with the same columns as wt and a new column called 'domain'
 Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- extract_domain(wt)
-}
 }

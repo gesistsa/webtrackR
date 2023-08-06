@@ -20,9 +20,7 @@ webtrack data.table with the same columns as wt and a new column called "\if{htm
 Drops the query and fragment from a URL, i.e., everything after a "?" or "#"
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- drop_query(wt)
-}
 }

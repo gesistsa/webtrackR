@@ -11,15 +11,13 @@
 #' @return a data.table with columns "panelist_id", column indicating the time unit (unless 'timeframe' set ot NULL),
 #' "n_visits" indicating the number of visits, and a column for each value of the class (if 'visit_class' not set to NULL).
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
-#' wt <- extract_domain(wt, drop_na = T)
+#' wt <- extract_domain(wt, drop_na = TRUE)
 #' wt[, google := ifelse(domain == "google.com", 1, 0)]
 #' wt_summ <- sum_visits(wt, timeframe = NULL, visit_class = NULL)
 #' wt_summ <- sum_visits(wt, timeframe = "week", visit_class = NULL)
 #' wt_summ <- sum_visits(wt, timeframe = "week", visit_class = "google")
-#' }
 #' @export
 sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -51,7 +49,7 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
       tmp_summary <- dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_visits"), fill = 0)
       setnames(tmp_summary, "tmp_timeframe", timeframe)
     }
-    wt[,tmp_class:=NULL]
+    wt[, tmp_class := NULL]
     summary <- summary[tmp_summary, on = c("panelist_id", timeframe)]
   }
   if (!is.null(timeframe)) {
@@ -80,15 +78,13 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 #' "duration_visits" indicating the duration of visits (in seconds, or whatever the unit of the variable specified by "var_duration" parameter),
 #' and a column for each value of the class (if 'visit_class' not set to NULL).
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
-#' wt <- extract_domain(wt, drop_na = T)
+#' wt <- extract_domain(wt, drop_na = TRUE)
 #' wt[, google := ifelse(domain == "google.com", 1, 0)]
 #' wt_summ <- sum_durations(wt)
 #' wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = NULL)
 #' wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = "google")
-#' }
 #' @export
 sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -115,11 +111,11 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class
   }
 
   grp_vars <- c("panelist_id", timeframe)
-  summary <- wt[, list("duration_visits" = if(all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)), by = grp_vars]
+  summary <- wt[, list("duration_visits" = if (all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)), by = grp_vars]
   if (!is.null(visit_class)) {
     wt <- wt[, tmp_class := paste0("duration_visits_", visit_class, "_", get(visit_class))]
     grp_vars <- c("panelist_id", timeframe, "tmp_class")
-    tmp_summary <- wt[, list("tmp_duration" = if(all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)), by = grp_vars]
+    tmp_summary <- wt[, list("tmp_duration" = if (all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)), by = grp_vars]
     if (is.null(timeframe)) {
       tmp_summary <- dcast(tmp_summary, panelist_id ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
     } else {
@@ -127,7 +123,7 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class
       tmp_summary <- dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
       setnames(tmp_summary, "tmp_timeframe", timeframe)
     }
-    wt[,tmp_class:=NULL]
+    wt[, tmp_class := NULL]
     summary <- summary[tmp_summary, on = c("panelist_id", timeframe)]
   }
   if (!is.null(timeframe)) {
@@ -146,11 +142,9 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class
 #' @importFrom data.table is.data.table shift .N
 #' @return a data.table with columns "panelist_id" and column indicating the number of active time units.
 #' @examples
-#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt_sum <- sum_activity(wt, timeframe = "date")
-#' }
 #' @export
 sum_activity <- function(wt, timeframe = "date") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))

@@ -48,11 +48,9 @@ A duplicate visit is defined as a visit to the same URL as the previous visit,
 within a certain time frame.
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt, cutoff = 300, replace_by = 300)
 deduplicate(wt, method = "drop")
-deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
-}
+# deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
 }

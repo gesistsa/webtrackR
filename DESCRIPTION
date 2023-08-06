@@ -29,7 +29,6 @@ Imports:
     rvest,
     httr
 LazyData: true
-LazyDataCompression: bzip2
 Suggests: 
     backbone,
     stats,

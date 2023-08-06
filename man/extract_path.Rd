@@ -18,9 +18,7 @@ webtrack data.table with the same columns as wt and a new column called 'path' (
 Extracts the path from urls.
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- extract_path(wt)
-}
 }
