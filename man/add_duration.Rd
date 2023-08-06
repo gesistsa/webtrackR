@@ -48,9 +48,9 @@ wt <- add_duration(wt)
 wt <- add_duration(wt, cutoff = 600, replace_by = 600)
 # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
 wt <- add_duration(wt, cutoff = 600, replace_by = 300)
-wt[, index := 1:.N, by=panelist_id]
-wt[, n := .N, by=panelist_id]
-wt[, device := ifelse(index < n/2, "desktop", "mobile")]
+wt[, index := 1:.N, by = panelist_id]
+wt[, n := .N, by = panelist_id]
+wt[, device := ifelse(index < n / 2, "desktop", "mobile")]
 wt[, index := NULL]
 wt[, n := NULL]
 }

@@ -1,9 +1,9 @@
 test_that("add_duration", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt[, index := 1:.N, by=panelist_id]
-  wt[, n := .N, by=panelist_id]
-  wt[, device := ifelse(index < n/2, "desktop", "mobile")]
+  wt[, index := 1:.N, by = panelist_id]
+  wt[, n := .N, by = panelist_id]
+  wt[, device := ifelse(index < n / 2, "desktop", "mobile")]
   wt[, index := NULL]
   wt[, n := NULL]
   wt_duration <- add_duration(wt)
@@ -15,8 +15,9 @@ test_that("add_duration", {
   expect_true(is.na(wt[is.na(device_next != device)][["duration"]][1]))
   # testing "last_replace_by = NA"
   wt_duration <- add_duration(wt[panelist_id == unique(wt$panelist_id)[1]],
-                              cutoff = 10000, replace_by = 10000,
-                              last_replace_by = NA)
+    cutoff = 10000, replace_by = 10000,
+    last_replace_by = NA
+  )
   expect_true(is.na(wt[nrow(wt), "duration"]))
 })
 
@@ -32,8 +33,10 @@ test_that("deduplicate", {
   expect_true(!"duplicate" %in% names(wt_keep))
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt, replace_by = 300)
-  wt_sum <- deduplicate(wt[1:100, ], method = "aggregate",
-                        duration_var = "duration", keep_nvisits = TRUE)
+  wt_sum <- deduplicate(wt[1:100, ],
+    method = "aggregate",
+    duration_var = "duration", keep_nvisits = TRUE
+  )
   expect_true("visits" %in% names(wt_sum))
 })
 
@@ -49,7 +52,7 @@ test_that("deduplicate errors", {
 test_that("extract_domain", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_domain(wt)
+  wt <- suppressWarnings(extract_domain(wt))
   expect_true("domain" %in% names(wt))
 })
 
@@ -90,7 +93,7 @@ test_that("drop_query", {
   wt <- as.wt_dt(testdt_tracking)
   wt <- drop_query(wt)
   expect_true("url_noquery" %in% names(wt))
-  test_url <- c("https://www.google.com/maps/@25.6726944,-80.4421392,19z")
+  test_url <- c("https://dkr1.ssisurveys.com/tzktsxomta")
   expect_true(wt[url == test_url, url] == test_url)
 })
 
@@ -120,9 +123,9 @@ test_that("add_referral errors", {
 test_that("urldummy", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_domain(wt)
-  code_urls <- c("https://invite.rmrsurveys.com/survey/selfserve/2252/1812586")
-  wt <- create_urldummy(wt,dummy = code_urls, name = "test_dummy")
+  wt <- suppressWarnings(extract_domain(wt))
+  code_urls <- c("https://dkr1.ssisurveys.com/tzktsxomta")
+  wt <- create_urldummy(wt, dummy = code_urls, name = "test_dummy")
   expect_true(wt$test_dummy[1])
 })
 
@@ -130,13 +133,13 @@ test_that("panelist_data", {
   data("testdt_tracking")
   data("testdt_survey_w")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_panelist_data(wt,testdt_survey_w)
-  expect_true("leftright"%in%names(wt))
+  wt <- add_panelist_data(wt, testdt_survey_w)
+  expect_true("leftright" %in% names(wt))
 })
 
 test_that("panelist_data errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_panelist_data(wt,testdt_survey_w)
-  expect_error(add_panelist_data(wt,"test"))
+  wt <- add_panelist_data(wt, testdt_survey_w)
+  expect_error(add_panelist_data(wt, "test"))
 })

@@ -24,9 +24,9 @@
 #' wt <- add_duration(wt, cutoff = 600, replace_by = 600)
 #' # Defining cutoff at 10 minutes and setting critical visits to 5 minutes:
 #' wt <- add_duration(wt, cutoff = 600, replace_by = 300)
-#' wt[, index := 1:.N, by=panelist_id]
-#' wt[, n := .N, by=panelist_id]
-#' wt[, device := ifelse(index < n/2, "desktop", "mobile")]
+#' wt[, index := 1:.N, by = panelist_id]
+#' wt[, n := .N, by = panelist_id]
+#' wt[, device := ifelse(index < n / 2, "desktop", "mobile")]
 #' wt[, index := NULL]
 #' wt[, n := NULL]
 #' }
@@ -146,8 +146,10 @@ deduplicate <- function(wt, method = "flag", within = 1, duration_var = NULL,
     wt[, tmp_timestamp_prev := shift(timestamp, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     wt[, tmp_url_prev := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     wt[, duplicate := ifelse(is.na(tmp_url_prev), FALSE, ifelse(
-      (timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE)),
-      by = "panelist_id"]
+      (timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE
+    )),
+    by = "panelist_id"
+    ]
     if (method == "drop") {
       wt <- wt[duplicate == FALSE]
       wt[, duplicate := NULL]
@@ -405,12 +407,18 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
   urls[, title := mapply(function(x) {
     return(
       tryCatch(
-        html_text(html_node(read_html(
-          GET(x, add_headers(.headers = c(
-            'user_agent'= 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246',
-            'Accept-language' = lang)))),
-          "head title")),
-        error = function(e) NA))
+        html_text(html_node(
+          read_html(
+            GET(x, add_headers(.headers = c(
+              "user_agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246",
+              "Accept-language" = lang
+            )))
+          ),
+          "head title"
+        )),
+        error = function(e) NA
+      )
+    )
   }, url)]
   closeAllConnections()
   wt <- wt[urls, on = "url"]
@@ -432,22 +440,24 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
-#' wt <- add_referral(wt, platform_domains = c("facebook.com", "twitter.com"), patterns = c("fbclid=", "utm_source=twitter"))
+#' wt <- add_referral(wt,
+#'   platform_domains = c("facebook.com", "twitter.com"),
+#'   patterns = c("fbclid=", "utm_source=twitter")
+#' )
 #' @export
 add_referral <- function(wt, platform_domains, patterns) {
-
   stopifnot("Input is not a wt_dt object" = is.wt_dt(wt))
-  vars_exist(wt,vars = c("panelist_id","url", "timestamp"))
+  vars_exist(wt, vars = c("panelist_id", "url", "timestamp"))
   stopifnot("Number of platform_domains must be identical to number of patterns" = length(platform_domains) == length(patterns))
 
   wt <- add_previous_visit(wt, level = "domain")
-  wt[,referral:=NA]
-  for (i in 1:length(platform_domains)) {
-    wt[,referral:=ifelse(grepl(patterns[i], url) &
-                           domain_previous == platform_domains[i] &
-                           is.na(referral), platform_domains[i], referral)]
+  wt[, referral := NA]
+  for (i in seq_along(platform_domains)) {
+    wt[, referral := ifelse(grepl(patterns[i], url) &
+      domain_previous == platform_domains[i] &
+      is.na(referral), platform_domains[i], referral)]
   }
-  wt[,domain_previous := NULL]
+  wt[, domain_previous := NULL]
   wt[]
 }
 
