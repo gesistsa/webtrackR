@@ -21,7 +21,7 @@ test_that("classify_visits", {
   data("testdt_tracking")
   data("domain_list")
   wt <- as.wt_dt(testdt_tracking)
-  wt_domains <- extract_domain(wt, drop_na = F)
+  wt_domains <- suppressWarnings(extract_domain(wt, drop_na = FALSE))
   wt_classes <- classify_visits(wt_domains, classes = domain_list, match_by = "domain")
   expect_true("type" %in% names(wt_classes))
 })
@@ -30,7 +30,7 @@ test_that("classify_visits", {
 test_that("classify_visits errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt_domains <- extract_domain(wt, drop_na = F)
+  wt_domains <- suppressWarnings(extract_domain(wt, drop_na = FALSE))
   expect_error(classify_visits(wt_domains, classes = data.frame(a = 5, b = 6)))
   expect_error(classify_visits(wt_domains, classes = domain_list, match_by = "not_a_value"))
   expect_error(classify_visits(wt_domains, classes = domain_list, match_by = "host"))

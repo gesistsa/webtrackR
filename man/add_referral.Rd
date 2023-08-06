@@ -29,5 +29,8 @@ For Facebook, the pattern has been identified by Schmidt et al. as 'fbclid=', al
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
-wt <- add_referral(wt, platform_domains = c("facebook.com", "twitter.com"), patterns = c("fbclid=", "utm_source=twitter"))
+wt <- add_referral(wt,
+  platform_domains = c("facebook.com", "twitter.com"),
+  patterns = c("fbclid=", "utm_source=twitter")
+)
 }

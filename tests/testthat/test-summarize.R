@@ -1,7 +1,7 @@
 test_that("sum_visits", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_domain(wt)
+  wt <- suppressWarnings(extract_domain(wt))
   wt[, google := ifelse(domain == "google.com", 1, 0)]
   wt_sum <- sum_visits(wt)
   expect_true("n_visits" %in% names(wt_sum))
@@ -28,7 +28,7 @@ test_that("sum_visits", {
 test_that("sum_visits errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_domain(wt)
+  wt <- suppressWarnings(extract_domain(wt))
   wt[, google := ifelse(domain == "google.com", 1, 0)]
   expect_error(sum_visits(wt, timeframe = "not_a_variable"))
   wt[["wave"]] <- NULL
@@ -39,7 +39,7 @@ test_that("sum_visits errors", {
 test_that("sum_durations", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_domain(wt)
+  wt <- suppressWarnings(extract_domain(wt))
   wt[, google := ifelse(domain == "google.com", 1, 0)]
   wt[, search := ifelse(grepl("search", url), 1, 0)]
   wt_sum <- sum_durations(wt)
@@ -66,7 +66,7 @@ test_that("sum_durations", {
 test_that("sum_durations errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_domain(wt)
+  wt <- suppressWarnings(extract_domain(wt))
   wt[, google := ifelse(domain == "google.com", 1, 0)]
   wt[, search := ifelse(grepl("search", url), 1, 0)]
   expect_error(sum_durations(wt, duration_var = "not_a_variable"))
