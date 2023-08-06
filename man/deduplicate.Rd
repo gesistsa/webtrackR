@@ -4,28 +4,55 @@
 \alias{deduplicate}
 \title{Deduplicate visits}
 \usage{
-deduplicate(wt, within = 1, drop = FALSE)
+deduplicate(
+  wt,
+  method = "flag",
+  within = 1,
+  duration_var = NULL,
+  keep_nvisits = FALSE,
+  same_day = TRUE
+)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
-\item{within}{numeric. If the consecutive visit happens within than this time difference (in seconds), it is flagged as a duplicate. Defaults to 1.}
+\item{method}{character. "aggregate", "flag" or "drop". If set to "aggregate",
+consecutive visits to the same URL are combined and their duration aggregated.
+In this case, a duration column must be specified via "duration_var";
+if "within" is specified, only
+If set to "flag", duplicates within a certain time frame are flagged in a new
+column called "duplicate". In this case, "within" argument must be specified.
+If set to "drop", duplicates are dropped. Again, "within" argument must be specified.
+Defaults to "aggregate".}
 
-\item{drop}{numeric. If duplicate visits should be dropped (TRUE), or just flagged with a new variable (FALSE). Defaults to FALSE.}
+\item{within}{numeric. If method set to "flag or "drop",
+a duplicate is defined only when the consecutive visit happens within
+this time difference (in seconds). Defaults to 1.}
+
+\item{duration_var}{character. Name of duration variable. Defaults to "duration".}
+
+\item{keep_nvisits}{logical. If method set to "aggregate", this determines whether
+number of aggregated visits should be kept as variable. Defaults to FALSE.}
+
+\item{same_day}{logical. If method set to "aggregate", determines
+whether to count visits as consecutive only when on the same day. Defaults to TRUE.}
 }
 \value{
-webtrack data.table with the same columns as wt and, if drop set to FALSE, a new column called "duplicate"
+webtrack data.table with the same columns as wt with updated duration
 }
 \description{
-Drop consecutive visits that are to the same URL within a user-defined timeframe
+Deduplicate visits or aggregate the duration of duplicate visits
+}
+\details{
+A duplicate visit is defined as a visit to the same URL as the previous visit,
+within a certain time frame.
 }
 \examples{
 \dontrun{
 data("testdt_tracking")
-wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
-wt2 <- as.wt_dt(testdt_tracking)[1:1000]
-wt <- data.table::rbindlist(list(wt1, wt2))
-wt <- as.wt_dt(wt)
-wt <- deduplicate(wt)
+wt <- as.wt_dt(testdt_tracking)
+wt <- add_duration(wt, cutoff = 300, replace_by = 300)
+deduplicate(wt, method = "drop")
+deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
 }
 }

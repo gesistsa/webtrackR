@@ -77,38 +77,84 @@ add_session <- function(wt, cutoff) {
   setnafill(wt, type = "nocb", cols = "session")
   wt[]
 }
-
 #' Deduplicate visits
-#' @description Drop consecutive visits that are to the same URL within a user-defined timeframe
+#' @description Deduplicate visits or aggregate the duration of duplicate visits
+#' @details
+#' A duplicate visit is defined as a visit to the same URL as the previous visit,
+#' within a certain time frame.
 #' @param wt webtrack data object
-#' @param within numeric. If the consecutive visit happens within than this time difference (in seconds), it is flagged as a duplicate. Defaults to 1.
-#' @param drop numeric. If duplicate visits should be dropped (TRUE), or just flagged with a new variable (FALSE). Defaults to FALSE.
-#' @importFrom data.table is.data.table shift setorder
-#' @return webtrack data.table with the same columns as wt and, if drop set to FALSE, a new column called "duplicate"
+#' @param method character. "aggregate", "flag" or "drop". If set to "aggregate",
+#' consecutive visits to the same URL are combined and their duration aggregated.
+#' In this case, a duration column must be specified via "duration_var";
+#' if "within" is specified, only
+#' If set to "flag", duplicates within a certain time frame are flagged in a new
+#' column called "duplicate". In this case, "within" argument must be specified.
+#' If set to "drop", duplicates are dropped. Again, "within" argument must be specified.
+#' Defaults to "aggregate".
+#' @param within numeric. If method set to "flag or "drop",
+#' a duplicate is defined only when the consecutive visit happens within
+#' this time difference (in seconds). Defaults to 1.
+#' @param duration_var character. Name of duration variable. Defaults to "duration".
+#' @param keep_nvisits logical. If method set to "aggregate", this determines whether
+#' number of aggregated visits should be kept as variable. Defaults to FALSE.
+#' @param same_day logical. If method set to "aggregate", determines
+#' whether to count visits as consecutive only when on the same day. Defaults to TRUE.
+#' @importFrom data.table is.data.table shift .N setnames setorder
+#' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
-#' wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
-#' wt2 <- as.wt_dt(testdt_tracking)[1:1000]
-#' wt <- data.table::rbindlist(list(wt1, wt2))
-#' wt <- as.wt_dt(wt)
-#' wt <- deduplicate(wt)
+#' wt <- as.wt_dt(testdt_tracking)
+#' wt <- add_duration(wt, cutoff = 300, replace_by = 300)
+#' deduplicate(wt, method = "drop")
+#' deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
 #' }
 #' @export
-deduplicate <- function(wt, within = 1, drop = FALSE) {
+deduplicate <- function(wt, method = "flag", within = 1, duration_var = NULL,
+                        keep_nvisits = FALSE, same_day = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  stopifnot("'within' must be numeric" = is.numeric(within))
-  vars_exist(wt, vars = c("panelist_id", "timestamp"))
+  vars_exist(wt, vars = c("url", "panelist_id", "timestamp"))
   setorder(wt, panelist_id, timestamp)
-  wt[, tmp_timestamp_next := shift(timestamp, n = 1, type = "lead", fill = NA), by = "panelist_id"]
-  wt[, tmp_url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
-  wt[, duplicate := ifelse(((tmp_timestamp_next - timestamp <= within) & (url == tmp_url_next)), TRUE, FALSE), by = "panelist_id"]
-  if (drop == TRUE) {
-    wt <- wt[duplicate == FALSE]
-    wt[, duplicate := NULL]
+  if (method == "aggregate") {
+    vars_exist(wt, vars = duration_var)
+    setnames(wt, duration_var, "duration")
+    wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
+    if (same_day == TRUE) {
+      wt[, day := as.Date(timestamp)]
+      grp_vars <- c("panelist_id", "visit", "url", "day")
+      wt <- wt[, list(
+        visits = .N,
+        duration = sum(as.numeric(duration), na.rm = TRUE),
+        timestamp = min(timestamp)
+      ), by = grp_vars]
+      wt[, day := NULL]
+    } else {
+      grp_vars <- c("panelist_id", "visit", "url")
+      wt <- wt[, list(
+        visits = .N,
+        duration = sum(as.numeric(duration), na.rm = TRUE),
+        timestamp = min(timestamp)
+      ), by = grp_vars]
+    }
+    wt[, visit := NULL]
+    if (keep_nvisits == FALSE) {
+      wt[, visits := NULL]
+    }
+    setnames(wt, "duration", duration_var)
+  } else if (method %in% c("drop", "flag")) {
+    stopifnot("'within' must be specified if 'method' set to 'flag' or 'drop" = !is.null(within))
+    wt[, tmp_timestamp_prev := shift(timestamp, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    wt[, tmp_url_prev := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    wt[, duplicate := ifelse(is.na(tmp_url_prev), FALSE, ifelse(
+      (timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE)),
+      by = "panelist_id"]
+    if (method == "drop") {
+      wt <- wt[duplicate == FALSE]
+      wt[, duplicate := NULL]
+    }
+    wt[, tmp_url_prev := NULL]
+    wt[, tmp_timestamp_prev := NULL]
   }
-  wt[, tmp_url_next := NULL]
-  wt[, tmp_timestamp_next := NULL]
   wt[]
 }
 
