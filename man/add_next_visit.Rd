@@ -2,7 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{add_next_visit}
 \alias{add_next_visit}
-\title{Add the next visit as a variable}
+\title{Add the next visit as a column}
 \usage{
 add_next_visit(wt, level = "url")
 }

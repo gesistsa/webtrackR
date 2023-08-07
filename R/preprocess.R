@@ -78,11 +78,11 @@ add_session <- function(wt, cutoff) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
   setorder(wt, panelist_id, timestamp)
-  wt[, index := 1:.N, by = panelist_id]
+  wt[, tmp_index := 1:.N, by = panelist_id]
   wt[as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp) > cutoff, session := 1:.N, by = "panelist_id"]
-  wt[, session := ifelse(index == 1, 1, session)]
+  wt[, session := ifelse(tmp_index == 1, 1, session)]
   setnafill(wt, type = "locf", cols = "session")
-  wt[, index := NULL]
+  wt[, tmp_index := NULL]
   wt[]
 }
 #' Deduplicate visits
@@ -171,13 +171,19 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
   wt[]
 }
 
-#' Extract host from url
-#' @description Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
+#' Extract the host from URLs
+#' @description
+#' `extract_host()` adds the host of a web address as a new column.
+#' The host is defined as the part following the scheme (e.g., "https://") and
+#' preceding the subdirectory (anything following the next "/").
 #' @param wt webtrack data object
-#' @param varname character. name of the URL variable from which to extract the host. Defaults to "url".
-#' @param drop_na boolean. Whether rows for which no host can be extracted should be dropped from the data. Defaults to TRUE.
+#' @param varname character. name of the column from which to extract the host.
+#' Defaults to `"url"`.
+#' @param drop_na boolean. Determines whether rows for which no host can be extracted
+#' should be dropped from the data. Defaults to `TRUE`.
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called 'host' (or, if varname not equal to 'url', '<varname>_host')
+#' @return webtrack data.table with the same columns as wt
+#' and a new column called `'host'` (or, if varname not equal to `'url'`, `'<varname>_host'`)
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -189,21 +195,32 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
   if (varname == "url") {
     wt[, host := urltools::domain(tmp_host)]
+    n_na <- nrow(wt[is.na(host)])
+    if (drop_na == TRUE) {
+      wt <- wt[!is.na(host)]
+      if (n_na > 0) {
+        warning(paste0("Host could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+      }
+    } else {
+      if (n_na > 0) {
+        warning(paste0("Host could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+      }
+    }
   } else {
     wt[, paste0(varname, "_host") := urltools::domain(tmp_host)]
+    n_na <- nrow(wt[is.na(paste0(varname, "_host"))])
+    if (drop_na == TRUE) {
+      wt <- wt[!is.na(paste0(varname, "_host"))]
+      if (n_na > 0) {
+        warning(paste0("Host could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
+      }
+    } else {
+      if (n_na > 0) {
+        warning(paste0("Host could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
+      }
+    }
   }
   wt[, tmp_host := NULL]
-  n_na <- nrow(wt[is.na(host)])
-  if (drop_na == TRUE) {
-    wt <- wt[!is.na(host)]
-    if (n_na > 0) {
-      warning(paste0("Host could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
-    }
-  } else {
-    if (n_na > 0) {
-      warning(paste0("Host could not be extracted for ", n_na, " rows. Set drop_na = TRUE to drop these rows."))
-    }
-  }
   wt[]
 }
 
@@ -298,7 +315,7 @@ drop_query <- function(wt, varname = "url", drop_na = TRUE) {
   wt[]
 }
 
-#' Add the next visit as a variable
+#' Add the next visit as a column
 #' @description Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
 #' @param wt webtrack data object
 #' @param level character. Either "url", "host" or "domain". Defaults to "url".
@@ -477,8 +494,6 @@ create_urldummy <- function(wt, dummy, name) {
   setattr(wt, "dummy", c(attr(wt, "dummy"), name))
   wt[]
 }
-
-
 
 #' Add panelist features to webtrack data
 #' Add characteristics of panelists (e.g. from a survey) to the webtrack data

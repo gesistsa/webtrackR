@@ -6,9 +6,9 @@
 \usage{
 deduplicate(
   wt,
-  method = "flag",
+  method = "aggregate",
   within = 1,
-  duration_var = NULL,
+  duration_var = "duration",
   keep_nvisits = FALSE,
   same_day = TRUE
 )
@@ -16,32 +16,31 @@ deduplicate(
 \arguments{
 \item{wt}{webtrack data object.}
 
-\item{method}{character. One of \code{"aggregate"}, \code{"flag"} or \code{"drop"}. If set to \code{"aggregate"},
-consecutive visits to the same URL are combined and their duration aggregated.
-In this case, a duration column must be specified via "duration_var";
+\item{method}{character. One of \code{"aggregate"}, \code{"flag"} or \code{"drop"}.
+If set to \code{"aggregate"}, consecutive visits (no matter the time difference)
+to the same URL are combined and their duration aggregated.
+In this case, a duration column must be specified via \code{"duration_var"}.
 If set to \code{"flag"}, duplicates within a certain time frame are flagged in a new
 column called \code{duplicate}. In this case, \code{within} argument must be specified.
 If set to \code{"drop"}, duplicates are dropped. Again, \code{within} argument must be specified.
 Defaults to \code{"aggregate"}.}
 
-\item{within}{numeric. If method set to "flag or "drop",
-a duplicate is defined only when the consecutive visit happens within
-this time difference (in seconds). Defaults to 1.}
+\item{within}{numeric (seconds). If \code{method} set to \code{"flag"} or \code{"drop"},
+a subsequent visit is only defined as a duplicate when happening within
+this time difference. Defaults to 1 second.}
 
-\item{duration_var}{character. Name of duration variable. Defaults to "duration".}
+\item{duration_var}{character. Name of duration variable. Defaults to \code{"duration"}.}
 
-\item{keep_nvisits}{logical. If method set to "aggregate", this determines whether
-number of aggregated visits should be kept as variable. Defaults to FALSE.}
+\item{keep_nvisits}{boolean. If method set to \code{"aggregate"}, this determines whether
+number of aggregated visits should be kept as variable. Defaults to \code{FALSE}.}
 
-\item{same_day}{logical. If method set to "aggregate", determines
-whether to count visits as consecutive only when on the same day. Defaults to TRUE.}
+\item{same_day}{boolean. If method set to \code{"aggregate"}, determines
+whether to count visits as consecutive only when on the same day. Defaults to \code{TRUE}.}
 }
 \value{
 webtrack data.table with the same columns as wt with updated duration
 }
 \description{
-Deduplicate visits or aggregate the duration of duplicate visits
-
 \code{deduplicate()} flags, drops or aggregates duplicates, which are defined as
 consecutive visits to the same URL within a certain time frame.
 }
@@ -49,6 +48,12 @@ consecutive visits to the same URL within a certain time frame.
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt, cutoff = 300, replace_by = 300)
-deduplicate(wt, method = "drop")
-# deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
+# Dropping duplicates with one-second default
+wt_dedup <- deduplicate(wt, method = "drop")
+# Flagging duplicates with one-second default
+wt_dedup <- deduplicate(wt, method = "flag")
+# Aggregating duplicates
+wt_dedup <- deduplicate(wt[1:1000], method = "aggregate")
+# Aggregating duplicates and keeping number of visits for aggregated visits
+wt_dedup <- deduplicate(wt[1:1000], method = "aggregate", keep_nvisits = TRUE)
 }

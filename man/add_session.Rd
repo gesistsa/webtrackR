@@ -23,5 +23,6 @@ when the difference between two consecutive timestamps exceeds a \code{cutoff}.
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# Setting cutoff to 30 minutes
 wt <- add_session(wt, cutoff = 1800)
 }

@@ -103,6 +103,31 @@ test_that("deduplicate testdt_specific", {
   expect_true(max(wt_dedup[, "visits"]) == 608)
 })
 
+test_that("extract_host", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_host <- suppressWarnings(extract_host(wt))
+  expect_true("host" %in% names(wt_host))
+  wt[,other_url:=url]
+  wt_host <- suppressWarnings(extract_host(wt, varname = "other_url"))
+  expect_true("other_url_host" %in% names(wt_host))
+})
+
+test_that("extract_host errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(extract_host(wt, varname = "not_a_variable"))
+})
+
+test_that("extract_host testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_host <- suppressWarnings(extract_host(wt, drop_na = TRUE))
+  expect_true(nrow(wt_host) == 49583)
+  wt_host <- suppressWarnings(extract_host(wt, drop_na = FALSE))
+  expect_true(nrow(wt_host) == nrow(wt))
+})
+
 test_that("extract_domain", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
@@ -114,19 +139,6 @@ test_that("extract_domain errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(extract_domain(wt, varname = "not_a_variable"))
-})
-
-test_that("extract_host", {
-  data("testdt_tracking")
-  wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_host(wt)
-  expect_true("host" %in% names(wt))
-})
-
-test_that("extract_host errors", {
-  data("testdt_tracking")
-  wt <- as.wt_dt(testdt_tracking)
-  expect_error(extract_host(wt, varname = "not_a_variable"))
 })
 
 test_that("extract_path", {
