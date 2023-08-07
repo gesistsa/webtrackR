@@ -132,14 +132,36 @@ test_that("extract_host testdt_specific", {
 test_that("extract_domain", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- suppressWarnings(extract_domain(wt))
-  expect_true("domain" %in% names(wt))
+  # test existence of variables
+  wt_domain <- suppressWarnings(extract_domain(wt))
+  expect_true("domain" %in% names(wt_domain))
+  wt[,other_url:=url]
+  wt_domain <- suppressWarnings(extract_domain(wt, varname = "other_url"))
+  expect_true("other_url_domain" %in% names(wt_domain))
+  wt_domain <- suppressWarnings(extract_domain(wt, drop_na = FALSE))
+  # test domain composition
+  wt_domain[, tmp_host := urltools::domain(gsub("@", "%40", url))]
+  wt_domain[, tmp_suffix := urltools::suffix_extract(tmp_host)[["suffix"]]]
+  wt_domain[, tmp_domain_name := urltools::suffix_extract(tmp_host)[["domain"]]]
+  expect_true(is.na(wt_domain[is.na(tmp_suffix), "domain"][1]))
+  expect_true(wt_domain[!is.na(tmp_suffix) & is.na(tmp_domain_name), "domain"] ==
+                wt_domain[!is.na(tmp_suffix) & is.na(tmp_domain_name), "tmp_suffix"])
 })
 
 test_that("extract_domain errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(extract_domain(wt, varname = "not_a_variable"))
+})
+
+test_that("extract_domain testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_domain <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
+  expect_true(wt_domain[1,"domain"] == "ssisurveys.com")
+  expect_true(nrow(wt_domain) == 49451)
+  wt_domain <- suppressWarnings(extract_domain(wt, drop_na = FALSE))
+  expect_true(nrow(wt_domain) == nrow(wt))
 })
 
 test_that("extract_path", {

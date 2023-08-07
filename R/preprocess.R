@@ -176,8 +176,8 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' `extract_host()` adds the host of a URL as a new column.
 #' The host is defined as the part following the scheme (e.g., "https://") and
 #' preceding the subdirectory (anything following the next "/").
-#' @param wt webtrack data object
-#' @param varname character. name of the column from which to extract the host.
+#' @param wt webtrack data object.
+#' @param varname character. Name of the column from which to extract the host.
 #' Defaults to `"url"`.
 #' @param drop_na boolean. Determines whether rows for which no host can be extracted
 #' should be dropped from the data. Defaults to `TRUE`.
@@ -187,7 +187,10 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # Extract host and drop rows without host
 #' wt <- extract_host(wt)
+#' # Extract host and keep rows without host
+#' wt <- extract_host(wt, drop_na = F)
 #' @export
 extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -224,17 +227,43 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   wt[]
 }
 
-#' Extract domain from url
-#' @description Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).
-#' @param wt webtrack data object
-#' @param varname name of the URL variable from which to extract the domain Defaults to "url".
-#' @param drop_na boolean. Whether rows for which no domain can be extracted should be dropped from the data. Defaults to TRUE.
-#' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called 'domain' (or, if varname not equal to 'url', '<varname>_domain')
+#' Extract the domain from URL
+#' @description
+#' `extract_domain()` adds the domain of a URL as a new column.
+#' By "domain", we mean the "top private domain", i.e., the domain under
+#' the public suffix (e.g., "`com`") as defined by the Public Suffix List.
+#' See details.
+#' @details
+#' We define a "web domain" in the common colloquial meaning, that is,
+#' the part of an web address that identifies the person or organization in control.
+#' is `google.com`. More technically, what we mean by "domain" is the
+#' "top private domain", i.e., the domain under the public suffix,
+#' as defined by the Public Suffix List.
+#' Note that this definition sometimes leads to counterintuitive results because
+#' not all public suffixes are "registry suffixes". That is, they are not controlled
+#' by a domain name registrar, but allow users to directly register a domain.
+#' One example of such a public, non-registry suffix is `blogspot.com`. For a URL like
+#' `www.mysite.blogspot.com`, our function, and indeed the packages we are aware of,
+#' would extract the domain as `mysite.blogspot.com`, although you might think of
+#' `blogspot.com` as the domain.
+#' For details, see [`https://github.com/google/guava/wiki/InternetDomainNameExplained].
+#' @param wt webtrack data object.
+#' @param varname character. Name of the column from which to extract the host.
+#' Defaults to `"url"`.
+#' @param drop_na boolean. Determines whether rows for which no host can be extracted
+#' should be dropped from the data. Defaults to `TRUE`.
+#' @description Extracts the domain from urls.
+#' @importFrom data.table is.data.table fcase
+#' @return webtrack data.table with the same columns as wt
+#' and a new column called `'domain'`
+#'(or, if varname not equal to `'url'`, `'<varname>_domain'`)
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # Extract domain and drop rows without domain
 #' wt <- extract_domain(wt)
+#' # Extract domain and keep rows without domain
+#' wt <- extract_domain(wt, drop_na = FALSE)
 #' @export
 extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -247,12 +276,28 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
   } else {
     wt[, paste0(varname, "_domain") := ifelse((!is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
   }
+  if (varname == "url") {
+    wt[, domain := fcase(
+      is.na(tmp_suffix), NA_character_,
+      !is.na(tmp_suffix) & is.na(tmp_domain_name), tmp_suffix,
+      !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix))]
+    n_na <- nrow(wt[is.na(domain)])
+  } else {
+    wt[, paste0(varname, "_domain") := fcase(
+      is.na(tmp_suffix), NA_character_,
+      !is.na(tmp_suffix) & is.na(tmp_domain_name), tmp_suffix,
+      !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix))]
+    n_na <- nrow(wt[is.na(paste0(varname, "_domain"))])
+  }
   wt[, tmp_host := NULL]
   wt[, tmp_suffix := NULL]
   wt[, tmp_domain_name := NULL]
-  n_na <- nrow(wt[is.na(domain)])
   if (drop_na == TRUE) {
-    wt <- wt[!is.na(domain)]
+    if (varname == "url") {
+      wt <- wt[!is.na(domain)]
+    } else {
+      wt <- wt[!is.na(paste0(varname, "_domain"))]
+    }
     if (n_na > 0) {
       warning(paste0("Domain could not be extracted for ", n_na, " rows, which were dropped from the data. Set drop_na = FALSE to keep these rows."))
     }

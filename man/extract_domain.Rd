@@ -2,25 +2,52 @@
 % Please edit documentation in R/preprocess.R
 \name{extract_domain}
 \alias{extract_domain}
-\title{Extract domain from url}
+\title{Extract the domain from URL}
 \usage{
 extract_domain(wt, varname = "url", drop_na = TRUE)
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{varname}{name of the URL variable from which to extract the domain Defaults to "url".}
+\item{varname}{character. Name of the column from which to extract the host.
+Defaults to \code{"url"}.}
 
-\item{drop_na}{boolean. Whether rows for which no domain can be extracted should be dropped from the data. Defaults to TRUE.}
+\item{drop_na}{boolean. Determines whether rows for which no host can be extracted
+should be dropped from the data. Defaults to \code{TRUE}.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called 'domain' (or, if varname not equal to 'url', '\if{html}{\out{<varname>}}_domain')
+webtrack data.table with the same columns as wt
+and a new column called \code{'domain'}
+(or, if varname not equal to \code{'url'}, \code{'<varname>_domain'})
 }
 \description{
-Extracts the domain from urls. We define the domain (e.g., "google.com") as the sum of the suffix (e.g., ".com") and the part before that and the preceding dot (e.g., "google" in "https://mail.google.com).
+\code{extract_domain()} adds the domain of a URL as a new column.
+By "domain", we mean the "top private domain", i.e., the domain under
+the public suffix (e.g., "\code{com}") as defined by the Public Suffix List.
+See details.
+
+Extracts the domain from urls.
+}
+\details{
+We define a "web domain" in the common colloquial meaning, that is,
+the part of an web address that identifies the person or organization in control.
+is \code{google.com}. More technically, what we mean by "domain" is the
+"top private domain", i.e., the domain under the public suffix,
+as defined by the Public Suffix List.
+Note that this definition sometimes leads to counterintuitive results because
+not all public suffixes are "registry suffixes". That is, they are not controlled
+by a domain name registrar, but allow users to directly register a domain.
+One example of such a public, non-registry suffix is \code{blogspot.com}. For a URL like
+\code{www.mysite.blogspot.com}, our function, and indeed the packages we are aware of,
+would extract the domain as \code{mysite.blogspot.com}, although you might think of
+\code{blogspot.com} as the domain.
+For details, see \link{`https://github.com/google/guava/wiki/InternetDomainNameExplained}.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# Extract domain and drop rows without domain
 wt <- extract_domain(wt)
+# Extract domain and keep rows without domain
+wt <- extract_domain(wt, drop_na = FALSE)
 }
