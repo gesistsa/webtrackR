@@ -52,19 +52,19 @@ test_that("add_session", {
                 length(unique(wt_session$panelist_id)))
 })
 
+test_that("add_session errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  # no cutoff specified
+  expect_error(add_session(wt))
+})
+
 test_that("add_session testdt_specific", {
   options(digits = 22)
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_session <- add_session(wt, cutoff = 1800)
   expect_true(wt_session[panelist_id == "AiDS4k1rQZ"][.N, "session"] == 123)
-})
-
-test_that("add_session errors", {
-  data("testdt_tracking")
-  wt <- as.wt_dt(testdt_tracking)
-  # no cutoff specified
-  expect_error(add_session(wt))
 })
 
 test_that("deduplicate", {
@@ -123,6 +123,7 @@ test_that("extract_host testdt_specific", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_host <- suppressWarnings(extract_host(wt, drop_na = TRUE))
+  expect_true(wt_host[1,"host"] == "dkr1.ssisurveys.com")
   expect_true(nrow(wt_host) == 49583)
   wt_host <- suppressWarnings(extract_host(wt, drop_na = FALSE))
   expect_true(nrow(wt_host) == nrow(wt))
@@ -144,14 +145,25 @@ test_that("extract_domain errors", {
 test_that("extract_path", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- extract_path(wt)
-  expect_true("path" %in% names(wt))
+  wt_path <- extract_path(wt)
+  expect_true("path" %in% names(wt_path))
+  wt[,other_url:=url]
+  wt_host <- extract_path(wt, varname = "other_url")
+  expect_true("other_url_path" %in% names(wt_host))
 })
 
 test_that("extract_path errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(extract_path(wt, varname = "not_a_variable"))
+})
+
+test_that("extract_path testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_path <- extract_path(wt)
+  expect_true(wt_path[1, "path"] == "tzktsxomta")
+  expect_true(is.na(wt_path[url == "https://www.youtube.com/", "path"][1]))
 })
 
 test_that("drop_query", {

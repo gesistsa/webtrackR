@@ -171,9 +171,9 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
   wt[]
 }
 
-#' Extract the host from URLs
+#' Extract the host from URL
 #' @description
-#' `extract_host()` adds the host of a web address as a new column.
+#' `extract_host()` adds the host of a URL as a new column.
 #' The host is defined as the part following the scheme (e.g., "https://") and
 #' preceding the subdirectory (anything following the next "/").
 #' @param wt webtrack data object
@@ -264,12 +264,17 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
   wt[]
 }
 
-#' Extract path from url
-#' @description Extracts the path from urls.
+#' Extract the path from URL
+#' @description
+#' `extract_path()` adds the path of a URL as a new column.
+#' The path is defined as the part following the host but not including a
+#' query (anything after a "?") or a fragment (anything after a "#").
 #' @param wt webtrack data object
-#' @param varname name of the URL variable from which to extract the domain Defaults to "url".
+#' @param varname character. name of the column from which to extract the host.
+#' Defaults to `"url"`.
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called 'path' (or, if varname not equal to 'url', '<varname>_path')
+#' @return webtrack data.table with the same columns as wt
+#' and a new column called `'path'` (or, if varname not equal to `'url'`, `'<varname>_path'`)
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -280,7 +285,11 @@ extract_path <- function(wt, varname = "url") {
   vars_exist(wt, vars = varname)
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
   wt[, tmp_path := urltools::path(gsub("@", "%40", get(varname)))]
-  wt[, path := gsub("%40", "@", tmp_path)]
+  if (varname == "url") {
+    wt[, path := gsub("%40", "@", tmp_path)]
+  } else {
+    wt[, paste0(varname, "_path") := gsub("%40", "@", tmp_path)]
+  }
   wt[, tmp_host := NULL]
   wt[, tmp_path := NULL]
   wt[]
