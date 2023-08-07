@@ -3,7 +3,7 @@
 #' `add_duration()` approximates the time spent on a visit based on the difference
 #' between two consecutive timestamps, replacing differences exceeding `cutoff` with
 #' the value defined in `replace_by`.
-#' @param wt webtrack data object
+#' @param wt webtrack data object.
 #' @param cutoff numeric (seconds). If duration is greater than this value,
 #' it is reset to the value defined by `replace_by`. Defaults to 300 seconds.
 #' @param replace_by numeric. Determines whether differences greater than
@@ -20,7 +20,7 @@
 #' Required if 'device_switch_na' set to `TRUE`. Defaults to `NULL`.
 #' @importFrom data.table is.data.table shift setorder setnames
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with
-#' the same columns as wt and a new column called `duration`
+#' the same columns as wt and a new column called `duration`.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -57,24 +57,31 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
   wt[]
 }
 
-#' Create a session variable
-#' @description Define sessions of browsing depending on aq time cutoff for inactivity
-#' @param wt webtrack data object
-#' @param cutoff numeric. If the consecutive visit happens later than this value (in seconds), a new browsing session is defined
+#' Add a session variable
+#' @description
+#' `add_session()` groups visits into "sessions", defining a session to end
+#' when the difference between two consecutive timestamps exceeds a `cutoff`.
+#' @param wt webtrack data object.
+#' @param cutoff numeric (seconds). If the difference between two consecutive
+#' timestamps exceeds this value, a new browsing session is defined.
 #' @importFrom data.table is.data.table shift setorder setnafill
-#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
+#' @return webtrack data.table (ordered by panelist_id and timestamp)
+#' with the same columns as wt and a new column called `session`.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_session(wt, cutoff = 1800)
 #' @export
 add_session <- function(wt, cutoff) {
-  stopifnot("cutoff argument is missing" = !missing(cutoff))
+  stopifnot("'cutoff' argument is missing" = !missing(cutoff))
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
   setorder(wt, panelist_id, timestamp)
+  wt[, index := 1:.N, by = panelist_id]
   wt[as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp) > cutoff, session := 1:.N, by = "panelist_id"]
-  setnafill(wt, type = "nocb", cols = "session")
+  wt[, session := ifelse(index == 1, 1, session)]
+  setnafill(wt, type = "locf", cols = "session")
+  wt[, index := NULL]
   wt[]
 }
 #' Deduplicate visits

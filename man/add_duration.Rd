@@ -9,12 +9,12 @@ add_duration(
   cutoff = 300,
   replace_by = NA,
   last_replace_by = NA,
-  device_switch_na = F,
+  device_switch_na = FALSE,
   device_var = NULL
 )
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
 \item{cutoff}{numeric (seconds). If duration is greater than this value,
 it is reset to the value defined by \code{replace_by}. Defaults to 300 seconds.}
@@ -37,7 +37,7 @@ Required if 'device_switch_na' set to \code{TRUE}. Defaults to \code{NULL}.}
 }
 \value{
 webtrack data.table (ordered by panelist_id and timestamp) with
-the same columns as wt and a new column called \code{duration}
+the same columns as wt and a new column called \code{duration}.
 }
 \description{
 \code{add_duration()} approximates the time spent on a visit based on the difference

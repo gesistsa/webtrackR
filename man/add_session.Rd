@@ -2,20 +2,23 @@
 % Please edit documentation in R/preprocess.R
 \name{add_session}
 \alias{add_session}
-\title{Create a session variable}
+\title{Add a session variable}
 \usage{
 add_session(wt, cutoff)
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{cutoff}{numeric. If the consecutive visit happens later than this value (in seconds), a new browsing session is defined}
+\item{cutoff}{numeric (seconds). If the difference between two consecutive
+timestamps exceeds this value, a new browsing session is defined.}
 }
 \value{
-webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
+webtrack data.table (ordered by panelist_id and timestamp)
+with the same columns as wt and a new column called \code{session}.
 }
 \description{
-Define sessions of browsing depending on aq time cutoff for inactivity
+\code{add_session()} groups visits into "sessions", defining a session to end
+when the difference between two consecutive timestamps exceeds a \code{cutoff}.
 }
 \examples{
 data("testdt_tracking")

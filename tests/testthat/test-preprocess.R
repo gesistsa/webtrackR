@@ -37,6 +37,34 @@ test_that("add_duration errors", {
   expect_error(add_duration(wt, device_switch_na = T, device_var = "not_a_variable"))
 })
 
+test_that("add_session", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_session <- add_session(wt, cutoff = 1800)
+  expect_true("session" %in% names(wt_session))
+  # test that session variable always positive
+  expect_true(min(wt_session$session, na.rm = T) >= 1)
+  # test that next session is only smaller than session when switch to new panelist
+  wt_session[, next_session:= shift(session, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+  expect_true(nrow(wt_session[session > next_session]) <=
+                length(unique(wt_session$panelist_id)))
+})
+
+test_that("add_session testdt_specific", {
+  options(digits = 22)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_session <- add_session(wt, cutoff = 1800)
+  # test number of sessions for first panelist
+  expect_true(wt_session[panelist_id == "AiDS4k1rQZ"][.N, "session"] == 123)
+})
+
+test_that("add_session errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(add_session(wt))
+})
+
 test_that("deduplicate", {
   data("testdt_tracking")
   wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
