@@ -64,12 +64,13 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
 #' @param wt webtrack data object.
 #' @param cutoff numeric (seconds). If the difference between two consecutive
 #' timestamps exceeds this value, a new browsing session is defined.
-#' @importFrom data.table is.data.table shift setorder setnafill
+#' @importFrom data.table is.data.table shift setorder setnafill .N
 #' @return webtrack data.table (ordered by panelist_id and timestamp)
 #' with the same columns as wt and a new column called `session`.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # Setting cutoff to 30 minutes
 #' wt <- add_session(wt, cutoff = 1800)
 #' @export
 add_session <- function(wt, cutoff) {
@@ -85,37 +86,42 @@ add_session <- function(wt, cutoff) {
   wt[]
 }
 #' Deduplicate visits
-#' @description Deduplicate visits or aggregate the duration of duplicate visits
-#' @details
-#' A duplicate visit is defined as a visit to the same URL as the previous visit,
-#' within a certain time frame.
-#' @param wt webtrack data object
-#' @param method character. "aggregate", "flag" or "drop". If set to "aggregate",
-#' consecutive visits to the same URL are combined and their duration aggregated.
-#' In this case, a duration column must be specified via "duration_var";
-#' if "within" is specified, only
-#' If set to "flag", duplicates within a certain time frame are flagged in a new
-#' column called "duplicate". In this case, "within" argument must be specified.
-#' If set to "drop", duplicates are dropped. Again, "within" argument must be specified.
-#' Defaults to "aggregate".
-#' @param within numeric. If method set to "flag or "drop",
-#' a duplicate is defined only when the consecutive visit happens within
-#' this time difference (in seconds). Defaults to 1.
-#' @param duration_var character. Name of duration variable. Defaults to "duration".
-#' @param keep_nvisits logical. If method set to "aggregate", this determines whether
-#' number of aggregated visits should be kept as variable. Defaults to FALSE.
-#' @param same_day logical. If method set to "aggregate", determines
-#' whether to count visits as consecutive only when on the same day. Defaults to TRUE.
+#' @description
+#' `deduplicate()` flags, drops or aggregates duplicates, which are defined as
+#' consecutive visits to the same URL within a certain time frame.
+#' @param wt webtrack data object.
+#' @param method character. One of `"aggregate"`, `"flag"` or `"drop"`.
+#' If set to `"aggregate"`, consecutive visits (no matter the time difference)
+#' to the same URL are combined and their duration aggregated.
+#' In this case, a duration column must be specified via `"duration_var"`.
+#' If set to `"flag"`, duplicates within a certain time frame are flagged in a new
+#' column called `duplicate`. In this case, `within` argument must be specified.
+#' If set to `"drop"`, duplicates are dropped. Again, `within` argument must be specified.
+#' Defaults to `"aggregate"`.
+#' @param within numeric (seconds). If `method` set to `"flag"` or `"drop"`,
+#' a subsequent visit is only defined as a duplicate when happening within
+#' this time difference. Defaults to 1 second.
+#' @param duration_var character. Name of duration variable. Defaults to `"duration"`.
+#' @param keep_nvisits boolean. If method set to `"aggregate"`, this determines whether
+#' number of aggregated visits should be kept as variable. Defaults to `FALSE`.
+#' @param same_day boolean. If method set to `"aggregate"`, determines
+#' whether to count visits as consecutive only when on the same day. Defaults to `TRUE`.
 #' @importFrom data.table is.data.table shift .N setnames setorder
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt, cutoff = 300, replace_by = 300)
-#' deduplicate(wt, method = "drop")
-#' # deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
+#' # Dropping duplicates with one-second default
+#' wt_dedup <- deduplicate(wt, method = "drop")
+#' # Flagging duplicates with one-second default
+#' wt_dedup <- deduplicate(wt, method = "flag")
+#' # Aggregating duplicates
+#' wt_dedup <- deduplicate(wt[1:1000], method = "aggregate")
+#' # Aggregating duplicates and keeping number of visits for aggregated visits
+#' wt_dedup <- deduplicate(wt[1:1000], method = "aggregate", keep_nvisits = TRUE)
 #' @export
-deduplicate <- function(wt, method = "flag", within = 1, duration_var = NULL,
+deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "duration",
                         keep_nvisits = FALSE, same_day = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("url", "panelist_id", "timestamp"))

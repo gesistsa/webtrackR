@@ -14,16 +14,15 @@ deduplicate(
 )
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{method}{character. "aggregate", "flag" or "drop". If set to "aggregate",
+\item{method}{character. One of \code{"aggregate"}, \code{"flag"} or \code{"drop"}. If set to \code{"aggregate"},
 consecutive visits to the same URL are combined and their duration aggregated.
 In this case, a duration column must be specified via "duration_var";
-if "within" is specified, only
-If set to "flag", duplicates within a certain time frame are flagged in a new
-column called "duplicate". In this case, "within" argument must be specified.
-If set to "drop", duplicates are dropped. Again, "within" argument must be specified.
-Defaults to "aggregate".}
+If set to \code{"flag"}, duplicates within a certain time frame are flagged in a new
+column called \code{duplicate}. In this case, \code{within} argument must be specified.
+If set to \code{"drop"}, duplicates are dropped. Again, \code{within} argument must be specified.
+Defaults to \code{"aggregate"}.}
 
 \item{within}{numeric. If method set to "flag or "drop",
 a duplicate is defined only when the consecutive visit happens within
@@ -42,10 +41,9 @@ webtrack data.table with the same columns as wt with updated duration
 }
 \description{
 Deduplicate visits or aggregate the duration of duplicate visits
-}
-\details{
-A duplicate visit is defined as a visit to the same URL as the previous visit,
-within a certain time frame.
+
+\code{deduplicate()} flags, drops or aggregates duplicates, which are defined as
+consecutive visits to the same URL within a certain time frame.
 }
 \examples{
 data("testdt_tracking")

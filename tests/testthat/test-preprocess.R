@@ -2,6 +2,7 @@ test_that("add_duration", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_duration <- add_duration(wt, cutoff = 300, replace_by = NA)
+  # test that variables in result
   expect_true("duration" %in% names(wt_duration))
   # test that duration variable is not NA
   expect_true(min(wt_duration$duration, na.rm = T) >= 0)
@@ -41,6 +42,7 @@ test_that("add_session", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_session <- add_session(wt, cutoff = 1800)
+  # test that variables in result
   expect_true("session" %in% names(wt_session))
   # test that session variable always positive
   expect_true(min(wt_session$session, na.rm = T) >= 1)
@@ -55,42 +57,50 @@ test_that("add_session testdt_specific", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_session <- add_session(wt, cutoff = 1800)
-  # test number of sessions for first panelist
   expect_true(wt_session[panelist_id == "AiDS4k1rQZ"][.N, "session"] == 123)
 })
 
 test_that("add_session errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
+  # no cutoff specified
   expect_error(add_session(wt))
 })
 
 test_that("deduplicate", {
   data("testdt_tracking")
-  wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
-  wt2 <- as.wt_dt(testdt_tracking)[1:1000]
-  wt <- data.table::rbindlist(list(wt1, wt2))
-  wt <- as.wt_dt(wt)
-  wt_drop <- deduplicate(wt, method = "flag")
-  expect_true("duplicate" %in% names(wt_drop))
-  wt_keep <- deduplicate(wt, method = "drop")
-  expect_true(!"duplicate" %in% names(wt_keep))
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_duration(wt, replace_by = 300)
-  wt_sum <- deduplicate(wt[1:100, ],
-    method = "aggregate",
-    duration_var = "duration", keep_nvisits = TRUE
-  )
-  expect_true("visits" %in% names(wt_sum))
+  wt <- add_duration(wt, cutoff = 300, replace_by = 300)
+  # test that variables in result
+  wt_dedup <- deduplicate(wt, method = "flag")
+  expect_true("duplicate" %in% names(wt_dedup))
+  wt_dedup <- deduplicate(wt, method = "drop")
+  expect_true(!"duplicate" %in% names(wt_dedup))
+  wt_dedup <- deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
+  expect_true("visits" %in% names(wt_dedup))
 })
 
 test_that("deduplicate errors", {
   data("testdt_tracking")
-  wt1 <- as.wt_dt(testdt_tracking)[1:1000] # revisit with new example data
-  wt2 <- as.wt_dt(testdt_tracking)[1:1000]
-  wt <- data.table::rbindlist(list(wt1, wt2))
-  wt <- as.wt_dt(wt)
-  expect_error(deduplicate(wt[1:100, ], method = "aggregate", duration_var = "not_a_variable"))
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- add_duration(wt, cutoff = 300, replace_by = 300)
+  expect_error(deduplicate(wt, method = "aggregate", duration_var = "not_a_variable"))
+  expect_error(deduplicate(wt, method = "flag", within = NULL))
+  expect_error(deduplicate(wt, method = "drop", within = NULL))
+})
+
+test_that("deduplicate testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt <- add_duration(wt, cutoff = 300, replace_by = 300)
+  wt_dedup <- deduplicate(wt, method = "drop")
+  expect_true(nrow(wt_dedup) == 46574)
+  wt_dedup <- deduplicate(wt, method = "flag")
+  expect_true(sum(wt_dedup[, "duplicate"]) == 3038)
+  wt_dedup <- deduplicate(wt, method = "aggregate")
+  expect_true(nrow(wt_dedup) == 39540)
+  wt_dedup <- deduplicate(wt, method = "aggregate", keep_nvisits = T)
+  expect_true(max(wt_dedup[, "visits"]) == 608)
 })
 
 test_that("extract_domain", {
