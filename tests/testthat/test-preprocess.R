@@ -165,9 +165,19 @@ test_that("drop_query", {
 
 test_that("add_title", {
   data("testdt_tracking")
-  wt <- as.wt_dt(testdt_tracking[1:10])
-  wt <- add_title(wt)
-  expect_true("title" %in% names(wt))
+  wt <- as.wt_dt(testdt_tracking[1])
+  wt_title <- add_title(wt)
+  expect_true("title" %in% names(wt_title))
+})
+
+test_that("add_title testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking[1])
+  wt_title <- add_title(wt)
+  expect_true(is.na(wt_title[,"title"]))
+  wt[, url:="google.com"]
+  wt_title <- add_title(wt)
+  expect_true(wt_title[,"title"] == "Google")
 })
 
 test_that("add_referral", {
