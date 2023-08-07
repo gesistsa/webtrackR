@@ -1,24 +1,40 @@
 test_that("add_duration", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt[, index := 1:.N, by = panelist_id]
-  wt[, n := .N, by = panelist_id]
-  wt[, device := ifelse(index < n / 2, "desktop", "mobile")]
-  wt[, index := NULL]
-  wt[, n := NULL]
-  wt_duration <- add_duration(wt)
+  wt_duration <- add_duration(wt, cutoff = 300, replace_by = NA)
   expect_true("duration" %in% names(wt_duration))
-  # testing that duration variable is not NA
+  # test that duration variable is not NA
   expect_true(min(wt_duration$duration, na.rm = T) >= 0)
-  # testing "device_switch_na = T"
-  wt[, device_next := shift(device, n = 1, type = "lead", fill = NA), by = "panelist_id"]
-  expect_true(is.na(wt[is.na(device_next != device)][["duration"]][1]))
-  # testing "last_replace_by = NA"
-  wt_duration <- add_duration(wt[panelist_id == unique(wt$panelist_id)[1]],
-    cutoff = 10000, replace_by = 10000,
-    last_replace_by = NA
-  )
-  expect_true(is.na(wt[nrow(wt), "duration"]))
+  # test that no duration > cutoff
+  expect_true(max(wt_duration$duration, na.rm = T) < 300)
+  # test that last row for panelist is NA for default
+  expect_true(is.na(wt_duration[panelist_id == "AiDS4k1rQZ"][.N, "duration"]))
+  # test that last row for panelist is not NA
+  wt_duration <- add_duration(wt, last_replace_by = 0)
+  expect_true(wt_duration[panelist_id == "AiDS4k1rQZ"][.N, "duration"] == 0)
+  # test device_switch_na
+  wt_duration <- add_duration(wt, device_switch_na = T, device_var = "device")
+  wt_duration[, device_next := shift(device, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+  expect_true(is.na(wt_duration[device_next != device][["duration"]][1]))
+})
+
+test_that("add_duration testdt_specific", {
+  options(digits = 22)
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_duration <- add_duration(wt)
+  # test duration for first row
+  expect_true(as.numeric(wt_duration[1, "duration"]) == 2.8580000400543212890625)
+  # test total duration
+  expect_true(sum(wt_duration[, "duration"], na.rm = T) == 1177364.354005098342896)
+})
+
+test_that("add_duration errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(add_duration(wt, replace_by = -1))
+  expect_error(add_duration(wt, device_switch_na = T, device_var = NULL))
+  expect_error(add_duration(wt, device_switch_na = T, device_var = "not_a_variable"))
 })
 
 test_that("deduplicate", {

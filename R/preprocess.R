@@ -1,32 +1,43 @@
 #' Add time spent on a visit in seconds
-#' @description Approximate the time spent on a visit based on the sequence of timestamps
+#' @description
+#' `add_duration()` approximates the time spent on a visit based on the difference
+#' between two consecutive timestamps, replacing differences exceeding `cutoff` with
+#' the value defined in `replace_by`.
 #' @param wt webtrack data object
-#' @param cutoff numeric. If duration is greater than this value, it is reset to na, the cutoff, or a user-defined value. Defaults to 5 minutes (= 300 seconds).
-#' @param replace_by numeric. This determines whether differences greater than
-#' the cutoff are set to NA (default), or a numeric value
-#' @param last_replace_by numeric. This determines the last visit for an individual,
-#' is set to NA (default) or a numeric value
-#' @param device_switch_na boolean. Relevant only if panelists have data from several devices.
-#' When visits are ordered by timestamp sequence, a next visit can happen on a different device.
-#' This makes it less likely that the next visit happened directly after the visit,
-#' and it may be preferable to set the duration of the visit to NA (TRUE)
-#' rather than the difference to the next timestamp (FALSE). Defaults to FALSE.
-#' @param device_var character. Column indicating the device.
-#' Required if 'device_switch_na' set to TRUE. Defaults to NULL.
+#' @param cutoff numeric (seconds). If duration is greater than this value,
+#' it is reset to the value defined by `replace_by`. Defaults to 300 seconds.
+#' @param replace_by numeric. Determines whether differences greater than
+#' the cutoff are set to `NA`, or some value. Defaults to `NA`.
+#' @param last_replace_by numeric. Determines whether the last visit
+#' for an individual is set to `NA`, or some value. Defaults to `NA`.
+#' @param device_switch_na boolean. Relevant only when data was collected
+#' from multiple devices. When visits are ordered by timestamp sequence,
+#' two consecutive visits can come from different devices, which makes the
+#' timestamp difference less likely to be the true duration. It may be
+#' preferable to set the duration of the visit to `NA` (`TRUE`) rather than
+#' the difference to the next timestamp (`FALSE`). Defaults to `FALSE`.
+#' @param device_var character. Column indicating device.
+#' Required if 'device_switch_na' set to `TRUE`. Defaults to `NULL`.
 #' @importFrom data.table is.data.table shift setorder setnames
-#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
+#' @return webtrack data.table (ordered by panelist_id and timestamp) with
+#' the same columns as wt and a new column called `duration`
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
-#' # Defining cutoff at 10 minutes and setting critical visits to 5 minutes
-#' wt <- add_duration(wt, cutoff = 600, replace_by = 300)
+#' # Defining cutoff at 10 minutes, replacing those exceeding cutoff to 5 minutes,
+#' # and setting duration before device switch to `NA`:
+#' wt <- add_duration(wt, cutoff = 600, replace_by = 300,
+#'                    device_switch_na = TRUE, device_var = "device")
 #' @export
 add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA,
-                         device_switch_na = F, device_var = NULL) {
+                         device_switch_na = FALSE, device_var = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
-  stopifnot("replace_by must be NA or greater zero" = (is.na(replace_by) | replace_by > 0))
-  vars_exist(wt, vars = c("panelist_id", "timestamp"))
+  stopifnot("replace_by must be NA or greater/equal zero" = (is.na(replace_by) | replace_by > 0))
+  if (device_switch_na == TRUE) {
+    stopifnot("'device_var' must be specified if device_switch_na = TRUE" = !is.null(device_var))
+  }
+  vars_exist(wt, vars = c("panelist_id", "timestamp", device_var))
   setorder(wt, panelist_id, timestamp)
   wt[, duration := as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp), by = "panelist_id"]
   wt[, tmp_last := ifelse(is.na(duration), T, F)]
