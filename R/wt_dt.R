@@ -1,9 +1,10 @@
-#' An S3 class, based on [data.table], to store webtrack data
+#' An S3 class, based on [data.table], to store web tracking data
 #' @details
 #' A `wt_dt` table is a [data.table].
-#' Therefore, it can be used by any function that would work on a [data.frame] or a [data.table].
-#' Most of the operation such as variable creation, subsetting and joins are inherited from the [data.table]
-#' `[]` operator, following the convention `DT[i,j,by]` (see data table package for detail).
+#' Therefore, it can be used by any function that would work on a [data.frame]
+#' or a [data.table]. Most of the operation such as column creation,
+#' subsetting and joins are inherited from the [data.table] `[]` operator,
+#' following the convention `DT[i,j,by]` (see data.table package for details).
 #' These operations are applied on the data.
 #' @name wt_dt
 #' @seealso
@@ -12,13 +13,16 @@ NULL
 
 # Construction ------------------------------------------------------------
 
-#' Convert a data.frame containing webtrack data to a wt_dt object
+#' Convert a data.frame containing web tracking data to a `wt_dt` object
 #' @rdname wt_dt
-#' @param x data.frame containing the needed set of variables (panelist_id,url
-#' and timestamp) but not necessarily named as such.
-#' @param timestamp_format string. Specify the raw timestamp's formatting. Defaults to "%Y-%m-%d %H:%M:%OS".
-#' @param varnames named vector of variable names that contain information "panelist_id", "url", "timestamp".
-#' @return a webtrack data object
+#' @param x data.frame containing a necessary set of columns, namely
+#' panelist's ID, visit URL and visit timestamp.
+#' @param varnames Named vector of column names, which contain the panelist's ID
+#' (`panelist_id`), the visit's URL (`url`) and the visit's timestamp (`timestamp`).
+#' @param timestamp_format string. Specifies the raw timestamp's formatting.
+#' Defaults to `"%Y-%m-%d %H:%M:%OS"`.
+#' @return a webtrack data object with at least columns `panelist_id`, `url`
+#' and `timestamp`
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -31,7 +35,7 @@ as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS",
     stop("x must be a data.frame comparable object (tibble,data.table,..)")
   }
   if (!all(names(varnames) %in% standard_vars)) {
-    stop("varnames need to include mappings for 'panelist_id', 'url', and 'timestamp'")
+    stop("varnames must include mappings for 'panelist_id', 'url', and 'timestamp'")
   }
   if (!all(standard_vars %in% names(varnames))) {
     idx <- which(!standard_vars %in% names(varnames))
@@ -39,7 +43,6 @@ as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS",
     names(named_standard_vars) <- standard_vars
     varnames <- c(varnames, named_standard_vars[idx])
   }
-
   if (!data.table::is.data.table(x)) {
     x <- data.table::as.data.table(x)
   }
