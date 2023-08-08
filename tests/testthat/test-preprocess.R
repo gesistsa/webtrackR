@@ -271,13 +271,12 @@ test_that("add_title testdt_specific", {
 test_that("add_referral", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  platforms <- "facebook.com"
-  wt_ref <- add_referral(wt, platform_domains = platforms, patterns = "fbclid=")
+  wt_ref <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
   # test existence of columns
   expect_true("referral" %in% names(wt_ref))
   expect_true(!"domain_previous" %in% names(wt_ref))
   # test value of new column
-  expect_true(names(table(wt_ref$referral)) == platforms)
+  expect_true(names(table(wt_ref$referral)) == "facebook.com")
 })
 
 test_that("add_referral errors", {
@@ -291,7 +290,7 @@ test_that("add_referral errors", {
 test_that("add_referral testdt_specific", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt_ref <- add_referral(wt, platform_domains = platforms, patterns = "fbclid=")
+  wt_ref <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
   expect_true(table(wt_ref$referral) == 57)
   expect_true(table(wt_ref$referral, exclude = NULL)[2] == 49555)
 })
@@ -307,15 +306,30 @@ test_that("urldummy", {
 
 test_that("panelist_data", {
   data("testdt_tracking")
-  data("testdt_survey_w")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_panelist_data(wt, testdt_survey_w)
-  expect_true("leftright" %in% names(wt))
+  data("testdt_survey_w")
+  # test existence of columns
+  wt_joined <- add_panelist_data(wt, testdt_survey_w)
+  expect_true("leftright" %in% names(wt_joined))
+  wt_joined <- add_panelist_data(wt, testdt_survey_w, cols = c("gender", "education"))
+  expect_true(!("leftright" %in% names(wt_joined)))
+  # text presence of data
+  expect_true(sum(is.na(wt_joined$gender)) == 0)
 })
 
 test_that("panelist_data errors", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_panelist_data(wt, testdt_survey_w)
-  expect_error(add_panelist_data(wt, "test"))
+  data("testdt_survey_w")
+  wt_joined <- add_panelist_data(wt, testdt_survey_w)
+  expect_error(add_panelist_data(wt_joined, "not_a_variable"))
+  expect_error(add_panelist_data(wt_joined, join_on = "not_a_variable"))
+})
+
+test_that("panelist_data testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  data("testdt_survey_w")
+  wt_joined <- add_panelist_data(wt, testdt_survey_w)
+  expect_true(round(mean(wt_joined$leftright), 2) == 4.99)
 })

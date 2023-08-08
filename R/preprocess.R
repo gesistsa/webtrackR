@@ -590,32 +590,37 @@ create_urldummy <- function(wt, dummy, name) {
 #' @description
 #' `add_panelist_data()` adds information about panelists (e.g., from a survey)
 #' to the tracking data.
-#' @param wt webtrack data object
-#' @param data a data.table (or object that can be converted to data.table) which contains variables of panelists
-#' @param cols character vector of columns to add. If NULL, all columns are added
-#' @param join_on which columns to join on. Defaults to "panelist_id".
-#' @return webtrack object with the same columns and joined with panelist survey data
+#' @param wt webtrack data object.
+#' @param data a data.table (or object that can be converted to data.table)
+#'  which contains columns about panelists
+#' @param cols character vector of columns to add. If `NULL`, all columns are added.
+#' Defaults to `NULL`.
+#' @param join_on which columns to join on. Defaults to `"panelist_id"`.
+#' @importFrom data.table is.data.table as.data.table setattr
+#' @return webtrack object with the same columns and the columns from `data`
+#' specified in `cols`.
 #' @examples
 #' data("testdt_tracking")
 #' data("testdt_survey_w")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # add survey test data
 #' add_panelist_data(wt, testdt_survey_w)
 #' @export
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c(join_on))
-  if (!data.table::is.data.table(data)) {
-    data <- data.table::as.data.table(data)
+  if (!is.data.table(data)) {
+    data <- as.data.table(data)
   }
   vars_exist(data, vars = c(join_on))
   if (!is.null(cols)) {
     if (!all(cols %in% names(data))) {
-      stop("couldn't locate all cols in data")
+      stop("couldn't locate all columns in data")
     }
     data <- data[, c(join_on, cols), with = FALSE]
-    data.table::setattr(wt, "panelist", cols)
+    setattr(wt, "panelist", cols)
   } else {
-    data.table::setattr(wt, "panelist", setdiff(names(data), join_on))
+    setattr(wt, "panelist", setdiff(names(data), join_on))
   }
   data[wt, on = join_on]
 }
