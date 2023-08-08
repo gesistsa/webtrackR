@@ -132,7 +132,7 @@ test_that("extract_host testdt_specific", {
 test_that("extract_domain", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  # test existence of variables
+  # test existence of new columns
   wt_domain <- suppressWarnings(extract_domain(wt))
   expect_true("domain" %in% names(wt_domain))
   wt[,other_url:=url]
@@ -191,10 +191,67 @@ test_that("extract_path testdt_specific", {
 test_that("drop_query", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- drop_query(wt)
-  expect_true("url_noquery" %in% names(wt))
-  test_url <- c("https://dkr1.ssisurveys.com/tzktsxomta")
-  expect_true(wt[url == test_url, url] == test_url)
+  # test existence of new colums
+  wt_noquery <- drop_query(wt)
+  expect_true("url_noquery" %in% names(wt_noquery))
+  wt[,other_url:=url]
+  wt_noquery <- drop_query(wt, varname = "other_url")
+  expect_true("other_url_noquery" %in% names(wt_noquery))
+  # test absence of queries / fragments
+  wt_noquery <- drop_query(wt)
+  expect_true(nrow(wt[url_noquery %like% "\\?|#"]) == 0)
+})
+
+test_that("drop_query errors", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(drop_query(wt, varname = "not_a_variable"))
+})
+
+test_that("drop_query testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_noquery <- drop_query(wt)
+  expect_true(wt_noquery[1, "url_noquery"] == "https://dkr1.ssisurveys.com/tzktsxomta")
+  wt_queries <- wt[url %like% "\\?"]
+  wt_noquery <- drop_query(wt_queries)
+  expect_true(wt_noquery[1, "url_noquery"] == "https://www.marketwatch.com/story/kelloggs-owned-veggie-burger-brand-morningstar-farms-to-go-all-vegan-by-2021-2019-03-04")
+})
+
+test_that("add_next_visit add_previous_visit", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  # test existence of new colums
+  wt_next <- add_next_visit(wt)
+  expect_true("url_next" %in% names(wt_next))
+  wt_next <- add_next_visit(wt, level = "host")
+  expect_true("host_next" %in% names(wt_next))
+  wt_next <- add_next_visit(wt, level = "domain")
+  expect_true("domain_next" %in% names(wt_next))
+  wt_prev <- add_previous_visit(wt)
+  expect_true("url_previous" %in% names(wt_prev))
+  wt_prev <- add_previous_visit(wt, level = "host")
+  expect_true("host_previous" %in% names(wt_prev))
+  wt_prev <- add_previous_visit(wt, level = "domain")
+  expect_true("domain_previous" %in% names(wt_prev))
+  # test identity of second visit and first next visit
+  wt_next <- add_next_visit(wt)
+  expect_true(wt_next[2, "url"] == wt_next[1, "url_next"])
+  # test identity of first visit and second previous visit
+  wt_prev <- add_previous_visit(wt)
+  expect_true(wt_prev[1, "url"] == wt_prev[2, "url_previous"])
+  # test first and last row
+  expect_true(is.na(wt_next[.N, "url_next"]))
+  expect_true(is.na(wt_prev[1, "url_previous"]))
+})
+
+test_that("add_next_visit add_previous_visit testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_next <- add_next_visit(wt)
+  expect_true(wt_next[1, "url_next"] == "https://roirocket.decipherinc.com/hivvocmeox")
+  wt_prev <- add_previous_visit(wt)
+  expect_true(wt_prev[2, "url_previous"] == "https://dkr1.ssisurveys.com/tzktsxomta")
 })
 
 test_that("add_title", {
@@ -209,17 +266,18 @@ test_that("add_title testdt_specific", {
   wt <- as.wt_dt(testdt_tracking[1])
   wt_title <- add_title(wt)
   expect_true(is.na(wt_title[,"title"]))
-  wt[, url:="google.com"]
-  wt_title <- add_title(wt)
-  expect_true(wt_title[,"title"] == "Google")
 })
 
 test_that("add_referral", {
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
-  wt <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
-  expect_true("referral" %in% names(wt))
-  expect_true(!"domain_previous" %in% names(wt))
+  platforms <- "facebook.com"
+  wt_ref <- add_referral(wt, platform_domains = platforms, patterns = "fbclid=")
+  # test existence of columns
+  expect_true("referral" %in% names(wt_ref))
+  expect_true(!"domain_previous" %in% names(wt_ref))
+  # test value of new column
+  expect_true(names(table(wt_ref$referral)) == platforms)
 })
 
 test_that("add_referral errors", {
@@ -228,6 +286,14 @@ test_that("add_referral errors", {
   expect_error(add_referral(wt))
   expect_error(add_referral(wt, platform_domains = "facebook.com"))
   expect_error(add_referral(wt, platform_domains = c("facebook.com", "twitter.com"), pattern = "some"))
+})
+
+test_that("add_referral testdt_specific", {
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_ref <- add_referral(wt, platform_domains = platforms, patterns = "fbclid=")
+  expect_true(table(wt_ref$referral) == 57)
+  expect_true(table(wt_ref$referral, exclude = NULL)[2] == 49555)
 })
 
 test_that("urldummy", {

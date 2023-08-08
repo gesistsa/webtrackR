@@ -2,8 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{add_panelist_data}
 \alias{add_panelist_data}
-\title{Add panelist features to webtrack data
-Add characteristics of panelists (e.g. from a survey) to the webtrack data}
+\title{Add panelist features to tracking data}
 \usage{
 add_panelist_data(wt, data, cols = NULL, join_on = "panelist_id")
 }
@@ -20,8 +19,8 @@ add_panelist_data(wt, data, cols = NULL, join_on = "panelist_id")
 webtrack object with the same columns and joined with panelist survey data
 }
 \description{
-Add panelist features to webtrack data
-Add characteristics of panelists (e.g. from a survey) to the webtrack data
+\code{add_panelist_data()} adds information about panelists (e.g., from a survey)
+to the tracking data.
 }
 \examples{
 data("testdt_tracking")

@@ -190,7 +190,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' # Extract host and drop rows without host
 #' wt <- extract_host(wt)
 #' # Extract host and keep rows without host
-#' wt <- extract_host(wt, drop_na = F)
+#' wt <- extract_host(wt, drop_na = FALSE)
 #' @export
 extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -246,7 +246,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' `www.mysite.blogspot.com`, our function, and indeed the packages we are aware of,
 #' would extract the domain as `mysite.blogspot.com`, although you might think of
 #' `blogspot.com` as the domain.
-#' For details, see [`https://github.com/google/guava/wiki/InternetDomainNameExplained].
+#' For details, see \link{https://github.com/google/guava/wiki/InternetDomainNameExplained}.
 #' @param wt webtrack data object.
 #' @param varname character. Name of the column from which to extract the host.
 #' Defaults to `"url"`.
@@ -323,6 +323,7 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # Extract path
 #' wt <- extract_path(wt)
 #' @export
 extract_path <- function(wt, varname = "url") {
@@ -340,19 +341,24 @@ extract_path <- function(wt, varname = "url") {
   wt[]
 }
 
-#' Drop query/fragment from URL
-#' @description Drops the query and fragment from a URL, i.e., everything after a "?" or "#"
-#' @param wt webtrack data object
-#' @param varname name of the URL variable from which to drop the query/fragment. Defaults to "url".
-#' @param drop_na boolean. Whether rows for which the URL cannot be split into its components should be dropped from the data. Defaults to TRUE.
-#' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called "<varname>_noquery"
+#' Drop the query and fragment from URL
+#' #' @description
+#' `drop_query()` adds the URL without query and fragment as a new column.
+#' The query is defined as the part following a "?" after the path.
+#' The fragement is anything following a "#" after the query.
+#' @param wt webtrack data object.
+#' @param varname character. name of the column from which to extract the host.
+#' Defaults to `"url"`.
+#' @importFrom data.table is.data.table %like%
+#' @return webtrack data.table with the same columns as wt
+#' and a new column called `'<varname>_noquery'`
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # Extract URL without query/fragment
 #' wt <- drop_query(wt)
 #' @export
-drop_query <- function(wt, varname = "url", drop_na = TRUE) {
+drop_query <- function(wt, varname = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
@@ -369,16 +375,25 @@ drop_query <- function(wt, varname = "url", drop_na = TRUE) {
   wt[]
 }
 
-#' Add the next visit as a column
-#' @description Adds the next visit as a variable, either as the full url, the extracted host or the extracted domain
-#' @param wt webtrack data object
-#' @param level character. Either "url", "host" or "domain". Defaults to "url".
+#' Add the next visit as a new column
+#' #' @description
+#' `add_next_visit()` adds the subsequent visit, as determined by order of
+#' timestamps as a new column. The next visit can be added as either the full URL,
+#' the extracted host or the extracted domain, depending on `level`.
+#' @param wt webtrack data object.
+#' @param level character. Either `"url"`, `"host"` or `"domain"`. Defaults to `"url"`.
 #' @importFrom data.table is.data.table shift setorder
-#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_next, host_next or domain_next.
+#' @return webtrack data.table with the same columns as wt and
+#' a new column called `url_next`,`host_next` or `domain_next`.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # Adding next full URL as new column
 #' wt <- add_next_visit(wt, level = "url")
+#' # Adding next host as new column
+#' wt <- add_next_visit(wt, level = "host")
+#' # Adding next domain as new column
+#' wt <- add_next_visit(wt, level = "domain")
 #' @export
 add_next_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -406,16 +421,25 @@ add_next_visit <- function(wt, level = "url") {
   wt[]
 }
 
-#' Add the previous visit as a variable
-#' @description Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
-#' @param wt webtrack data object
-#' @param level character. Either "url", "host" or "domain". Defaults to "url".
+#' Add the previous visit as a new column
+#' #' @description
+#' `add_previous_visit()` adds the previous visit, as determined by order of
+#' timestamps as a new column The previous visit can be added as either the full URL,
+#' the extracted host or the extracted domain, depending on `level`.
+#' @param wt webtrack data object.
+#' @param level character. Either `"url"`, `"host"` or `"domain"`. Defaults to `"url"`.
 #' @importFrom data.table is.data.table shift setorder
-#' @return webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
+#' @return webtrack data.table with the same columns as wt and
+#' a new column called `url_previous`,`host_previous` or `domain_previous.`.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # Adding previous full URL as new column
 #' wt <- add_previous_visit(wt, level = "url")
+#' # Adding previous host as new column
+#' wt <- add_previous_visit(wt, level = "host")
+#' # Adding previous domain as new column
+#' wt <- add_previous_visit(wt, level = "domain")
 #' @export
 add_previous_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -425,7 +449,7 @@ add_previous_visit <- function(wt, level = "url") {
     wt[, url_previous := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
     if (!"host" %in% names(wt)) {
-      wt <- extract_host(wt, varname = "url", drop_na = F)
+      suppressWarnings(wt <- extract_host(wt, varname = "url", drop_na = F))
       wt[, host_previous := shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
       wt[, host := NULL]
     } else {
@@ -433,7 +457,7 @@ add_previous_visit <- function(wt, level = "url") {
     }
   } else if (level == "domain") {
     if (!"domain" %in% names(wt)) {
-      wt <- extract_domain(wt, varname = "url", drop_na = F)
+      suppressWarnings(wt <- extract_domain(wt, varname = "url", drop_na = F))
       wt[, domain_previous := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
       wt[, domain := NULL]
     } else {
@@ -498,17 +522,24 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
   wt[]
 }
 
-#' Identify social media referrals
-#' @description Identifies whether a web visit was referred to from social media. See details.
-#' @details To identify referrals, we rely on the method described as most valid in Schmidt et al.:
-#' When the domain preceding a visit was to the platform in question,
-#' and the query string of the visit's URL contains a certain pattern, we count it as a referred visit.
-#' For Facebook, the pattern has been identified by Schmidt et al. as 'fbclid=', although this can change in future.
-#' @param wt webtrack data object
-#' @param platform_domains character. A vector of platform domains for which referrers should be identified. Order and length must correspondent to 'patterns' vector.
-#' @param patterns character. A vector of patterns for which referrers should be identified. Order and length must correspondent to 'platform_domains' vector.
+#' Add social media referrals as a new column
+#' @description
+#' Identifies whether a visit was referred to from social media and
+#' adds it as a new column. See details for method.
+#' @details To identify referrals, we rely on the method described as most valid
+#' in Schmidt et al.: When the domain preceding a visit was to the platform in question,
+#' and the query string of the visit's URL contains a certain pattern,
+#' we count it as a referred visit. For Facebook, the pattern has been identified
+#' by Schmidt et al. as `'fbclid='`, although this can change in future.
+#' @param wt webtrack data object.
+#' @param platform_domains character. A vector of platform domains for which
+#' referrers should be identified. Order and length must correspondent to `patterns` argument
+#' @param patterns character. A vector of patterns for which referrers should
+#' be identified. Order and length must correspondent to `platform_domains` vector.
 #' @importFrom data.table is.data.table
-#' @return webtrack data.table with the same columns as wt and a new column called 'referral'.
+#' @return webtrack data.table with the same columns as wt and a new column called `referral`,
+#' which takes on NA if no referral has been identified, or the name specified
+#' platform_domains if a referral from that platform has been identified
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -522,7 +553,6 @@ add_referral <- function(wt, platform_domains, patterns) {
   stopifnot("Input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "url", "timestamp"))
   stopifnot("Number of platform_domains must be identical to number of patterns" = length(platform_domains) == length(patterns))
-
   wt <- add_previous_visit(wt, level = "domain")
   wt[, referral := NA]
   for (i in seq_along(platform_domains)) {
@@ -556,8 +586,10 @@ create_urldummy <- function(wt, dummy, name) {
   wt[]
 }
 
-#' Add panelist features to webtrack data
-#' Add characteristics of panelists (e.g. from a survey) to the webtrack data
+#' Add panelist features to tracking data
+#' @description
+#' `add_panelist_data()` adds information about panelists (e.g., from a survey)
+#' to the tracking data.
 #' @param wt webtrack data object
 #' @param data a data.table (or object that can be converted to data.table) which contains variables of panelists
 #' @param cols character vector of columns to add. If NULL, all columns are added

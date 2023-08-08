@@ -30,5 +30,5 @@ wt <- as.wt_dt(testdt_tracking)
 # Extract host and drop rows without host
 wt <- extract_host(wt)
 # Extract host and keep rows without host
-wt <- extract_host(wt, drop_na = F)
+wt <- extract_host(wt, drop_na = FALSE)
 }

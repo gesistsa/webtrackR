@@ -24,5 +24,6 @@ query (anything after a "?") or a fragment (anything after a "#").
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# Extract path
 wt <- extract_path(wt)
 }
