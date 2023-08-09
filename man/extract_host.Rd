@@ -22,7 +22,9 @@ and a new column called \code{'host'} (or, if varname not equal to \code{'url'},
 \description{
 \code{extract_host()} adds the host of a URL as a new column.
 The host is defined as the part following the scheme (e.g., "https://") and
-preceding the subdirectory (anything following the next "/").
+preceding the subdirectory (anything following the next "/"). Note that
+for URL entries like \verb{chrome-extension://soomething} or \verb{http://192.168.0.1/something},
+result will be set to \code{NA}.
 }
 \examples{
 data("testdt_tracking")

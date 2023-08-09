@@ -9,27 +9,28 @@ sum_durations(wt, var_duration = NULL, timeframe = NULL, visit_class = NULL)
 \arguments{
 \item{wt}{webtrack data object.}
 
-\item{var_duration}{character. Name of the duration variable if already present. Defaults to NULL,
-in which case duration will be approximated with add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)}
+\item{var_duration}{character. Name of the duration variable if already present.
+Defaults to \code{NULL}, in which case duration will be approximated with
+\code{add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)}}
 
-\item{timeframe}{character. indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", "wave" or NULL.
-If set to "wave", webtrack data object must contain a column call "wave". Defaults to NULL, in which case the output contains number of visits for the entire time.}
+\item{timeframe}{character. Indicates for what time frame to aggregate visit durations.
+Possible values are \code{"date"}, \code{"week"}, \code{"month"}, \code{"year"}, \code{"wave"} or \code{NULL}.
+If set to \code{"wave"}, \code{wt} must contain a column call \code{wave}. Defaults to \code{NULL},
+in which case the output contains duration of visits for the entire time.}
 
-\item{visit_class}{character. Column that contains a classification of visits. For each value in this column,
-the output will have a column indicating the number of visits belonging to that value. Defaults to NULL.}
+\item{visit_class}{character. Column that contains a classification of visits.
+For each value in this column, the output will have a column indicating the
+number of visits belonging to that value. Defaults to \code{NULL}.}
 }
 \value{
-a data.table with columns "panelist_id", column indicating the time unit (unless 'timeframe' set ot NULL),
-"duration_visits" indicating the duration of visits (in seconds, or whatever the unit of the variable specified by "var_duration" parameter),
-and a column for each value of the class (if 'visit_class' not set to NULL).
+a data.table with columns \code{panelist_id}, column indicating the time unit
+(unless \code{timeframe} set to \code{NULL}), \code{duration_visits} indicating the duration of visits
+(in seconds, or whatever the unit of the variable specified by \code{var_duration} parameter),
+and a column for each value of \code{visit_class}, if specified.
 }
 \description{
-Summarize duration of visits by person within a time frame, and optionally by class of visit
-}
-\details{
-sum_durations allows you to sum the duration of visits by panelist_id for different time periods (for example, by day).
-It further allows to break down the number by any "classes" of visits.
-Note:
+\code{sum_durations()} summarizes the duration of visits by person within a \code{timeframe},
+and optionally by \code{visit_class} of visit. Note:
 \itemize{
 \item If for a time frame all rows are NA on the duration column, the summarized duration for that time frame will be NA.
 \item If only some of the rows of a time frame are NA on the duration column, the function will ignore those NA rows.
@@ -39,9 +40,12 @@ Note:
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
-wt <- extract_domain(wt, drop_na = TRUE)
-wt[, google := ifelse(domain == "google.com", 1, 0)]
+# summarize for whole period
 wt_summ <- sum_durations(wt)
-wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = NULL)
-wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = "google")
+# summarize by week
+wt_summ <- sum_durations(wt, timeframe = "week")
+# create a class variable to summarize by class
+wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
+wt[, google := ifelse(domain == "google.com", 1, 0)]
+wt_summ <- sum_durations(wt, timeframe = "week", visit_class = "google")
 }

@@ -175,13 +175,15 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' @description
 #' `extract_host()` adds the host of a URL as a new column.
 #' The host is defined as the part following the scheme (e.g., "https://") and
-#' preceding the subdirectory (anything following the next "/").
+#' preceding the subdirectory (anything following the next "/"). Note that
+#' for URL entries like `chrome-extension://soomething` or `http://192.168.0.1/something`,
+#' result will be set to `NA`.
 #' @param wt webtrack data object.
 #' @param varname character. Name of the column from which to extract the host.
 #' Defaults to `"url"`.
 #' @param drop_na boolean. Determines whether rows for which no host can be extracted
 #' should be dropped from the data. Defaults to `TRUE`.
-#' @importFrom data.table is.data.table
+#' @importFrom data.table is.data.table fifelse
 #' @return webtrack data.table with the same columns as wt
 #' and a new column called `'host'` (or, if varname not equal to `'url'`, `'<varname>_host'`)
 #' @examples
@@ -196,8 +198,9 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = varname)
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
+  wt[, tmp_suffix := urltools::suffix_extract(tmp_host)[["suffix"]]]
   if (varname == "url") {
-    wt[, host := urltools::domain(tmp_host)]
+    wt[, host := fifelse(is.na(tmp_suffix), NA_character_, urltools::domain(tmp_host))]
     n_na <- nrow(wt[is.na(host)])
     if (drop_na == TRUE) {
       wt <- wt[!is.na(host)]
@@ -210,7 +213,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
       }
     }
   } else {
-    wt[, paste0(varname, "_host") := urltools::domain(tmp_host)]
+    wt[, paste0(varname, "_host") := fifelse(is.na(tmp_suffix), NA_character_, urltools::domain(tmp_host))]
     n_na <- nrow(wt[is.na(paste0(varname, "_host"))])
     if (drop_na == TRUE) {
       wt <- wt[!is.na(paste0(varname, "_host"))]

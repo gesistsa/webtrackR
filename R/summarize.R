@@ -1,22 +1,29 @@
 #' Summarize number of visits by person
-#' @description Summarize number of visits by person within a time frame, and optionally by class of visit
-#' @details sum_visits allows you to summarize the number of visits by panelist_id for different time periods (for example, by day).
-#' It further allows to break down the number by any "classes" of visits.
+#' @description
+#' `sum_visits()` summarizes the number of visits by person within a `timeframe`,
+#' and optionally by `visit_class` of visit.
 #' @param wt webtrack data object.
-#' @param timeframe character. indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", "wave" or NULL.
-#' If set to "wave", webtrack data object must contain a column call "wave". Defaults to NULL, in which case the output contains number of visits for the entire time.
-#' @param visit_class character. Column that contains a classification of visits. For each value in this column,
-#' the output will have a column indicating the number of visits belonging to that value. Defaults to NULL.
+#' @param timeframe character. Indicates for what time frame to aggregate visits.
+#' Possible values are `"date"`, `"week"`, `"month"`, `"year"`, `"wave"` or `NULL`.
+#' If set to `"wave"`, `wt` must contain a column call `wave`. Defaults to `NULL`,
+#' in which case the output contains number of visits for the entire time.
+#' @param visit_class character. Column that contains a classification of visits.
+#' For each value in this column, the output will have a column indicating the
+#' number of visits belonging to that value. Defaults to `NULL`.
 #' @importFrom data.table is.data.table shift .N dcast setnames
-#' @return a data.table with columns "panelist_id", column indicating the time unit (unless 'timeframe' set ot NULL),
-#' "n_visits" indicating the number of visits, and a column for each value of the class (if 'visit_class' not set to NULL).
+#' @return a data.table with columns `panelist_id`, column indicating the time unit
+#' (unless `timeframe` set to `NULL`), `n_visits` indicating the number of visits,
+#' and a column for each value of `visit_class`, if specified.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
-#' wt <- extract_domain(wt, drop_na = TRUE)
+#' # summarize for whole period
+#' wt_summ <- sum_visits(wt)
+#' # summarize by week
+#' wt_summ <- sum_visits(wt, timeframe = "week")
+#' # create a class variable to summarize by class
+#' wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
 #' wt[, google := ifelse(domain == "google.com", 1, 0)]
-#' wt_summ <- sum_visits(wt, timeframe = NULL, visit_class = NULL)
-#' wt_summ <- sum_visits(wt, timeframe = "week", visit_class = NULL)
 #' wt_summ <- sum_visits(wt, timeframe = "week", visit_class = "google")
 #' @export
 sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
@@ -59,32 +66,39 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 }
 
 #' Summarize visit duration by person
-#' @description Summarize duration of visits by person within a time frame, and optionally by class of visit
-#' @details sum_durations allows you to sum the duration of visits by panelist_id for different time periods (for example, by day).
-#' It further allows to break down the number by any "classes" of visits.
-#' Note:
+#' @description
+#' `sum_durations()` summarizes the duration of visits by person within a `timeframe`,
+#' and optionally by `visit_class` of visit. Note:
 #' - If for a time frame all rows are NA on the duration column, the summarized duration for that time frame will be NA.
 #' - If only some of the rows of a time frame are NA on the duration column, the function will ignore those NA rows.
 #' - If there were no visits to a class (i.e., a value of the 'visit_class' column) for a time frame, the summarized duration for that time frame will be zero; if there were visits, but NA on duration, the summarized duration will be NA.
 #' @param wt webtrack data object.
-#' @param var_duration character. Name of the duration variable if already present. Defaults to NULL,
-#' in which case duration will be approximated with add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)
-#' @param timeframe character. indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", "wave" or NULL.
-#' If set to "wave", webtrack data object must contain a column call "wave". Defaults to NULL, in which case the output contains number of visits for the entire time.
-#' @param visit_class character. Column that contains a classification of visits. For each value in this column,
-#' the output will have a column indicating the number of visits belonging to that value. Defaults to NULL.
+#' @param var_duration character. Name of the duration variable if already present.
+#' Defaults to `NULL`, in which case duration will be approximated with
+#' `add_duration(wt, cutoff = 300, replace_by = "na", replace_val = NULL)`
+#' @param timeframe character. Indicates for what time frame to aggregate visit durations.
+#' Possible values are `"date"`, `"week"`, `"month"`, `"year"`, `"wave"` or `NULL`.
+#' If set to `"wave"`, `wt` must contain a column call `wave`. Defaults to `NULL`,
+#' in which case the output contains duration of visits for the entire time.
+#' @param visit_class character. Column that contains a classification of visits.
+#' For each value in this column, the output will have a column indicating the
+#' number of visits belonging to that value. Defaults to `NULL`.
 #' @importFrom data.table is.data.table shift .N dcast setnames
-#' @return a data.table with columns "panelist_id", column indicating the time unit (unless 'timeframe' set ot NULL),
-#' "duration_visits" indicating the duration of visits (in seconds, or whatever the unit of the variable specified by "var_duration" parameter),
-#' and a column for each value of the class (if 'visit_class' not set to NULL).
+#' @return a data.table with columns `panelist_id`, column indicating the time unit
+#' (unless `timeframe` set to `NULL`), `duration_visits` indicating the duration of visits
+#' (in seconds, or whatever the unit of the variable specified by `var_duration` parameter),
+#' and a column for each value of `visit_class`, if specified.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
-#' wt <- extract_domain(wt, drop_na = TRUE)
-#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' # summarize for whole period
 #' wt_summ <- sum_durations(wt)
-#' wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = NULL)
-#' wt_summ <- sum_durations(wt, var_duration = NULL, timeframe = "week", visit_class = "google")
+#' # summarize by week
+#' wt_summ <- sum_durations(wt, timeframe = "week")
+#' # create a class variable to summarize by class
+#' wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
+#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' wt_summ <- sum_durations(wt, timeframe = "week", visit_class = "google")
 #' @export
 sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -133,17 +147,21 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class
 }
 
 #' Summarize activity per person
-#' @description Count number of active time periods (days, weeks, months, years, or waves) per person
-#' @details sum_activity allows you to count the number of active days, weeks, months, years or waves by panelist_id.
-#' A period counts as "active" if the person provided at least one visit for that period.
+#' @description
+#' `sum_activity()` counts the number of active time periods (i.e., days, weeks,
+#' months, years, or waves) by `panelist_id`. A period counts as "active" if
+#' the panelist provided at least one visit for that period.
 #' @param wt webtrack data object.
-#' @param timeframe character. Indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", or "wave".
-#' If set to "wave", webtrack data object must contain a column call "wave". Defaults to "date".
+#' @param timeframe character. Indicates for what time frame to aggregate visits.
+#' Possible values are `"date"`, `"week"`, `"month"`, `"year"` or `"wave"`. If
+#' set to `"wave"`, `wt` must contain a column call `wave`. Defaults to `"date"`.
 #' @importFrom data.table is.data.table shift .N
-#' @return a data.table with columns "panelist_id" and column indicating the number of active time units.
+#' @return a data.table with columns `panelist_id`, column indicating the
+#' number of active time units.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
+#' # summarize activity by day
 #' wt_sum <- sum_activity(wt, timeframe = "date")
 #' @export
 sum_activity <- function(wt, timeframe = "date") {

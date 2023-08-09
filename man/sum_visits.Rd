@@ -9,29 +9,33 @@ sum_visits(wt, timeframe = NULL, visit_class = NULL)
 \arguments{
 \item{wt}{webtrack data object.}
 
-\item{timeframe}{character. indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", "wave" or NULL.
-If set to "wave", webtrack data object must contain a column call "wave". Defaults to NULL, in which case the output contains number of visits for the entire time.}
+\item{timeframe}{character. Indicates for what time frame to aggregate visits.
+Possible values are \code{"date"}, \code{"week"}, \code{"month"}, \code{"year"}, \code{"wave"} or \code{NULL}.
+If set to \code{"wave"}, \code{wt} must contain a column call \code{wave}. Defaults to \code{NULL},
+in which case the output contains number of visits for the entire time.}
 
-\item{visit_class}{character. Column that contains a classification of visits. For each value in this column,
-the output will have a column indicating the number of visits belonging to that value. Defaults to NULL.}
+\item{visit_class}{character. Column that contains a classification of visits.
+For each value in this column, the output will have a column indicating the
+number of visits belonging to that value. Defaults to \code{NULL}.}
 }
 \value{
-a data.table with columns "panelist_id", column indicating the time unit (unless 'timeframe' set ot NULL),
-"n_visits" indicating the number of visits, and a column for each value of the class (if 'visit_class' not set to NULL).
+a data.table with columns \code{panelist_id}, column indicating the time unit
+(unless \code{timeframe} set to \code{NULL}), \code{n_visits} indicating the number of visits,
+and a column for each value of \code{visit_class}, if specified.
 }
 \description{
-Summarize number of visits by person within a time frame, and optionally by class of visit
-}
-\details{
-sum_visits allows you to summarize the number of visits by panelist_id for different time periods (for example, by day).
-It further allows to break down the number by any "classes" of visits.
+\code{sum_visits()} summarizes the number of visits by person within a \code{timeframe},
+and optionally by \code{visit_class} of visit.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
-wt <- extract_domain(wt, drop_na = TRUE)
+# summarize for whole period
+wt_summ <- sum_visits(wt)
+# summarize by week
+wt_summ <- sum_visits(wt, timeframe = "week")
+# create a class variable to summarize by class
+wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
 wt[, google := ifelse(domain == "google.com", 1, 0)]
-wt_summ <- sum_visits(wt, timeframe = NULL, visit_class = NULL)
-wt_summ <- sum_visits(wt, timeframe = "week", visit_class = NULL)
 wt_summ <- sum_visits(wt, timeframe = "week", visit_class = "google")
 }

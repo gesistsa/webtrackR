@@ -124,7 +124,7 @@ test_that("extract_host testdt_specific", {
   wt <- as.wt_dt(testdt_tracking)
   wt_host <- suppressWarnings(extract_host(wt, drop_na = TRUE))
   expect_true(wt_host[1,"host"] == "dkr1.ssisurveys.com")
-  expect_true(nrow(wt_host) == 49583)
+  expect_true(nrow(wt_host) == 49451)
   wt_host <- suppressWarnings(extract_host(wt, drop_na = FALSE))
   expect_true(nrow(wt_host) == nrow(wt))
 })
