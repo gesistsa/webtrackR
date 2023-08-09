@@ -29,13 +29,15 @@
 #' data("domain_list")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # classify visits via domain
-#' wt_domains <- extract_domain(wt, drop_na = F)
+#' wt_domains <- extract_domain(wt, drop_na = FALSE)
 #' wt_classes <- classify_visits(wt_domains, classes = domain_list, match_by = "domain")
-#' # classify visits via domain; for example, just using "domain" column
+#' # classify visits via domain
+#' # for the example, just renaming "domain" column
 #' domain_list$host <- domain_list$domain
-#' wt_hosts <- extract_host(wt, drop_na = F)
+#' wt_hosts <- extract_host(wt, drop_na = FALSE)
 #' wt_classes <- classify_visits(wt_hosts, classes = domain_list, match_by = "host")
-#' # classify visits with regular expression matching; for example, any value in the "domain" column treated as a pattern to match
+#' # classify visits with pattern matching
+#' # for the example, any value in "domain" treated as pattern
 #' data("domain_list")
 #' regex_list <- domain_list[type == "facebook"]
 #' wt_classes <- classify_visits(wt[1:5000], classes = regex_list, match_by = "regex", regex_on = "domain")

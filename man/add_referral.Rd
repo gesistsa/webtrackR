@@ -40,3 +40,6 @@ wt <- add_referral(wt,
   patterns = c("fbclid=", "utm_source=twitter")
 )
 }
+\references{
+Schmidt, Felix, Frank Mangold, Sebastian Stier and Roberto Ulloa. "Facebook as an Avenue to News: A Comparison and Validation of Approaches to Identify Facebook Referrals". Working paper.
+}

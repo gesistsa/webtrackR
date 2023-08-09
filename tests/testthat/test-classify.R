@@ -76,7 +76,7 @@ test_that("classify_visits testdt_specific", {
   expect_true(table(wt_classes$type)["facebook"] == 1374)
   expect_true(sum(is.na(wt_classes$type)) == 48238)
   # test number of cases when only rows classified as "search" returned
-  expect_true(nrow(classify_visits(wt_domains, classes = domain_list, match_by = "domain",
+  expect_true(nrow(classify_visits(wt, classes = domain_list, match_by = "domain",
                                    return_rows_by = "type", return_rows_val = "search")) == 2795)
 
 })

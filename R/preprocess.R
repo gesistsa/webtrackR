@@ -540,6 +540,8 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
 #' @return webtrack data.table with the same columns as wt and a new column called `referral`,
 #' which takes on NA if no referral has been identified, or the name specified
 #' platform_domains if a referral from that platform has been identified
+#' @references
+#' Schmidt, Felix, Frank Mangold, Sebastian Stier and Roberto Ulloa. "Facebook as an Avenue to News: A Comparison and Validation of Approaches to Identify Facebook Referrals". Working paper.
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
