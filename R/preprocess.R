@@ -249,7 +249,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' `www.mysite.blogspot.com`, our function, and indeed the packages we are aware of,
 #' would extract the domain as `mysite.blogspot.com`, although you might think of
 #' `blogspot.com` as the domain.
-#' For details, see `https://github.com/google/guava/wiki/InternetDomainNameExplained`.
+#' For details, see \link[github.com/google/guava/wiki/InternetDomainNameExplained]{https://github.com/google/guava/wiki/InternetDomainNameExplained}
 #' @param wt webtrack data object.
 #' @param varname character. Name of the column from which to extract the host.
 #' Defaults to `"url"`.

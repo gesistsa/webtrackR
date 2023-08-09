@@ -33,7 +33,7 @@ Note that it may take a while to run this function for a large number of URLs.
 \examples{
 \dontrun{
 data("testdt_tracking")
-wt <- as.wt_dt(testdt_tracking)[1:10]
+wt <- as.wt_dt(testdt_tracking)[1:2]
 # Get titles with `lang` set to default English
 wt_titles <- add_title(wt)
 # Get titles with `lang` set to German
