@@ -1,17 +1,24 @@
 #' Create incidence matrix for two-mode networks including audiences
-#' @details The incidence matrix is a matrix A with entries  `A[i,j]=1` if panelist i visited outlet j at least once.
-#' @param wt webtrack data object
-#' @param mode2 character. name of column that includes the second mode (e.g.
-#' 'domain' or 'host')
-#' @param cutoff visits below this cutoff will not be considered as a visit
-#' @return incidence matrix of a two-mode network
-#' @seealso to create audience networks see [audience_network]
+#' @description
+#' `audience_incidence()` created an incidence matrix, which is a matrix A
+#' with entries `A[i,j]=1` if panelist `i` visited web site `j` at least once.
+#' Web site can be defined, for example, by the URL's domain, or its host.
+#' @param wt webtrack data object.
+#' @param mode2 character. Name of column that includes the second mode (e.g.,
+#' `domain` or `host`)
+#' @param cutoff visits below this cutoff will not be considered as a visit.
+#' @return Incidence matrix of a two-mode network
+#' @seealso To create audience networks see [audience_network].
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
-#' wt <- extract_domain(wt)
-#' audience_incidence(wt)
+#' wt <- suppressWarnings(extract_domain(wt))
+#' # create incidence matrix using domains as second mode
+#' incidence <- audience_incidence(wt)
+#' # create incidence matrix using hosts as second mode
+#' wt <- suppressWarnings(extract_host(wt))
+#' incidence <- audience_incidence(wt, mode2 = "host")
 #' @export
 audience_incidence <- function(wt, mode2 = "domain", cutoff = 3) {
   # .N = 0 #revisit
@@ -44,8 +51,8 @@ audience_incidence <- function(wt, mode2 = "domain", cutoff = 3) {
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
-#' wt <- extract_domain(wt)
-#' audience_network(wt, type = "pmi", cutoff = 120)
+#' wt <- suppressWarnings(extract_domain(wt))
+#' network <- audience_network(wt, type = "pmi", cutoff = 120)
 #' @export
 audience_network <- function(wt, mode2 = "domain", cutoff = 3, type = "pmi", alpha = 0.05) {
   A <- audience_incidence(wt, mode2 = mode2, cutoff = cutoff)
