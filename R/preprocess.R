@@ -249,7 +249,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' `www.mysite.blogspot.com`, our function, and indeed the packages we are aware of,
 #' would extract the domain as `mysite.blogspot.com`, although you might think of
 #' `blogspot.com` as the domain.
-#' For details, see \link{https://github.com/google/guava/wiki/InternetDomainNameExplained}.
+#' For details, see `https://github.com/google/guava/wiki/InternetDomainNameExplained`.
 #' @param wt webtrack data object.
 #' @param varname character. Name of the column from which to extract the host.
 #' Defaults to `"url"`.
@@ -493,7 +493,7 @@ add_previous_visit <- function(wt, level = "url") {
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
-#' wt <- as.wt_dt(testdt_tracking)[1:10]
+#' wt <- as.wt_dt(testdt_tracking)[1:2]
 #' # Get titles with `lang` set to default English
 #' wt_titles <- add_title(wt)
 #' # Get titles with `lang` set to German
