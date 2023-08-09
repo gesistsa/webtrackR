@@ -80,7 +80,7 @@ print.wt_dt <- function(x, ...) {
   print_wt_dt(x, ...)
 }
 
-#' Summary function for webtrack data
+#' Summary function for web tracking data
 #' @param object object of class wt_dt
 #' @param ... additional parameters for summary
 #' @return No return value, called for side effects

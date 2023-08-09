@@ -14,15 +14,17 @@ classify_visits(
 )
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
 \item{classes}{a data.table containing classes that can be matched to visits.}
 
-\item{match_by}{character. Whether to match list entry to the domain of a visit ("domain") or the host ("host") with an exact match;
-or with a regular expression against the whole URL of a visit. If set to "domain" or "host",
-both "wt" and "classes" need to have a column called thus. If set to "regex",
-the "url" column of "wt" will be used, and you need to set "regex_on" to the
-column in "classes" for which to do the regex matching. Defaults to "domain".}
+\item{match_by}{character. Whether to match list entries from \code{classes} to
+the domain of a visit (\code{"domain"}) or the host (\code{"host"}) with an exact match;
+or with a regular expression against the whole URL of a visit (\code{"regex"}).
+If set to \code{"domain"} or \code{"host"}, both \code{"wt"} and \code{"classes"} need to have
+a column called accordingly. If set to \code{"regex"}, the \code{"url"} column of \code{"wt"}
+will be used, and you need to set \code{"regex_on"} to the column in \code{"classes"}
+for which to do the regex matching. Defaults to \code{"domain"}.}
 
 \item{regex_on}{character. Column in "classes" on which to do the regex matching. Defaults to NULL.}
 
@@ -35,7 +37,9 @@ data should be returned.}
 webtrack data.table with the same columns as wt and any column in classes except the "match_by" column.
 }
 \description{
-Classify visits by matching to a list of classes
+\code{classify_visits()} categorizes visits by either extracting the visit URL's
+domain or host and matching them to a list of domains or hosts;
+or by matching a list of regular expressions against the visit URL.
 }
 \examples{
 \dontrun{
