@@ -9,21 +9,22 @@ sum_activity(wt, timeframe = "date")
 \arguments{
 \item{wt}{webtrack data object.}
 
-\item{timeframe}{character. Indicates for what time frame to aggregate visits. Possible values are "date", "week", "month", "year", or "wave".
-If set to "wave", webtrack data object must contain a column call "wave". Defaults to "date".}
+\item{timeframe}{character. Indicates for what time frame to aggregate visits.
+Possible values are \code{"date"}, \code{"week"}, \code{"month"}, \code{"year"} or \code{"wave"}. If
+set to \code{"wave"}, \code{wt} must contain a column call \code{wave}. Defaults to \code{"date"}.}
 }
 \value{
-a data.table with columns "panelist_id" and column indicating the number of active time units.
+a data.table with columns \code{panelist_id}, column indicating the
+number of active time units.
 }
 \description{
-Count number of active time periods (days, weeks, months, years, or waves) per person
-}
-\details{
-sum_activity allows you to count the number of active days, weeks, months, years or waves by panelist_id.
-A period counts as "active" if the person provided at least one visit for that period.
+\code{sum_activity()} counts the number of active time periods (i.e., days, weeks,
+months, years, or waves) by \code{panelist_id}. A period counts as "active" if
+the panelist provided at least one visit for that period.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# summarize activity by day
 wt_sum <- sum_activity(wt, timeframe = "date")
 }

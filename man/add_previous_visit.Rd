@@ -2,23 +2,37 @@
 % Please edit documentation in R/preprocess.R
 \name{add_previous_visit}
 \alias{add_previous_visit}
-\title{Add the previous visit as a variable}
+\title{Add the previous visit as a new column
+#' @description
+\code{add_previous_visit()} adds the previous visit, as determined by order of
+timestamps as a new column The previous visit can be added as either the full URL,
+the extracted host or the extracted domain, depending on \code{level}.}
 \usage{
 add_previous_visit(wt, level = "url")
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{level}{character. Either "url", "host" or "domain". Defaults to "url".}
+\item{level}{character. Either \code{"url"}, \code{"host"} or \code{"domain"}. Defaults to \code{"url"}.}
 }
 \value{
-webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called url_previous, host_previous or domain_previous.
+webtrack data.table with the same columns as wt and
+a new column called \code{url_previous},\code{host_previous} or \code{domain_previous.}.
 }
 \description{
-Adds the previous visit as a variable, either as the full url, the extracted host or the extracted domain
+Add the previous visit as a new column
+#' @description
+\code{add_previous_visit()} adds the previous visit, as determined by order of
+timestamps as a new column The previous visit can be added as either the full URL,
+the extracted host or the extracted domain, depending on \code{level}.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# Adding previous full URL as new column
 wt <- add_previous_visit(wt, level = "url")
+# Adding previous host as new column
+wt <- add_previous_visit(wt, level = "host")
+# Adding previous domain as new column
+wt <- add_previous_visit(wt, level = "domain")
 }

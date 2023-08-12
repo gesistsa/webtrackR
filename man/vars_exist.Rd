@@ -7,13 +7,16 @@
 vars_exist(wt, vars = c("panelist_id", "url", "timestamp"))
 }
 \arguments{
-\item{wt}{webtrack data as data.table object}
+\item{wt}{webtrack data object.}
 
-\item{vars}{character vector of variables}
+\item{vars}{character vector of variables.
+Defaults to \code{c("panelist_id", "url", "timestamp")}.}
 }
 \value{
-A data.table object
+A data.table object.
 }
 \description{
-checks if the required columns are present in the webtrack data
+\code{vars_exist()} checks if columns are present in a webtrack data object.
+By default, checks whether the data has a \code{panelist_id}, a \code{ulr} and a
+\code{timestamp} column.#'
 }

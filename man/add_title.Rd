@@ -7,30 +7,36 @@
 add_title(wt, lang = "en-US,en-GB,en")
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{lang}{character (a language tag). Language accepted by the request. Defaults to "en-US,en-GB,en".
-Note that you are likely to still obtain titles different from the ones seen originally by the user,
-because the language also depend on the user's IP and device settings.}
+\item{lang}{character (a language tag). Language accepted by the request.
+Defaults to \code{"en-US,en-GB,en"}. Note that you are likely to still obtain titles
+different from the ones seen originally by the user, because the language
+also depend on the user's IP and device settings.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called "title",
-which will be NA if the title cannot be retrieved.
+webtrack data.table with the same columns as wt and a new column
+called \code{"title"}, which will be \code{NA} if the title cannot be retrieved.
 }
 \description{
-Gets the title of a website and adds it as a new variable. See details.
+\code{add_title()} gets the title of a URL by accessing the web address online
+and adds the title as a new column. See details for the meaning of "title".
+You need an internet connection to run this function.
 }
 \details{
-The title of a website (the text within the \if{html}{\out{<title>}} tag of a web sites \if{html}{\out{<head>}})
-is the text that is shown onn the "tab" when looking at the website in a browser.
-It can contain useful information about a URL's content and can be used, for example,
-for classification purposes. Note that it may take a while to run this function for a large number of URLs.
+The title of a website (the text within the \verb{<title>} tag
+of a web site's \verb{<head>}) #' is the text that is shown on the "tab"
+when looking at the website in a browser. It can contain useful information
+about a URL's content and can be used, for example, for classification purposes.
+Note that it may take a while to run this function for a large number of URLs.
 }
 \examples{
 \dontrun{
 data("testdt_tracking")
-wt <- as.wt_dt(testdt_tracking)[1:10]
+wt <- as.wt_dt(testdt_tracking)[1:2]
+# Get titles with `lang` set to default English
 wt_titles <- add_title(wt)
+# Get titles with `lang` set to German
 wt_titles <- add_title(wt, lang = "de")
 }
 }

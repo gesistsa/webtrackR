@@ -2,30 +2,33 @@
 % Please edit documentation in R/preprocess.R
 \name{add_panelist_data}
 \alias{add_panelist_data}
-\title{Add panelist features to webtrack data
-Add characteristics of panelists (e.g. from a survey) to the webtrack data}
+\title{Add panelist features to tracking data}
 \usage{
 add_panelist_data(wt, data, cols = NULL, join_on = "panelist_id")
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{data}{a data.table (or object that can be converted to data.table) which contains variables of panelists}
+\item{data}{a data.table (or object that can be converted to data.table)
+which contains columns about panelists}
 
-\item{cols}{character vector of columns to add. If NULL, all columns are added}
+\item{cols}{character vector of columns to add. If \code{NULL}, all columns are added.
+Defaults to \code{NULL}.}
 
-\item{join_on}{which columns to join on. Defaults to "panelist_id".}
+\item{join_on}{which columns to join on. Defaults to \code{"panelist_id"}.}
 }
 \value{
-webtrack object with the same columns and joined with panelist survey data
+webtrack object with the same columns and the columns from \code{data}
+specified in \code{cols}.
 }
 \description{
-Add panelist features to webtrack data
-Add characteristics of panelists (e.g. from a survey) to the webtrack data
+\code{add_panelist_data()} adds information about panelists (e.g., from a survey)
+to the tracking data.
 }
 \examples{
 data("testdt_tracking")
 data("testdt_survey_w")
 wt <- as.wt_dt(testdt_tracking)
+# add survey test data
 add_panelist_data(wt, testdt_survey_w)
 }

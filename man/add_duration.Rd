@@ -9,40 +9,47 @@ add_duration(
   cutoff = 300,
   replace_by = NA,
   last_replace_by = NA,
-  device_switch_na = F,
+  device_switch_na = FALSE,
   device_var = NULL
 )
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{cutoff}{numeric. If duration is greater than this value, it is reset to na, the cutoff, or a user-defined value. Defaults to 5 minutes (= 300 seconds).}
+\item{cutoff}{numeric (seconds). If duration is greater than this value,
+it is reset to the value defined by \code{replace_by}. Defaults to 300 seconds.}
 
-\item{replace_by}{numeric. This determines whether differences greater than
-the cutoff are set to NA (default), or a numeric value}
+\item{replace_by}{numeric. Determines whether differences greater than
+the cutoff are set to \code{NA}, or some value. Defaults to \code{NA}.}
 
-\item{last_replace_by}{numeric. This determines the last visit for an individual,
-is set to NA (default) or a numeric value}
+\item{last_replace_by}{numeric. Determines whether the last visit
+for an individual is set to \code{NA}, or some value. Defaults to \code{NA}.}
 
-\item{device_switch_na}{boolean. Relevant only if panelists have data from several devices.
-When visits are ordered by timestamp sequence, a next visit can happen on a different device.
-This makes it less likely that the next visit happened directly after the visit,
-and it may be preferable to set the duration of the visit to NA (TRUE)
-rather than the difference to the next timestamp (FALSE). Defaults to FALSE.}
+\item{device_switch_na}{boolean. Relevant only when data was collected
+from multiple devices. When visits are ordered by timestamp sequence,
+two consecutive visits can come from different devices, which makes the
+timestamp difference less likely to be the true duration. It may be
+preferable to set the duration of the visit to \code{NA} (\code{TRUE}) rather than
+the difference to the next timestamp (\code{FALSE}). Defaults to \code{FALSE}.}
 
-\item{device_var}{character. Column indicating the device.
-Required if 'device_switch_na' set to TRUE. Defaults to NULL.}
+\item{device_var}{character. Column indicating device.
+Required if 'device_switch_na' set to \code{TRUE}. Defaults to \code{NULL}.}
 }
 \value{
-webtrack data.table (ordered by panelist_id and timestamp) with the same columns as wt and a new column called duration
+webtrack data.table (ordered by panelist_id and timestamp) with
+the same columns as wt and a new column called \code{duration}.
 }
 \description{
-Approximate the time spent on a visit based on the sequence of timestamps
+\code{add_duration()} approximates the time spent on a visit based on the difference
+between two consecutive timestamps, replacing differences exceeding \code{cutoff} with
+the value defined in \code{replace_by}.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
-# Defining cutoff at 10 minutes and setting critical visits to 5 minutes
-wt <- add_duration(wt, cutoff = 600, replace_by = 300)
+# Defining cutoff at 10 minutes, replacing those exceeding cutoff to 5 minutes,
+# and setting duration before device switch to `NA`:
+wt <- add_duration(wt, cutoff = 600, replace_by = 300,
+                   device_switch_na = TRUE, device_var = "device")
 }
