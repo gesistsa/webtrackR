@@ -2,7 +2,7 @@
 % Please edit documentation in R/wt_dt.R
 \name{summary.wt_dt}
 \alias{summary.wt_dt}
-\title{Summary function for webtrack data}
+\title{Summary function for web tracking data}
 \usage{
 \method{summary}{wt_dt}(object, ...)
 }
@@ -15,5 +15,5 @@
 No return value, called for side effects
 }
 \description{
-Summary function for webtrack data
+Summary function for web tracking data
 }

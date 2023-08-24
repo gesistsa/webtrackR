@@ -7,29 +7,32 @@
 audience_incidence(wt, mode2 = "domain", cutoff = 3)
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{mode2}{character. name of column that includes the second mode (e.g.
-'domain' or 'host')}
+\item{mode2}{character. Name of column that includes the second mode (e.g.,
+\code{domain} or \code{host})}
 
-\item{cutoff}{visits below this cutoff will not be considered as a visit}
+\item{cutoff}{visits below this cutoff will not be considered as a visit.}
 }
 \value{
-incidence matrix of a two-mode network
+Incidence matrix of a two-mode network
 }
 \description{
-Create incidence matrix for two-mode networks including audiences
-}
-\details{
-The incidence matrix is a matrix A with entries  \code{A[i,j]=1} if panelist i visited outlet j at least once.
+\code{audience_incidence()} created an incidence matrix, which is a matrix A
+with entries \code{A[i,j]=1} if panelist \code{i} visited web site \code{j} at least once.
+Web site can be defined, for example, by the URL's domain, or its host.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
-wt <- extract_domain(wt)
-audience_incidence(wt)
+wt <- suppressWarnings(extract_domain(wt))
+# create incidence matrix using domains as second mode
+incidence <- audience_incidence(wt)
+# create incidence matrix using hosts as second mode
+wt <- suppressWarnings(extract_host(wt))
+incidence <- audience_incidence(wt, mode2 = "host")
 }
 \seealso{
-to create audience networks see \link{audience_network}
+To create audience networks see \link{audience_network}.
 }

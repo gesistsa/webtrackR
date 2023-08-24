@@ -4,5 +4,5 @@ utils::globalVariables(c(
     "date", "week", "month", "year", "wave", "duplicate", "i.type", "title", "visits", "url_noquery", "referral",
     "tmp_timestamp_next", "tmp_url_next", "tmp_host", "tmp_suffix", "tmp_path", "tmp_scheme", "tmp_domain_name", "tmp_index",
     "tmp_class", "tmp_duration", "tmp_timeframe", "tmp_visits", "tmp_last", "device", "device_next",
-    "tmp_timestamp_prev", "tmp_url_prev"
+    "tmp_timestamp_prev", "tmp_url_prev", "tmp_index"
 ))

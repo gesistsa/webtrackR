@@ -14,41 +14,60 @@ classify_visits(
 )
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
 \item{classes}{a data.table containing classes that can be matched to visits.}
 
-\item{match_by}{character. Whether to match list entry to the domain of a visit ("domain") or the host ("host") with an exact match;
-or with a regular expression against the whole URL of a visit. If set to "domain" or "host",
-both "wt" and "classes" need to have a column called thus. If set to "regex",
-the "url" column of "wt" will be used, and you need to set "regex_on" to the
-column in "classes" for which to do the regex matching. Defaults to "domain".}
+\item{match_by}{character. Whether to match list entries from \code{classes} to
+the domain of a visit (\code{"domain"}) or the host (\code{"host"}) with an exact match;
+or with a regular expression against the whole URL of a visit (\code{"regex"}).
+If set to \code{"domain"} or \code{"host"}, both \code{wt} and \code{classes} need to have
+a column called accordingly. If set to \code{"regex"}, the \code{url} column of \code{wt}
+will be used, and you need to set \code{regex_on} to the column in \code{classes}
+for which to do the pattern matching. Defaults to \code{"domain"}.}
 
-\item{regex_on}{character. Column in "classes" on which to do the regex matching. Defaults to NULL.}
+\item{regex_on}{character. Column in \code{classes} which to use for
+pattern matching. Defaults to \code{NULL}.}
 
-\item{return_rows_by}{character. A column in "classes" on which to subset the joined data.}
+\item{return_rows_by}{character. A column in \code{classes} on which to
+subset the returning data. Defaults to \code{NULL}.}
 
-\item{return_rows_val}{character. The value of the columns specified in "return_rows_by", for which
-data should be returned.}
+\item{return_rows_val}{character. The value of the columns specified in
+\code{return_rows_by}, for which data should be returned. For example, if your
+\code{classes} data contains a column \code{type}, which has a value called \code{"shopping"},
+setting \code{return_rows_by} to \code{"type"} and \code{return_rows_val} to \code{"shopping"}
+will only return visits classified as \code{"shopping"}.}
 }
 \value{
-webtrack data.table with the same columns as wt and any column in classes except the "match_by" column.
+webtrack data.table with the same columns as \code{wt} and any column
+in \code{classes} except the column specified by \code{match_by}.
 }
 \description{
-Classify visits by matching to a list of classes
+\code{classify_visits()} categorizes visits by either extracting the visit URL's
+domain or host and matching them to a list of domains or hosts;
+or by matching a list of regular expressions against the visit URL.
 }
 \examples{
-\dontrun{
 data("testdt_tracking")
 data("domain_list")
 wt <- as.wt_dt(testdt_tracking)
-wt_domains <- extract_domain(wt, drop_na = F)
+# classify visits via domain
+wt_domains <- extract_domain(wt, drop_na = FALSE)
 wt_classes <- classify_visits(wt_domains, classes = domain_list, match_by = "domain")
+# classify visits via domain
+# for the example, just renaming "domain" column
 domain_list$host <- domain_list$domain
-wt_hosts <- extract_host(wt, drop_na = F)
+wt_hosts <- extract_host(wt, drop_na = FALSE)
 wt_classes <- classify_visits(wt_hosts, classes = domain_list, match_by = "host")
+# classify visits with pattern matching
+# for the example, any value in "domain" treated as pattern
 data("domain_list")
-regex_list <- domain_list[type == "newsportals"]
-wt_classes <- classify_visits(wt, classes = regex_list, match_by = "regex", regex_on = "domain")
-}
+regex_list <- domain_list[type == "facebook"]
+wt_classes <- classify_visits(wt[1:5000], classes = regex_list,
+                              match_by = "regex", regex_on = "domain")
+# classify visits via domain and only return class "search"
+data("domain_list")
+wt_classes <- classify_visits(wt_domains, classes = domain_list,
+                              match_by = "domain", return_rows_by = "type",
+                              return_rows_val = "search")
 }

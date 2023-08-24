@@ -2,25 +2,34 @@
 % Please edit documentation in R/preprocess.R
 \name{drop_query}
 \alias{drop_query}
-\title{Drop query/fragment from URL}
+\title{Drop the query and fragment from URL
+#' @description
+\code{drop_query()} adds the URL without query and fragment as a new column.
+The query is defined as the part following a "?" after the path.
+The fragement is anything following a "#" after the query.}
 \usage{
-drop_query(wt, varname = "url", drop_na = TRUE)
+drop_query(wt, varname = "url")
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{varname}{name of the URL variable from which to drop the query/fragment. Defaults to "url".}
-
-\item{drop_na}{boolean. Whether rows for which the URL cannot be split into its components should be dropped from the data. Defaults to TRUE.}
+\item{varname}{character. name of the column from which to extract the host.
+Defaults to \code{"url"}.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called "\if{html}{\out{<varname>}}_noquery"
+webtrack data.table with the same columns as wt
+and a new column called \code{'<varname>_noquery'}
 }
 \description{
-Drops the query and fragment from a URL, i.e., everything after a "?" or "#"
+Drop the query and fragment from URL
+#' @description
+\code{drop_query()} adds the URL without query and fragment as a new column.
+The query is defined as the part following a "?" after the path.
+The fragement is anything following a "#" after the query.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# Extract URL without query/fragment
 wt <- drop_query(wt)
 }

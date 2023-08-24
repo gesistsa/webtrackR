@@ -2,25 +2,35 @@
 % Please edit documentation in R/preprocess.R
 \name{extract_host}
 \alias{extract_host}
-\title{Extract host from url}
+\title{Extract the host from URL}
 \usage{
 extract_host(wt, varname = "url", drop_na = TRUE)
 }
 \arguments{
-\item{wt}{webtrack data object}
+\item{wt}{webtrack data object.}
 
-\item{varname}{character. name of the URL variable from which to extract the host. Defaults to "url".}
+\item{varname}{character. Name of the column from which to extract the host.
+Defaults to \code{"url"}.}
 
-\item{drop_na}{boolean. Whether rows for which no host can be extracted should be dropped from the data. Defaults to TRUE.}
+\item{drop_na}{boolean. Determines whether rows for which no host can be extracted
+should be dropped from the data. Defaults to \code{TRUE}.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called 'host' (or, if varname not equal to 'url', '\if{html}{\out{<varname>}}_host')
+webtrack data.table with the same columns as wt
+and a new column called \code{'host'} (or, if varname not equal to \code{'url'}, \code{'<varname>_host'})
 }
 \description{
-Extracts the host from urls. The host is defined as the part between the scheme (e.g., "https://") and the subdirectory.
+\code{extract_host()} adds the host of a URL as a new column.
+The host is defined as the part following the scheme (e.g., "https://") and
+preceding the subdirectory (anything following the next "/"). Note that
+for URL entries like \verb{chrome-extension://soomething} or \verb{http://192.168.0.1/something},
+result will be set to \code{NA}.
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# Extract host and drop rows without host
 wt <- extract_host(wt)
+# Extract host and keep rows without host
+wt <- extract_host(wt, drop_na = FALSE)
 }

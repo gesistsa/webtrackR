@@ -2,23 +2,28 @@
 % Please edit documentation in R/preprocess.R
 \name{extract_path}
 \alias{extract_path}
-\title{Extract path from url}
+\title{Extract the path from URL}
 \usage{
 extract_path(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object}
 
-\item{varname}{name of the URL variable from which to extract the domain Defaults to "url".}
+\item{varname}{character. name of the column from which to extract the host.
+Defaults to \code{"url"}.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called 'path' (or, if varname not equal to 'url', '\if{html}{\out{<varname>}}_path')
+webtrack data.table with the same columns as wt
+and a new column called \code{'path'} (or, if varname not equal to \code{'url'}, \code{'<varname>_path'})
 }
 \description{
-Extracts the path from urls.
+\code{extract_path()} adds the path of a URL as a new column.
+The path is defined as the part following the host but not including a
+query (anything after a "?") or a fragment (anything after a "#").
 }
 \examples{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
+# Extract path
 wt <- extract_path(wt)
 }

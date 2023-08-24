@@ -4,7 +4,7 @@
 \alias{wt_dt}
 \alias{as.wt_dt}
 \alias{is.wt_dt}
-\title{An S3 class, based on \link{data.table}, to store webtrack data}
+\title{An S3 class, based on \link{data.table}, to store web tracking data}
 \usage{
 as.wt_dt(
   x,
@@ -15,22 +15,25 @@ as.wt_dt(
 is.wt_dt(x)
 }
 \arguments{
-\item{x}{data.frame containing the needed set of variables (panelist_id,url
-and timestamp) but not necessarily named as such.}
+\item{x}{data.frame containing a necessary set of columns, namely
+panelist's ID, visit URL and visit timestamp.}
 
-\item{timestamp_format}{string. Specify the raw timestamp's formatting. Defaults to "\%Y-\%m-\%d \%H:\%M:\%OS".}
+\item{timestamp_format}{string. Specifies the raw timestamp's formatting.
+Defaults to \code{"\%Y-\%m-\%d \%H:\%M:\%OS"}.}
 
-\item{varnames}{named vector of variable names that contain information "panelist_id", "url", "timestamp".}
+\item{varnames}{Named vector of column names, which contain the panelist's ID
+(\code{panelist_id}), the visit's URL (\code{url}) and the visit's timestamp (\code{timestamp}).}
 }
 \value{
-a webtrack data object
+a webtrack data object with at least columns \code{panelist_id}, \code{url}
+and \code{timestamp}
 
 logical. TRUE if x is a webtrack data object and FALSE otherwise
 }
 \description{
-An S3 class, based on \link{data.table}, to store webtrack data
+An S3 class, based on \link{data.table}, to store web tracking data
 
-Convert a data.frame containing webtrack data to a wt_dt object
+Convert a data.frame containing web tracking data to a \code{wt_dt} object
 }
 \details{
 A \code{wt_dt} table is a \link{data.table}.
