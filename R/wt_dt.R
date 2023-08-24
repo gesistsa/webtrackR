@@ -4,7 +4,6 @@
 #' Therefore, it can be used by any function that would work on a [data.frame] or a [data.table].
 #' Most of the operation such as variable creation, subsetting and joins are inherited from the [data.table]
 #' `[]` operator, following the convention `DT[i,j,by]` (see data table package for detail).
-#' These operations are applied on the data.
 #' @name wt_dt
 #' @seealso
 #' * [data.table] -- on which `wt_dt` is based
