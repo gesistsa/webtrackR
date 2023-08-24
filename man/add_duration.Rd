@@ -50,6 +50,8 @@ wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
 # Defining cutoff at 10 minutes, replacing those exceeding cutoff to 5 minutes,
 # and setting duration before device switch to `NA`:
-wt <- add_duration(wt, cutoff = 600, replace_by = 300,
-                   device_switch_na = TRUE, device_var = "device")
+wt <- add_duration(wt,
+  cutoff = 600, replace_by = 300,
+  device_switch_na = TRUE, device_var = "device"
+)
 }

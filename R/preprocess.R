@@ -27,8 +27,10 @@
 #' wt <- add_duration(wt)
 #' # Defining cutoff at 10 minutes, replacing those exceeding cutoff to 5 minutes,
 #' # and setting duration before device switch to `NA`:
-#' wt <- add_duration(wt, cutoff = 600, replace_by = 300,
-#'                    device_switch_na = TRUE, device_var = "device")
+#' wt <- add_duration(wt,
+#'   cutoff = 600, replace_by = 300,
+#'   device_switch_na = TRUE, device_var = "device"
+#' )
 #' @export
 add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA,
                          device_switch_na = FALSE, device_var = NULL) {
@@ -249,7 +251,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' `www.mysite.blogspot.com`, our function, and indeed the packages we are aware of,
 #' would extract the domain as `mysite.blogspot.com`, although you might think of
 #' `blogspot.com` as the domain.
-#' For details, see \link[github.com/google/guava/wiki/InternetDomainNameExplained]{https://github.com/google/guava/wiki/InternetDomainNameExplained}
+#' For details, see [here](https://github.com/google/guava/wiki/InternetDomainNameExplained)
 #' @param wt webtrack data object.
 #' @param varname character. Name of the column from which to extract the host.
 #' Defaults to `"url"`.
@@ -259,7 +261,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' @importFrom data.table is.data.table fcase
 #' @return webtrack data.table with the same columns as wt
 #' and a new column called `'domain'`
-#'(or, if varname not equal to `'url'`, `'<varname>_domain'`)
+#' (or, if varname not equal to `'url'`, `'<varname>_domain'`)
 #' @examples
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -283,13 +285,15 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
     wt[, domain := fcase(
       is.na(tmp_suffix), NA_character_,
       !is.na(tmp_suffix) & is.na(tmp_domain_name), tmp_suffix,
-      !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix))]
+      !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix)
+    )]
     n_na <- nrow(wt[is.na(domain)])
   } else {
     wt[, paste0(varname, "_domain") := fcase(
       is.na(tmp_suffix), NA_character_,
       !is.na(tmp_suffix) & is.na(tmp_domain_name), tmp_suffix,
-      !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix))]
+      !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix)
+    )]
     n_na <- nrow(wt[is.na(paste0(varname, "_domain"))])
   }
   wt[, tmp_host := NULL]

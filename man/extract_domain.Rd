@@ -41,7 +41,7 @@ One example of such a public, non-registry suffix is \code{blogspot.com}. For a 
 \code{www.mysite.blogspot.com}, our function, and indeed the packages we are aware of,
 would extract the domain as \code{mysite.blogspot.com}, although you might think of
 \code{blogspot.com} as the domain.
-For details, see \link[github.com/google/guava/wiki/InternetDomainNameExplained]{https://github.com/google/guava/wiki/InternetDomainNameExplained}
+For details, see \href{https://github.com/google/guava/wiki/InternetDomainNameExplained}{here}
 }
 \examples{
 data("testdt_tracking")

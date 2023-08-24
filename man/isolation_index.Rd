@@ -2,36 +2,39 @@
 % Please edit documentation in R/indices.R
 \name{isolation_index}
 \alias{isolation_index}
-\title{Isolation Index
-In terms of news exposure, the isolation index captures the extent to which conservatives disproportionately visit outlets whose other visitors are conservative}
+\title{Isolation Index}
 \usage{
-isolation_index(left, right)
+isolation_index(grp_A, grp_B)
 }
 \arguments{
-\item{left}{vector (usually corresponds to a column in a webtrack data.table) indicating the number of left leaning individuals using an outlet}
+\item{grp_A}{vector (usually corresponds to a column in a webtrack
+data.table) indicating the number of individuals of group A using a website}
 
-\item{right}{vector (usually corresponds to a column in a webtrack data.table) indicating the number of right leaning individuals using an outlet}
+\item{grp_B}{vector (usually corresponds to a column in a webtrack
+data.table) indicating the number of individuals of group B using a website}
 }
 \value{
 numeric value between 0 and 1. 0 indicates no isolation and 1 perfect isolation
 }
 \description{
-Isolation Index
-In terms of news exposure, the isolation index captures the extent to which conservatives disproportionately visit outlets whose other visitors are conservative
+Given two groups (A and B) of individuals, the isolation index captures the
+extent to which group A disproportionately visit websites whose other visitors
+are also members of group A.
 }
 \details{
-a value of 1 indicates that left leaning and right leaning users do not have any outlet overlap. A value of 0 means both use exactly the same outlets
+a value of 1 indicates that the websites visited by group A and group B do not overlap.
+A value of 0 means both visit exactly the same websites
 }
 \examples{
 # perfect isolation
-left <-  c(5,5,0,0)
-right <- c(0,0,5,5)
-isolation_index(left,right)
+left <- c(5, 5, 0, 0)
+right <- c(0, 0, 5, 5)
+isolation_index(left, right)
 
-#perfect overlap
-left <-  c(5,5,5,5)
-right <- c(5,5,5,5)
-isolation_index(left,right)
+# perfect overlap
+left <- c(5, 5, 5, 5)
+right <- c(5, 5, 5, 5)
+isolation_index(left, right)
 }
 \references{
 Cutler, David M., Edward L. Glaeser, and Jacob L. Vigdor. "The rise and decline of the American ghetto." Journal of political economy 107.3 (1999): 455-506.
