@@ -33,8 +33,6 @@ the CRAN version can be installed with
 install.packages("webtrackR")
 ```
 
-## S3 class
-
 ## S3 class `wt_dt`
 
 The package defines an S3 class called `wt_dt` which inherits most of
