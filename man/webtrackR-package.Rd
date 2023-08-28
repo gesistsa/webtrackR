@@ -4,11 +4,11 @@
 \name{webtrackR-package}
 \alias{webtrackR}
 \alias{webtrackR-package}
-\title{webtrackR: Analysing Web Tracking Data and Online News Behaviour}
+\title{webtrackR: Preprocessing and Analyzing Web Tracking Data}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Implements data structures and methods to work with web tracking data. This includes data preprocessing steps, methods to construct audience networks as described in Mangold & Scharkow (2020) \doi{10.1080/19312458.2020.1724274}, and metrics of news audience polarization described in Mangold & Scharkow (2022) \doi{10.1080/19312458.2022.2085249}.
+The R package implements data structures and methods to work with web tracking data. The functions cover data preprocessing steps, enriching web tracking data with external information and methods for the analysis of digital behavior as used in several academic papers.
 }
 \seealso{
 Useful links:
@@ -24,9 +24,9 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Bernhard Clemm von Hohenberg \email{bernhard.clemm@gesis.org} (\href{https://orcid.org/0000-0002-6976-9745}{ORCID})
   \item Frank Mangold \email{frank.mangold@gesis.org} (\href{https://orcid.org/0000-0002-9776-3113}{ORCID})
   \item Sebastian Stier \email{sebastian.stier@gesis.org} (\href{https://orcid.org/0000-0002-1217-5778}{ORCID})
-  \item Bernhard Clemm von Hohenberg \email{Bernhard.Clemm@gesis.org} (\href{https://orcid.org/0000-0002-6976-9745}{ORCID})
 }
 
 }
