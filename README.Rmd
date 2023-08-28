@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/webtrackR)](https://CRAN.R-project.org/package=webtrackR)
+[![CRAN Downloads](http://cranlogs.r-pkg.org/badges/webtrackR)](https://CRAN.R-project.org/package=webtrackR)
 [![R-CMD-check](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/schochastics/webtrackR?branch=main)
 <!-- badges: end -->
@@ -46,7 +47,7 @@ Each row in a web tracking data set represents a visit. Raw data are assumed to 
 - `url`: the URL of the visit
 - `timestamp`: the time of the URL visit
 
-The function `as.wt_dt` assigns the `wt_dt` to raw data set. It also allows you to specify the name of the raw variables corresponding to `panelist_id`, `url` and `timestamp`. It also turns the timestamp variable into `POSIXct` format.
+The function `as.wt_dt` assigns the `wt_dt` to raw data set. It also allows you to specify the name of the raw variables corresponding to `panelist_id`, `url` and `timestamp`. Additionally, it turns the timestamp variable into `POSIXct` format.
 
 All preprocessing functions check if these three variables are present. Otherwise an error is thrown.
 
@@ -64,7 +65,8 @@ Several other variables can be derived from the raw data with the following func
 
 ## Classification
 
-- `classify_visits()` allows you to 
+- `classify_visits()` allows you to categorizes visits by either extracting the visit URL's
+ domain or host and matching them to a list of domains or hosts; or by matching a list of regular expressions against the visit URL.
 
 ## Filtering / summarizing / aggregating
 
