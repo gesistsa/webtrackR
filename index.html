@@ -103,7 +103,7 @@
 <li>
 <code>timestamp</code>: the time of the URL visit</li>
 </ul>
-<p>The function <code>as.wt_dt</code> assigns the <code>wt_dt</code> to raw data set. It also allows you to specify the name of the raw variables corresponding to <code>panelist_id</code>, <code>url</code> and <code>timestamp</code>. It also turns the timestamp variable into <code>POSIXct</code> format.</p>
+<p>The function <code>as.wt_dt</code> assigns the <code>wt_dt</code> to raw data set. It also allows you to specify the name of the raw variables corresponding to <code>panelist_id</code>, <code>url</code> and <code>timestamp</code>. Additionally, it turns the timestamp variable into <code>POSIXct</code> format.</p>
 <p>All preprocessing functions check if these three variables are present. Otherwise an error is thrown.</p>
 </div>
 <div class="section level2">
@@ -132,7 +132,7 @@
 </h2>
 <ul>
 <li>
-<code><a href="reference/classify_visits.html">classify_visits()</a></code> allows you to</li>
+<code><a href="reference/classify_visits.html">classify_visits()</a></code> allows you to categorizes visits by either extracting the visit URL’s domain or host and matching them to a list of domains or hosts; or by matching a list of regular expressions against the visit URL.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -187,10 +187,8 @@
 <code>type</code> can be one of “pmi”, “phi”, “disparity”, “sdsm”, or “fdsm”</li>
 </ul>
 <!-- ### Ideology
-
-Top 500 Bakshy scores are available in the package
-
-``` r
+&#10;Top 500 Bakshy scores are available in the package
+&#10;``` r
 data("bakshy")
 ``` -->
 </div>
@@ -234,6 +232,7 @@ data("bakshy")
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=webtrackR" class="external-link"><img src="https://www.r-pkg.org/badges/version/webtrackR" alt="CRAN status"></a></li>
+<li><a href="https://CRAN.R-project.org/package=webtrackR" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/webtrackR" alt="CRAN Downloads"></a></li>
 <li><a href="https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/schochastics/webtrackR?branch=main" class="external-link"><img src="https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
