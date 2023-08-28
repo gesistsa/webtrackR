@@ -1,7 +1,7 @@
 url: https://schochastics.github.io/webtrackR/
 template:
   bootstrap: 5
-   bslib:
+  bslib:
     bg: "#F9F7F7"
     fg: "#112D4E"
     primary: "#3F72AF"
