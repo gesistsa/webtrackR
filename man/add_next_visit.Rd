@@ -2,11 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{add_next_visit}
 \alias{add_next_visit}
-\title{Add the next visit as a new column
-#' @description
-\code{add_next_visit()} adds the subsequent visit, as determined by order of
-timestamps as a new column. The next visit can be added as either the full URL,
-the extracted host or the extracted domain, depending on \code{level}.}
+\title{Add the next visit as a new column}
 \usage{
 add_next_visit(wt, level = "url")
 }
@@ -20,8 +16,6 @@ webtrack data.table with the same columns as wt and
 a new column called \code{url_next},\code{host_next} or \code{domain_next}.
 }
 \description{
-Add the next visit as a new column
-#' @description
 \code{add_next_visit()} adds the subsequent visit, as determined by order of
 timestamps as a new column. The next visit can be added as either the full URL,
 the extracted host or the extracted domain, depending on \code{level}.

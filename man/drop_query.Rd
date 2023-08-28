@@ -2,11 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{drop_query}
 \alias{drop_query}
-\title{Drop the query and fragment from URL
-#' @description
-\code{drop_query()} adds the URL without query and fragment as a new column.
-The query is defined as the part following a "?" after the path.
-The fragement is anything following a "#" after the query.}
+\title{Drop the query and fragment from URL}
 \usage{
 drop_query(wt, varname = "url")
 }
@@ -21,8 +17,6 @@ webtrack data.table with the same columns as wt
 and a new column called \code{'<varname>_noquery'}
 }
 \description{
-Drop the query and fragment from URL
-#' @description
 \code{drop_query()} adds the URL without query and fragment as a new column.
 The query is defined as the part following a "?" after the path.
 The fragement is anything following a "#" after the query.

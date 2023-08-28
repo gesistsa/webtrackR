@@ -349,7 +349,7 @@ extract_path <- function(wt, varname = "url") {
 }
 
 #' Drop the query and fragment from URL
-#' #' @description
+#' @description
 #' `drop_query()` adds the URL without query and fragment as a new column.
 #' The query is defined as the part following a "?" after the path.
 #' The fragement is anything following a "#" after the query.
@@ -383,7 +383,7 @@ drop_query <- function(wt, varname = "url") {
 }
 
 #' Add the next visit as a new column
-#' #' @description
+#' @description
 #' `add_next_visit()` adds the subsequent visit, as determined by order of
 #' timestamps as a new column. The next visit can be added as either the full URL,
 #' the extracted host or the extracted domain, depending on `level`.
@@ -429,7 +429,7 @@ add_next_visit <- function(wt, level = "url") {
 }
 
 #' Add the previous visit as a new column
-#' #' @description
+#' @description
 #' `add_previous_visit()` adds the previous visit, as determined by order of
 #' timestamps as a new column The previous visit can be added as either the full URL,
 #' the extracted host or the extracted domain, depending on `level`.

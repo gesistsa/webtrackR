@@ -2,11 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{add_previous_visit}
 \alias{add_previous_visit}
-\title{Add the previous visit as a new column
-#' @description
-\code{add_previous_visit()} adds the previous visit, as determined by order of
-timestamps as a new column The previous visit can be added as either the full URL,
-the extracted host or the extracted domain, depending on \code{level}.}
+\title{Add the previous visit as a new column}
 \usage{
 add_previous_visit(wt, level = "url")
 }
@@ -20,8 +16,6 @@ webtrack data.table with the same columns as wt and
 a new column called \code{url_previous},\code{host_previous} or \code{domain_previous.}.
 }
 \description{
-Add the previous visit as a new column
-#' @description
 \code{add_previous_visit()} adds the previous visit, as determined by order of
 timestamps as a new column The previous visit can be added as either the full URL,
 the extracted host or the extracted domain, depending on \code{level}.
