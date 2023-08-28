@@ -5,7 +5,7 @@ Authors@R: c(
     person("David", "Schoch", email = "david@schochastics.net", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2952-4812")),
     person("Bernhard", "Clemm von Hohenberg", email = "bernhard.clemm@gesis.org", role = "aut",
-            comment = c(ORCID = "0000-0002-6976-9745"))
+            comment = c(ORCID = "0000-0002-6976-9745")),
     person("Frank", "Mangold", email = "frank.mangold@gesis.org", role = "aut",
            comment = c(ORCID = "0000-0002-9776-3113")),
     person("Sebastian", "Stier", email = "sebastian.stier@gesis.org", role = "aut",
