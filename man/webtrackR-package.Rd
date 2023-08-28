@@ -14,6 +14,7 @@ Implements data structures and methods to work with web tracking data. This incl
 Useful links:
 \itemize{
   \item \url{https://github.com/schochastics/webtrackR}
+  \item \url{https://schochastics.github.io/webtrackR/}
   \item Report bugs at \url{https://github.com/schochastics/webtrackR/issues}
 }
 

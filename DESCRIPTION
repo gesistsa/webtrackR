@@ -12,7 +12,7 @@ Authors@R: c(
             comment = c(ORCID = "0000-0002-6976-9745"))
     )
 Description: Implements data structures and methods to work with web tracking data. This includes data preprocessing steps, methods to construct audience networks as described in Mangold & Scharkow (2020) <doi:10.1080/19312458.2020.1724274>, and metrics of news audience polarization described in Mangold & Scharkow (2022) <doi:10.1080/19312458.2022.2085249>.
-URL: https://github.com/schochastics/webtrackR
+URL: https://github.com/schochastics/webtrackR, https://schochastics.github.io/webtrackR/
 BugReports: https://github.com/schochastics/webtrackR/issues
 Depends: 
     R (>= 3.5.0)
