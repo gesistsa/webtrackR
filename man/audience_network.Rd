@@ -25,9 +25,11 @@ audience network as igraph object
 audience network
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
 wt <- suppressWarnings(extract_domain(wt))
 network <- audience_network(wt, type = "pmi", cutoff = 120)
+}
 }

@@ -23,6 +23,7 @@ with entries \code{A[i,j]=1} if panelist \code{i} visited web site \code{j} at l
 Web site can be defined, for example, by the URL's domain, or its host.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
@@ -32,6 +33,7 @@ incidence <- audience_incidence(wt)
 # create incidence matrix using hosts as second mode
 wt <- suppressWarnings(extract_host(wt))
 incidence <- audience_incidence(wt, mode2 = "host")
+}
 }
 \seealso{
 To create audience networks see \link{audience_network}.

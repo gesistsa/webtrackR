@@ -10,6 +10,7 @@
 #' @return Incidence matrix of a two-mode network
 #' @seealso To create audience networks see [audience_network].
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
@@ -19,6 +20,7 @@
 #' # create incidence matrix using hosts as second mode
 #' wt <- suppressWarnings(extract_host(wt))
 #' incidence <- audience_incidence(wt, mode2 = "host")
+#' }
 #' @export
 audience_incidence <- function(wt, mode2 = "domain", cutoff = 3) {
   # .N = 0 #revisit
@@ -48,11 +50,13 @@ audience_incidence <- function(wt, mode2 = "domain", cutoff = 3) {
 #' @param alpha significance level
 #' @return audience network as igraph object
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' wt <- add_duration(wt)
 #' wt <- suppressWarnings(extract_domain(wt))
 #' network <- audience_network(wt, type = "pmi", cutoff = 120)
+#' }
 #' @export
 audience_network <- function(wt, mode2 = "domain", cutoff = 3, type = "pmi", alpha = 0.05) {
   A <- audience_incidence(wt, mode2 = mode2, cutoff = cutoff)
