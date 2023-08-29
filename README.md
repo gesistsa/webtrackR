@@ -81,7 +81,7 @@ following functions:
   next URL, domain, or host (defined by `level`) as a new variable.
 - `add_referral()` adds a new variable indicating whether a visit was
   referred by a social media platform. Follows the logic of Schmidt et
-  al., [2023](https://doi.org/10.31235/osf.io/cks68).
+  al., [(2023)](https://doi.org/10.31235/osf.io/cks68).
 - `add_title()` downloads the title of a website (the text within the
   `<title>` tag of a web site’s `<head>`) and adds it as a new variable.
 - `add_panelist_data()`. Joins a data set containing information about
