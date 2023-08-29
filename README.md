@@ -30,8 +30,8 @@ You can install the development version of webtrackR from
 devtools::install_github("schochastics/webtrackR")
 ```
 
-The [CRAN](https://cran.r-project.org/web/packages/webtrackR/index.html)
-version can be installed with:
+The [CRAN](https://CRAN.R-project.org/package=webtrackR) version can be
+installed with:
 
 ``` r
 install.packages("webtrackR")
