@@ -91,7 +91,7 @@ wt <- add_duration(wt)
 wt <- extract_domain(wt)
 
 # drop duplicates (consecutive visits to the same URL within one second)
-wt_dedup <- deduplicate(wt, within = 1, method = "drop")
+wt <- deduplicate(wt, within = 1, method = "drop")
 
 # load example domain classification and classify domains
 data("domain_list")
