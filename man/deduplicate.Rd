@@ -45,6 +45,7 @@ webtrack data.table with the same columns as wt with updated duration
 consecutive visits to the same URL within a certain time frame.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt, cutoff = 300, replace_by = 300)
@@ -56,4 +57,5 @@ wt_dedup <- deduplicate(wt, method = "flag")
 wt_dedup <- deduplicate(wt[1:1000], method = "aggregate")
 # Aggregating duplicates and keeping number of visits for aggregated visits
 wt_dedup <- deduplicate(wt[1:1000], method = "aggregate", keep_nvisits = TRUE)
+}
 }

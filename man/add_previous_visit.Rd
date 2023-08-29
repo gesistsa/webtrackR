@@ -21,6 +21,7 @@ timestamps as a new column The previous visit can be added as either the full UR
 the extracted host or the extracted domain, depending on \code{level}.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # Adding previous full URL as new column
@@ -29,4 +30,5 @@ wt <- add_previous_visit(wt, level = "url")
 wt <- add_previous_visit(wt, level = "host")
 # Adding previous domain as new column
 wt <- add_previous_visit(wt, level = "domain")
+}
 }

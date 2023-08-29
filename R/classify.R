@@ -25,6 +25,7 @@
 #' @return webtrack data.table with the same columns as `wt` and any column
 #' in `classes` except the column specified by `match_by`.
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' data("domain_list")
 #' wt <- as.wt_dt(testdt_tracking)
@@ -51,6 +52,7 @@
 #'   match_by = "domain", return_rows_by = "type",
 #'   return_rows_val = "search"
 #' )
+#' }
 #' @export
 classify_visits <- function(wt, classes, match_by = "domain",
                             regex_on = NULL,

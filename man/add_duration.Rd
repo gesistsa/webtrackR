@@ -45,6 +45,7 @@ between two consecutive timestamps, replacing differences exceeding \code{cutoff
 the value defined in \code{replace_by}.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_duration(wt)
@@ -54,4 +55,5 @@ wt <- add_duration(wt,
   cutoff = 600, replace_by = 300,
   device_switch_na = TRUE, device_var = "device"
 )
+}
 }

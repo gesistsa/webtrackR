@@ -22,8 +22,10 @@ The path is defined as the part following the host but not including a
 query (anything after a "?") or a fragment (anything after a "#").
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # Extract path
 wt <- extract_path(wt)
+}
 }

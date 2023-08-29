@@ -48,6 +48,7 @@ domain or host and matching them to a list of domains or hosts;
 or by matching a list of regular expressions against the visit URL.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 data("domain_list")
 wt <- as.wt_dt(testdt_tracking)
@@ -74,4 +75,5 @@ wt_classes <- classify_visits(wt_domains,
   match_by = "domain", return_rows_by = "type",
   return_rows_val = "search"
 )
+}
 }

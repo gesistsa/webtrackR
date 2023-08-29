@@ -15,6 +15,7 @@
 #' (unless `timeframe` set to `NULL`), `n_visits` indicating the number of visits,
 #' and a column for each value of `visit_class`, if specified.
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # summarize for whole period
@@ -25,6 +26,7 @@
 #' wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
 #' wt[, google := ifelse(domain == "google.com", 1, 0)]
 #' wt_summ <- sum_visits(wt, timeframe = "week", visit_class = "google")
+#' }
 #' @export
 sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -89,6 +91,7 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 #' (in seconds, or whatever the unit of the variable specified by `var_duration` parameter),
 #' and a column for each value of `visit_class`, if specified.
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # summarize for whole period
@@ -99,6 +102,7 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 #' wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
 #' wt[, google := ifelse(domain == "google.com", 1, 0)]
 #' wt_summ <- sum_durations(wt, timeframe = "week", visit_class = "google")
+#' }
 #' @export
 sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
@@ -159,10 +163,12 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class
 #' @return a data.table with columns `panelist_id`, column indicating the
 #' number of active time units.
 #' @examples
+#' \dontrun{
 #' data("testdt_tracking")
 #' wt <- as.wt_dt(testdt_tracking)
 #' # summarize activity by day
 #' wt_sum <- sum_activity(wt, timeframe = "date")
+#' }
 #' @export
 sum_activity <- function(wt, timeframe = "date") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))

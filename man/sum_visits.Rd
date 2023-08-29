@@ -28,6 +28,7 @@ and a column for each value of \code{visit_class}, if specified.
 and optionally by \code{visit_class} of visit.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # summarize for whole period
@@ -38,4 +39,5 @@ wt_summ <- sum_visits(wt, timeframe = "week")
 wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
 wt[, google := ifelse(domain == "google.com", 1, 0)]
 wt_summ <- sum_visits(wt, timeframe = "week", visit_class = "google")
+}
 }

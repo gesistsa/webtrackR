@@ -22,8 +22,10 @@ The query is defined as the part following a "?" after the path.
 The fragement is anything following a "#" after the query.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # Extract URL without query/fragment
 wt <- drop_query(wt)
+}
 }

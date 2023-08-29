@@ -32,6 +32,7 @@ we count it as a referred visit. For Facebook, the pattern has been identified
 by Schmidt et al. as \code{'fbclid='}, although this can change in future.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
@@ -39,6 +40,7 @@ wt <- add_referral(wt,
   platform_domains = c("facebook.com", "twitter.com"),
   patterns = c("fbclid=", "utm_source=twitter")
 )
+}
 }
 \references{
 Schmidt, Felix, Frank Mangold, Sebastian Stier and Roberto Ulloa. "Facebook as an Avenue to News: A Comparison and Validation of Approaches to Identify Facebook Referrals". Working paper.

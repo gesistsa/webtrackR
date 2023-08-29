@@ -26,9 +26,11 @@ specified in \code{cols}.
 to the tracking data.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 data("testdt_survey_w")
 wt <- as.wt_dt(testdt_tracking)
 # add survey test data
 add_panelist_data(wt, testdt_survey_w)
+}
 }

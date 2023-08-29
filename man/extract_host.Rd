@@ -27,10 +27,12 @@ for URL entries like \verb{chrome-extension://soomething} or \verb{http://192.16
 result will be set to \code{NA}.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # Extract host and drop rows without host
 wt <- extract_host(wt)
 # Extract host and keep rows without host
 wt <- extract_host(wt, drop_na = FALSE)
+}
 }

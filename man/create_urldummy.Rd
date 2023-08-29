@@ -20,9 +20,11 @@ webtrack object with the same columns and a new column called "name" including t
 Create an urldummy variable from a data.table object
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- extract_domain(wt)
 code_urls <- "https://dkr1.ssisurveys.com/tzktsxomta"
 create_urldummy(wt, dummy = code_urls, name = "test_dummy")
+}
 }

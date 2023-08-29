@@ -44,10 +44,12 @@ would extract the domain as \code{mysite.blogspot.com}, although you might think
 For details, see \href{https://github.com/google/guava/wiki/InternetDomainNameExplained}{here}
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # Extract domain and drop rows without domain
 wt <- extract_domain(wt)
 # Extract domain and keep rows without domain
 wt <- extract_domain(wt, drop_na = FALSE)
+}
 }

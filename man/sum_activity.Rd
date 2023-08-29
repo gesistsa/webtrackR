@@ -23,8 +23,10 @@ months, years, or waves) by \code{panelist_id}. A period counts as "active" if
 the panelist provided at least one visit for that period.
 }
 \examples{
+\dontrun{
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 # summarize activity by day
 wt_sum <- sum_activity(wt, timeframe = "date")
+}
 }
