@@ -2,6 +2,8 @@
 
 added many new functions, better example data and more unit tests
 
+*(examples set to dontrun because realistic example data is quite large and
+examples would not run below 5 sec)*
 
 # Test environments
 * ubuntu 22.04, R 4.3.1
