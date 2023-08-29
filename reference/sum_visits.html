@@ -87,7 +87,8 @@ and a column for each value of <code>visit_class</code>, if specified.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"testdt_tracking"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"testdt_tracking"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="wt_dt.html">as.wt_dt</a></span><span class="op">(</span><span class="va">testdt_tracking</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># summarize for whole period</span></span></span>
 <span class="r-in"><span><span class="va">wt_summ</span> <span class="op">&lt;-</span> <span class="fu">sum_visits</span><span class="op">(</span><span class="va">wt</span><span class="op">)</span></span></span>
@@ -96,21 +97,8 @@ and a column for each value of <code>visit_class</code>, if specified.</p>
 <span class="r-in"><span><span class="co"># create a class variable to summarize by class</span></span></span>
 <span class="r-in"><span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu"><a href="extract_domain.html">extract_domain</a></span><span class="op">(</span><span class="va">wt</span>, drop_na <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wt</span><span class="op">[</span>, <span class="va">google</span> <span class="op">:=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">domain</span> <span class="op">==</span> <span class="st">"google.com"</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># webtrack data: 49,451 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    panelist_id  wave timestamp           url                device domain google</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:47</span> https://dkr1.ssis… mobile ssisu…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:49</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:50</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:50</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:53</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:53</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:53</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:59</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:59</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AiDS4k1rQZ      1 2019-02-28 <span style="color: #949494;">19:09:59</span> https://roirocket… mobile decip…      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 49,441 more rows</span></span>
 <span class="r-in"><span><span class="va">wt_summ</span> <span class="op">&lt;-</span> <span class="fu">sum_visits</span><span class="op">(</span><span class="va">wt</span>, timeframe <span class="op">=</span> <span class="st">"week"</span>, visit_class <span class="op">=</span> <span class="st">"google"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

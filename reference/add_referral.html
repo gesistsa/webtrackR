@@ -96,13 +96,15 @@ by Schmidt et al. as <code>'fbclid='</code>, although this can change in future.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"testdt_tracking"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"testdt_tracking"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="wt_dt.html">as.wt_dt</a></span><span class="op">(</span><span class="va">testdt_tracking</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu">add_referral</span><span class="op">(</span><span class="va">wt</span>, platform_domains <span class="op">=</span> <span class="st">"facebook.com"</span>, patterns <span class="op">=</span> <span class="st">"fbclid="</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu">add_referral</span><span class="op">(</span><span class="va">wt</span>,</span></span>
 <span class="r-in"><span>  platform_domains <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"facebook.com"</span>, <span class="st">"twitter.com"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  patterns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fbclid="</span>, <span class="st">"utm_source=twitter"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
