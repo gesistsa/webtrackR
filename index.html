@@ -165,7 +165,7 @@
 <span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/extract_domain.html">extract_domain</a></span><span class="op">(</span><span class="va">wt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># drop duplicates (consecutive visits to the same URL within one second)</span></span>
-<span><span class="va">wt_dedup</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/deduplicate.html">deduplicate</a></span><span class="op">(</span><span class="va">wt</span>, within <span class="op">=</span> <span class="fl">1</span>, method <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
+<span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/deduplicate.html">deduplicate</a></span><span class="op">(</span><span class="va">wt</span>, within <span class="op">=</span> <span class="fl">1</span>, method <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># load example domain classification and classify domains</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"domain_list"</span><span class="op">)</span></span>
