@@ -1,0 +1,9 @@
+bibentry(
+  bibtype  = "Manual",
+  title    = "webtrackR: Preprocessing and Analyzing Web Tracking Data",
+  author   = c(as.person("David Schoch"),as.person("Bernhard Clemm von
+  Hohenberg"), as.person("Frank Mangold"), as.person("Sebastian Stier")),
+  year     = 2023,
+  textVersion= "Schoch, D.; Clemm von Hohenberg, B.; Mangold, F.; Stier, S.
+  (2023). webtrackR: Preprocessing and Analyzing Web Tracking Data"
+)
