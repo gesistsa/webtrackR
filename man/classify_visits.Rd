@@ -63,11 +63,15 @@ wt_classes <- classify_visits(wt_hosts, classes = domain_list, match_by = "host"
 # for the example, any value in "domain" treated as pattern
 data("domain_list")
 regex_list <- domain_list[type == "facebook"]
-wt_classes <- classify_visits(wt[1:5000], classes = regex_list,
-                              match_by = "regex", regex_on = "domain")
+wt_classes <- classify_visits(wt[1:5000],
+  classes = regex_list,
+  match_by = "regex", regex_on = "domain"
+)
 # classify visits via domain and only return class "search"
 data("domain_list")
-wt_classes <- classify_visits(wt_domains, classes = domain_list,
-                              match_by = "domain", return_rows_by = "type",
-                              return_rows_val = "search")
+wt_classes <- classify_visits(wt_domains,
+  classes = domain_list,
+  match_by = "domain", return_rows_by = "type",
+  return_rows_val = "search"
+)
 }

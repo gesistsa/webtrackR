@@ -40,13 +40,17 @@
 #' # for the example, any value in "domain" treated as pattern
 #' data("domain_list")
 #' regex_list <- domain_list[type == "facebook"]
-#' wt_classes <- classify_visits(wt[1:5000], classes = regex_list,
-#'                               match_by = "regex", regex_on = "domain")
+#' wt_classes <- classify_visits(wt[1:5000],
+#'   classes = regex_list,
+#'   match_by = "regex", regex_on = "domain"
+#' )
 #' # classify visits via domain and only return class "search"
 #' data("domain_list")
-#' wt_classes <- classify_visits(wt_domains, classes = domain_list,
-#'                               match_by = "domain", return_rows_by = "type",
-#'                               return_rows_val = "search")
+#' wt_classes <- classify_visits(wt_domains,
+#'   classes = domain_list,
+#'   match_by = "domain", return_rows_by = "type",
+#'   return_rows_val = "search"
+#' )
 #' @export
 classify_visits <- function(wt, classes, match_by = "domain",
                             regex_on = NULL,
@@ -70,7 +74,7 @@ classify_visits <- function(wt, classes, match_by = "domain",
     vars_exist(wt, vars = c("url"))
     stopifnot("couldn't find the column set in 'regex_on' in the classes data" = regex_on %in% names(classes))
     wt <- drop_query(wt)
-    wt <- wt[, tmp_index := 1:.N]
+    wt <- wt[, tmp_index := seq_len(.N)]
     tmp_wt <- wt[, list(tmp_index, url_noquery)]
     pattern <- paste(classes[[regex_on]], collapse = "|")
     tmp_wt_matched <- tmp_wt[grepl(pattern, url_noquery)]
@@ -85,5 +89,6 @@ classify_visits <- function(wt, classes, match_by = "domain",
     stopifnot("You have to specify return_rows_val if return_rows_by is not NULL" = !is.null(return_rows_val))
     wt <- wt[get(return_rows_by) == return_rows_val]
   }
+  class(wt) <- c("wt_dt", class(wt))
   wt[]
 }
