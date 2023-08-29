@@ -94,42 +94,21 @@ Defaults to <code>NULL</code>.</p></dd>
 <span class="r-in"><span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="wt_dt.html">as.wt_dt</a></span><span class="op">(</span><span class="va">testdt_tracking</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># add survey test data</span></span></span>
 <span class="r-in"><span><span class="fu">add_panelist_data</span><span class="op">(</span><span class="va">wt</span>, <span class="va">testdt_survey_w</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        panelist_id age gender education leftright opinion_w1 opinion_w2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1:  AiDS4k1rQZ  92   male      high         6          5          4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     2:  AiDS4k1rQZ  92   male      high         6          5          4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     3:  AiDS4k1rQZ  92   male      high         6          5          4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     4:  AiDS4k1rQZ  92   male      high         6          5          4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     5:  AiDS4k1rQZ  92   male      high         6          5          4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ---                                                                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49608:  uNzUWueZw3  32   male      high         2          5          7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49609:  uNzUWueZw3  32   male      high         2          5          7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49610:  uNzUWueZw3  32   male      high         2          5          7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49611:  uNzUWueZw3  32   male      high         2          5          7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49612:  uNzUWueZw3  32   male      high         2          5          7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        opinion_w3 wave           timestamp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1:          4    1 2019-02-28 19:09:47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     2:          4    1 2019-02-28 19:09:49</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     3:          4    1 2019-02-28 19:09:50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     4:          4    1 2019-02-28 19:09:50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     5:          4    1 2019-02-28 19:09:53</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ---                                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49608:          2    2 2019-07-09 12:07:54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49609:          2    2 2019-07-09 12:07:57</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49610:          2    2 2019-07-09 12:08:00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49611:          2    2 2019-07-09 12:08:01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49612:          2    2 2019-07-09 12:08:01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                 url  device</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1:       https://dkr1.ssisurveys.com/tzktsxomta  mobile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     2: https://roirocket.decipherinc.com/hivvocmeox  mobile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     3: https://roirocket.decipherinc.com/ubzflwgglx  mobile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     4: https://roirocket.decipherinc.com/hivvocmeox  mobile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     5: https://roirocket.decipherinc.com/evmoispsxv  mobile</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ---                                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49608:           https://www.youtube.com/xlttnqbuml desktop</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49609:           https://www.youtube.com/zoikorgswx desktop</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49610:           https://www.youtube.com/tskionliae desktop</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49611:                     https://www.youtube.com/ desktop</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49612:                     https://www.youtube.com/ desktop</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># webtrack data: 49,612 × 12</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    panelist_id   age gender education leftright opinion_w1 opinion_w2 opinion_w3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> AiDS4k1rQZ     92 male   high              6          5          4          4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 49,602 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: wave &lt;int&gt;, timestamp &lt;dttm&gt;, url &lt;chr&gt;, device &lt;chr&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
