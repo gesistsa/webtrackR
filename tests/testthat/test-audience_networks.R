@@ -1,4 +1,5 @@
 test_that("audience_incidence", {
+  skip_on_cran()
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt)
@@ -9,6 +10,7 @@ test_that("audience_incidence", {
 })
 
 test_that("audience_networks", {
+  skip_on_cran()
   library(igraph)
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
