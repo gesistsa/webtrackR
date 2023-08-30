@@ -1,4 +1,5 @@
 test_that("as.wt_dt", {
+  skip_on_cran()
   data("testdt_tracking")
   class(testdt_tracking) <- "data.frame"
   testdt_tracking$timestamp <- as.character(testdt_tracking$timestamp)
@@ -16,6 +17,7 @@ test_that("as.wt_dt", {
 })
 
 test_that("as.wt_dt errors", {
+  skip_on_cran()
   data("testdt_tracking")
   expect_no_error(as.wt_dt(testdt_tracking))
   names(testdt_tracking)[1] <- "wrong"
@@ -23,6 +25,7 @@ test_that("as.wt_dt errors", {
 })
 
 test_that("is.wt_dt", {
+  skip_on_cran()
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_true(is.wt_dt(wt))
@@ -30,6 +33,7 @@ test_that("is.wt_dt", {
 })
 
 test_that("summary", {
+  skip_on_cran()
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   sum <- utils::capture.output(summary(wt))
@@ -38,6 +42,7 @@ test_that("summary", {
 })
 
 test_that("print", {
+  skip_on_cran()
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   sum <- utils::capture.output(print(wt))
