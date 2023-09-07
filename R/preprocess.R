@@ -18,7 +18,6 @@
 #' the difference to the next timestamp (`FALSE`). Defaults to `FALSE`.
 #' @param device_var character. Column indicating device.
 #' Required if 'device_switch_na' set to `TRUE`. Defaults to `NULL`.
-#' @importFrom data.table is.data.table shift setorder setnames
 #' @return webtrack data.table (ordered by panelist_id and timestamp) with
 #' the same columns as wt and a new column called `duration`.
 #' @examples
@@ -42,16 +41,16 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
     stopifnot("'device_var' must be specified if device_switch_na = TRUE" = !is.null(device_var))
   }
   vars_exist(wt, vars = c("panelist_id", "timestamp", device_var))
-  setorder(wt, panelist_id, timestamp)
-  wt[, duration := as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp), by = "panelist_id"]
+  data.table::setorder(wt, panelist_id, timestamp)
+  wt[, duration := as.numeric(data.table::shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp), by = "panelist_id"]
   wt[, tmp_last := ifelse(is.na(duration), T, F)]
   if (device_switch_na == T) {
-    setnames(wt, device_var, "device")
-    wt[, device_next := shift(device, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+    data.table::setnames(wt, device_var, "device")
+    wt[, device_next := data.table::shift(device, n = 1, type = "lead", fill = NA), by = "panelist_id"]
     wt[tmp_last == T, duration := last_replace_by]
     wt[duration > cutoff & tmp_last == F, duration := replace_by]
     wt[device_next != device & tmp_last == F, duration := NA]
-    setnames(wt, "device", device_var)
+    data.table::setnames(wt, "device", device_var)
     wt[, device_next := NULL]
   } else {
     wt[tmp_last == T, duration := last_replace_by]
@@ -68,7 +67,6 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
 #' @param wt webtrack data object.
 #' @param cutoff numeric (seconds). If the difference between two consecutive
 #' timestamps exceeds this value, a new browsing session is defined.
-#' @importFrom data.table is.data.table shift setorder setnafill .N
 #' @return webtrack data.table (ordered by panelist_id and timestamp)
 #' with the same columns as wt and a new column called `session`.
 #' @examples
@@ -83,11 +81,11 @@ add_session <- function(wt, cutoff) {
   stopifnot("'cutoff' argument is missing" = !missing(cutoff))
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
-  setorder(wt, panelist_id, timestamp)
+  data.table::setorder(wt, panelist_id, timestamp)
   wt[, tmp_index := 1:.N, by = panelist_id]
-  wt[as.numeric(shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp) > cutoff, session := 1:.N, by = "panelist_id"]
+  wt[as.numeric(data.table::shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp) > cutoff, session := 1:.N, by = "panelist_id"]
   wt[, session := ifelse(tmp_index == 1, 1, session)]
-  setnafill(wt, type = "locf", cols = "session")
+  data.table::setnafill(wt, type = "locf", cols = "session")
   wt[, tmp_index := NULL]
   wt[]
 }
@@ -112,7 +110,6 @@ add_session <- function(wt, cutoff) {
 #' number of aggregated visits should be kept as variable. Defaults to `FALSE`.
 #' @param same_day boolean. If method set to `"aggregate"`, determines
 #' whether to count visits as consecutive only when on the same day. Defaults to `TRUE`.
-#' @importFrom data.table is.data.table shift .N setnames setorder
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
 #' \dontrun{
@@ -133,11 +130,11 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
                         keep_nvisits = FALSE, same_day = TRUE) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("url", "panelist_id", "timestamp"))
-  setorder(wt, panelist_id, timestamp)
+  data.table::setorder(wt, panelist_id, timestamp)
   if (method == "aggregate") {
     vars_exist(wt, vars = duration_var)
-    setnames(wt, duration_var, "duration")
-    wt[, visit := cumsum(url != shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
+    data.table::setnames(wt, duration_var, "duration")
+    wt[, visit := cumsum(url != data.table::shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
     if (same_day == TRUE) {
       wt[, day := as.Date(timestamp)]
       grp_vars <- c("panelist_id", "visit", "url", "day")
@@ -159,11 +156,11 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
     if (keep_nvisits == FALSE) {
       wt[, visits := NULL]
     }
-    setnames(wt, "duration", duration_var)
+    data.table::setnames(wt, "duration", duration_var)
   } else if (method %in% c("drop", "flag")) {
     stopifnot("'within' must be specified if 'method' set to 'flag' or 'drop" = !is.null(within))
-    wt[, tmp_timestamp_prev := shift(timestamp, n = 1, type = "lag", fill = NA), by = "panelist_id"]
-    wt[, tmp_url_prev := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    wt[, tmp_timestamp_prev := data.table::shift(timestamp, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    wt[, tmp_url_prev := data.table::shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     wt[, duplicate := ifelse(is.na(tmp_url_prev), FALSE, ifelse(
       (timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE
     )),
@@ -191,7 +188,6 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' Defaults to `"url"`.
 #' @param drop_na boolean. Determines whether rows for which no host can be extracted
 #' should be dropped from the data. Defaults to `TRUE`.
-#' @importFrom data.table is.data.table fifelse
 #' @return webtrack data.table with the same columns as wt
 #' and a new column called `'host'` (or, if varname not equal to `'url'`, `'<varname>_host'`)
 #' @examples
@@ -210,7 +206,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
   wt[, tmp_host := urltools::domain(gsub("@", "%40", get(varname)))]
   wt[, tmp_suffix := urltools::suffix_extract(tmp_host)[["suffix"]]]
   if (varname == "url") {
-    wt[, host := fifelse(is.na(tmp_suffix), NA_character_, urltools::domain(tmp_host))]
+    wt[, host := data.table::fifelse(is.na(tmp_suffix), NA_character_, urltools::domain(tmp_host))]
     n_na <- nrow(wt[is.na(host)])
     if (drop_na == TRUE) {
       wt <- wt[!is.na(host)]
@@ -223,7 +219,7 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
       }
     }
   } else {
-    wt[, paste0(varname, "_host") := fifelse(is.na(tmp_suffix), NA_character_, urltools::domain(tmp_host))]
+    wt[, paste0(varname, "_host") := data.table::fifelse(is.na(tmp_suffix), NA_character_, urltools::domain(tmp_host))]
     n_na <- nrow(wt[is.na(paste0(varname, "_host"))])
     if (drop_na == TRUE) {
       wt <- wt[!is.na(paste0(varname, "_host"))]
@@ -266,7 +262,6 @@ extract_host <- function(wt, varname = "url", drop_na = TRUE) {
 #' @param drop_na boolean. Determines whether rows for which no host can be extracted
 #' should be dropped from the data. Defaults to `TRUE`.
 #' @description Extracts the domain from urls.
-#' @importFrom data.table is.data.table fcase
 #' @return webtrack data.table with the same columns as wt
 #' and a new column called `'domain'`
 #' (or, if varname not equal to `'url'`, `'<varname>_domain'`)
@@ -292,14 +287,14 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
     wt[, paste0(varname, "_domain") := ifelse((!is.na(tmp_suffix)), paste0(tmp_domain_name, ".", tmp_suffix), NA)]
   }
   if (varname == "url") {
-    wt[, domain := fcase(
+    wt[, domain := data.table::fcase(
       is.na(tmp_suffix), NA_character_,
       !is.na(tmp_suffix) & is.na(tmp_domain_name), tmp_suffix,
       !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix)
     )]
     n_na <- nrow(wt[is.na(domain)])
   } else {
-    wt[, paste0(varname, "_domain") := fcase(
+    wt[, paste0(varname, "_domain") := data.table::fcase(
       is.na(tmp_suffix), NA_character_,
       !is.na(tmp_suffix) & is.na(tmp_domain_name), tmp_suffix,
       !is.na(tmp_suffix) & !is.na(tmp_domain_name), paste0(tmp_domain_name, ".", tmp_suffix)
@@ -334,7 +329,6 @@ extract_domain <- function(wt, varname = "url", drop_na = TRUE) {
 #' @param wt webtrack data object
 #' @param varname character. name of the column from which to extract the host.
 #' Defaults to `"url"`.
-#' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt
 #' and a new column called `'path'` (or, if varname not equal to `'url'`, `'<varname>_path'`)
 #' @examples
@@ -368,7 +362,6 @@ extract_path <- function(wt, varname = "url") {
 #' @param wt webtrack data object.
 #' @param varname character. name of the column from which to extract the host.
 #' Defaults to `"url"`.
-#' @importFrom data.table is.data.table %like%
 #' @return webtrack data.table with the same columns as wt
 #' and a new column called `'<varname>_noquery'`
 #' @examples
@@ -403,7 +396,6 @@ drop_query <- function(wt, varname = "url") {
 #' the extracted host or the extracted domain, depending on `level`.
 #' @param wt webtrack data object.
 #' @param level character. Either `"url"`, `"host"` or `"domain"`. Defaults to `"url"`.
-#' @importFrom data.table is.data.table shift setorder
 #' @return webtrack data.table with the same columns as wt and
 #' a new column called `url_next`,`host_next` or `domain_next`.
 #' @examples
@@ -421,24 +413,24 @@ drop_query <- function(wt, varname = "url") {
 add_next_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
-  setorder(wt, panelist_id, timestamp)
+  data.table::setorder(wt, panelist_id, timestamp)
   if (level == "url") {
-    wt[, url_next := shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+    wt[, url_next := data.table::shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
     if (!"host" %in% names(wt)) {
       suppressWarnings(wt <- extract_host(wt, varname = "url", drop_na = F))
-      wt[, host_next := shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+      wt[, host_next := data.table::shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
       wt[, host := NULL]
     } else {
-      wt[, host_next := shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+      wt[, host_next := data.table::shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
     }
   } else if (level == "domain") {
     if (!"domain" %in% names(wt)) {
       suppressWarnings(wt <- extract_domain(wt, varname = "url", drop_na = F))
-      wt[, domain_next := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, domain_next := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
       wt[, domain := NULL]
     } else {
-      wt[, domain_next := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, domain_next := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     }
   }
   wt[]
@@ -451,7 +443,6 @@ add_next_visit <- function(wt, level = "url") {
 #' the extracted host or the extracted domain, depending on `level`.
 #' @param wt webtrack data object.
 #' @param level character. Either `"url"`, `"host"` or `"domain"`. Defaults to `"url"`.
-#' @importFrom data.table is.data.table shift setorder
 #' @return webtrack data.table with the same columns as wt and
 #' a new column called `url_previous`,`host_previous` or `domain_previous.`.
 #' @examples
@@ -469,24 +460,24 @@ add_next_visit <- function(wt, level = "url") {
 add_previous_visit <- function(wt, level = "url") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("panelist_id", "timestamp"))
-  setorder(wt, panelist_id, timestamp)
+  data.table::setorder(wt, panelist_id, timestamp)
   if (level == "url") {
-    wt[, url_previous := shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+    wt[, url_previous := data.table::shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
   } else if (level == "host") {
     if (!"host" %in% names(wt)) {
       suppressWarnings(wt <- extract_host(wt, varname = "url", drop_na = F))
-      wt[, host_previous := shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, host_previous := data.table::shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
       wt[, host := NULL]
     } else {
-      wt[, host_previous := shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, host_previous := data.table::shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     }
   } else if (level == "domain") {
     if (!"domain" %in% names(wt)) {
       suppressWarnings(wt <- extract_domain(wt, varname = "url", drop_na = F))
-      wt[, domain_previous := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, domain_previous := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
       wt[, domain := NULL]
     } else {
-      wt[, domain_previous := shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+      wt[, domain_previous := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     }
   }
   wt[]
@@ -507,9 +498,6 @@ add_previous_visit <- function(wt, level = "url") {
 #' Defaults to `"en-US,en-GB,en"`. Note that you are likely to still obtain titles
 #' different from the ones seen originally by the user, because the language
 #' also depend on the user's IP and device settings.
-#' @importFrom data.table is.data.table
-#' @importFrom rvest html_text html_node read_html
-#' @importFrom httr GET add_headers
 #' @return webtrack data.table with the same columns as wt and a new column
 #' called `"title"`, which will be `NA` if the title cannot be retrieved.
 #' @examples
@@ -529,9 +517,9 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
   urls[, title := mapply(function(x) {
     return(
       tryCatch(
-        html_text(html_node(
-          read_html(
-            GET(x, add_headers(.headers = c(
+        rvest::html_text(rvest::html_node(
+          rvest::read_html(
+            httr::GET(x, httr::add_headers(.headers = c(
               "user_agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246",
               "Accept-language" = lang
             )))
@@ -561,7 +549,6 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
 #' referrers should be identified. Order and length must correspondent to `patterns` argument
 #' @param patterns character. A vector of patterns for which referrers should
 #' be identified. Order and length must correspondent to `platform_domains` vector.
-#' @importFrom data.table is.data.table
 #' @return webtrack data.table with the same columns as wt and a new column called `referral`,
 #' which takes on NA if no referral has been identified, or the name specified
 #' platform_domains if a referral from that platform has been identified
@@ -597,7 +584,6 @@ add_referral <- function(wt, platform_domains, patterns) {
 #' @param wt webtrack data object
 #' @param dummy a vector of urls that should be dummy coded
 #' @param name name of dummy variable to create.
-#' @importFrom data.table setnames setattr
 #' @return webtrack object with the same columns and a new column called "name" including the dummy variable
 #' @examples
 #' \dontrun{
@@ -612,8 +598,8 @@ create_urldummy <- function(wt, dummy, name) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("url"))
   wt[, dummy := data.table::fifelse(url %in% dummy, TRUE, FALSE)]
-  setnames(wt, "dummy", name)
-  setattr(wt, "dummy", c(attr(wt, "dummy"), name))
+  data.table::setnames(wt, "dummy", name)
+  data.table::setattr(wt, "dummy", c(attr(wt, "dummy"), name))
   wt[]
 }
 
@@ -627,7 +613,6 @@ create_urldummy <- function(wt, dummy, name) {
 #' @param cols character vector of columns to add. If `NULL`, all columns are added.
 #' Defaults to `NULL`.
 #' @param join_on which columns to join on. Defaults to `"panelist_id"`.
-#' @importFrom data.table is.data.table as.data.table setattr
 #' @return webtrack object with the same columns and the columns from `data`
 #' specified in `cols`.
 #' @examples
@@ -642,8 +627,8 @@ create_urldummy <- function(wt, dummy, name) {
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c(join_on))
-  if (!is.data.table(data)) {
-    data <- as.data.table(data)
+  if (!data.table::is.data.table(data)) {
+    data <- data.table::as.data.table(data)
   }
   vars_exist(data, vars = c(join_on))
   if (!is.null(cols)) {
@@ -651,9 +636,9 @@ add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
       stop("couldn't locate all columns in data")
     }
     data <- data[, c(join_on, cols), with = FALSE]
-    setattr(wt, "panelist", cols)
+    data.table::setattr(wt, "panelist", cols)
   } else {
-    setattr(wt, "panelist", setdiff(names(data), join_on))
+    data.table::setattr(wt, "panelist", setdiff(names(data), join_on))
   }
   data <- data[wt, on = join_on]
   class(data) <- c("wt_dt", class(data))

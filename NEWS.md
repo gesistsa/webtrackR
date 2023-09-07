@@ -1,6 +1,7 @@
 # webtrackR (development version)
 
 * fixed #81
+* fixed #84
 
 # webtrackR 0.1.0
 
