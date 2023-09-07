@@ -1,5 +1,5 @@
 test_that("add_duration", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_duration <- add_duration(wt, cutoff = 300, replace_by = NA)
@@ -21,7 +21,7 @@ test_that("add_duration", {
 })
 
 test_that("add_duration testdt_specific", {
-  skip_on_cran()
+  
   options(digits = 22)
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
@@ -33,7 +33,7 @@ test_that("add_duration testdt_specific", {
 })
 
 test_that("add_duration errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(add_duration(wt, replace_by = -1))
@@ -42,7 +42,7 @@ test_that("add_duration errors", {
 })
 
 test_that("add_session", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_session <- add_session(wt, cutoff = 1800)
@@ -57,7 +57,7 @@ test_that("add_session", {
 })
 
 test_that("add_session errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   # no cutoff specified
@@ -65,7 +65,7 @@ test_that("add_session errors", {
 })
 
 test_that("add_session testdt_specific", {
-  skip_on_cran()
+  
   options(digits = 22)
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
@@ -74,7 +74,7 @@ test_that("add_session testdt_specific", {
 })
 
 test_that("deduplicate", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt, cutoff = 300, replace_by = 300)
@@ -88,7 +88,7 @@ test_that("deduplicate", {
 })
 
 test_that("deduplicate errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt, cutoff = 300, replace_by = 300)
@@ -98,7 +98,7 @@ test_that("deduplicate errors", {
 })
 
 test_that("deduplicate testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- add_duration(wt, cutoff = 300, replace_by = 300)
@@ -113,7 +113,7 @@ test_that("deduplicate testdt_specific", {
 })
 
 test_that("extract_host", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_host <- suppressWarnings(extract_host(wt))
@@ -124,14 +124,14 @@ test_that("extract_host", {
 })
 
 test_that("extract_host errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(extract_host(wt, varname = "not_a_variable"))
 })
 
 test_that("extract_host testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_host <- suppressWarnings(extract_host(wt, drop_na = TRUE))
@@ -142,7 +142,7 @@ test_that("extract_host testdt_specific", {
 })
 
 test_that("extract_domain", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   # test existence of new columns
@@ -162,14 +162,14 @@ test_that("extract_domain", {
 })
 
 test_that("extract_domain errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(extract_domain(wt, varname = "not_a_variable"))
 })
 
 test_that("extract_domain testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_domain <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
@@ -180,7 +180,7 @@ test_that("extract_domain testdt_specific", {
 })
 
 test_that("extract_path", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_path <- extract_path(wt)
@@ -191,14 +191,14 @@ test_that("extract_path", {
 })
 
 test_that("extract_path errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(extract_path(wt, varname = "not_a_variable"))
 })
 
 test_that("extract_path testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_path <- extract_path(wt)
@@ -207,7 +207,7 @@ test_that("extract_path testdt_specific", {
 })
 
 test_that("drop_query", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   # test existence of new colums
@@ -222,14 +222,14 @@ test_that("drop_query", {
 })
 
 test_that("drop_query errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(drop_query(wt, varname = "not_a_variable"))
 })
 
 test_that("drop_query testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_noquery <- drop_query(wt)
@@ -240,7 +240,7 @@ test_that("drop_query testdt_specific", {
 })
 
 test_that("add_next_visit add_previous_visit", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   # test existence of new colums
@@ -268,7 +268,7 @@ test_that("add_next_visit add_previous_visit", {
 })
 
 test_that("add_next_visit add_previous_visit testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_next <- add_next_visit(wt)
@@ -278,7 +278,7 @@ test_that("add_next_visit add_previous_visit testdt_specific", {
 })
 
 test_that("add_title", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking[1])
   wt_title <- add_title(wt)
@@ -286,7 +286,7 @@ test_that("add_title", {
 })
 
 test_that("add_title testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking[1])
   wt_title <- add_title(wt)
@@ -294,7 +294,7 @@ test_that("add_title testdt_specific", {
 })
 
 test_that("add_referral", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_ref <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
@@ -306,7 +306,7 @@ test_that("add_referral", {
 })
 
 test_that("add_referral errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(add_referral(wt))
@@ -315,7 +315,7 @@ test_that("add_referral errors", {
 })
 
 test_that("add_referral testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_ref <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
@@ -324,7 +324,7 @@ test_that("add_referral testdt_specific", {
 })
 
 test_that("urldummy", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt))
@@ -334,7 +334,7 @@ test_that("urldummy", {
 })
 
 test_that("panelist_data", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   data("testdt_survey_w")
@@ -348,7 +348,7 @@ test_that("panelist_data", {
 })
 
 test_that("panelist_data errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   data("testdt_survey_w")
@@ -358,7 +358,7 @@ test_that("panelist_data errors", {
 })
 
 test_that("panelist_data testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   data("testdt_survey_w")

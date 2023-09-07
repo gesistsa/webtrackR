@@ -1,5 +1,5 @@
 test_that("classify_visits", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   data("domain_list")
   wt <- as.wt_dt(testdt_tracking)
@@ -20,7 +20,7 @@ test_that("classify_visits", {
 })
 
 test_that("classify_visits errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   data("domain_list")
@@ -54,7 +54,7 @@ test_that("classify_visits errors", {
 })
 
 test_that("classify_visits testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt, drop_na = F))
