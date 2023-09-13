@@ -13,6 +13,13 @@
 #' Same randomly generated survey data, one row per person/wave (long format)
 "testdt_survey_l"
 
+#' English dictionary
+#'
+#' A dictionary of English-language words based on the 'Word Game Dictionary'
+#' @references
+#' Neilson, Conor. words: List of English Words from the Scrabble Dictionary. https://cran.r-project.org/web/packages/words/index.html
+"words_en"
+
 #' News Types
 #'
 #' Classification of domains into different news types

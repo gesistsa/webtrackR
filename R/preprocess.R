@@ -110,6 +110,11 @@ add_session <- function(wt, cutoff) {
 #' number of aggregated visits should be kept as variable. Defaults to `FALSE`.
 #' @param same_day boolean. If method set to `"aggregate"`, determines
 #' whether to count visits as consecutive only when on the same day. Defaults to `TRUE`.
+#' @param add_grpvars vector. If method set to `"aggregate"`, determines
+#' whether any additional variables are included in grouping of visits and
+#' therefore kept. Defaults to `NULL`.
+#' add_grpvars = NULL
+#' @importFrom data.table is.data.table shift .N setnames setorder
 #' @return webtrack data.table with the same columns as wt with updated duration
 #' @examples
 #' \dontrun{
@@ -124,10 +129,13 @@ add_session <- function(wt, cutoff) {
 #' wt_dedup <- deduplicate(wt[1:1000], method = "aggregate")
 #' # Aggregating duplicates and keeping number of visits for aggregated visits
 #' wt_dedup <- deduplicate(wt[1:1000], method = "aggregate", keep_nvisits = TRUE)
+#' # Aggregating duplicates and keeping "domain" variable despite grouping
+#' wt <- extract_domain(wt)
+#' wt_dedup <- deduplicate(wt, method = "aggregate", add_grpvars = "domain")
 #' }
 #' @export
 deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "duration",
-                        keep_nvisits = FALSE, same_day = TRUE) {
+                        keep_nvisits = FALSE, same_day = TRUE, add_grpvars = NULL) {
   stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
   vars_exist(wt, vars = c("url", "panelist_id", "timestamp"))
   data.table::setorder(wt, panelist_id, timestamp)
@@ -137,7 +145,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
     wt[, visit := cumsum(url != data.table::shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
     if (same_day == TRUE) {
       wt[, day := as.Date(timestamp)]
-      grp_vars <- c("panelist_id", "visit", "url", "day")
+      grp_vars <- c("panelist_id", "visit", "url", "day", add_grpvars)
       wt <- wt[, list(
         visits = .N,
         duration = sum(as.numeric(duration), na.rm = TRUE),
@@ -145,7 +153,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
       ), by = grp_vars]
       wt[, day := NULL]
     } else {
-      grp_vars <- c("panelist_id", "visit", "url")
+      grp_vars <- c("panelist_id", "visit", "url", add_grpvars)
       wt <- wt[, list(
         visits = .N,
         duration = sum(as.numeric(duration), na.rm = TRUE),
@@ -351,6 +359,65 @@ extract_path <- function(wt, varname = "url") {
   }
   wt[, tmp_host := NULL]
   wt[, tmp_path := NULL]
+  wt[]
+}
+
+#' Parse parts of path for text analysis
+#' @description
+#' `parse_path()` parses parts of a path, i.e., anything separated by
+#' "/", "-", "_" or ".", and adds them as a new variable. Parts that do not
+#' consist of letters only, or of a real word, can be filtered via the argument `keep`.
+#' @param wt webtrack data object
+#' @param varname character. name of the column from which to extract the host.
+#' Defaults to `"url"`.
+#' @param keep character. Defines which types of path components to keep.
+#' If set to `"all"`, anything is kept. If `"letters_only"`, only parts
+#' containing letters are kept. If `"words_only"`, only parts constituting
+#' English words (as defined by the Word Game Dictionary,
+#' cf. https://cran.r-project.org/web/packages/words/index.html) are kept.
+#' Support for more languages will be added in future.
+#' @importFrom data.table is.data.table
+#' @return webtrack data.table with the same columns as wt
+#' and a new column called `'path_split'`  (or, if varname not equal to `'url'`, `'<varname>_path_split'`)
+#' containing parts as a comma-separated string.
+#' @examples
+#' \dontrun{
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
+#' wt <- parse_path(wt)
+#' }
+#' @export
+parse_path <- function(wt, varname = "url", keep = "letters_only") {
+  stopifnot("input is not a wt_dt object" = is.wt_dt(wt))
+  vars_exist(wt, vars = varname)
+  wt[,tmp_index := 1:.N]
+  paths <- extract_path(wt, varname = varname)
+  if (varname != "url") {
+    setnames(paths, paste0(varname, "_path"), "path")
+  }
+  paths <- paths[,c("tmp_index", "path")]
+  paths <- paths[, list(path_split = unlist(strsplit(as.character(path), '/|-|_|\\.'))), by = list(tmp_index)]
+  paths <- paths[!is.na(path_split)]
+  if (keep == "letters_only") {
+    paths[,keep:=ifelse(grepl("^[A-Za-z]+$", path_split, perl = T), T, F)]
+    paths <- paths[keep==TRUE]
+    paths[,keep:=NULL]
+  } else if (keep == "words_only") {
+    paths <- paths[,path_split:=tolower(path_split)]
+    data("words_en")
+    words <- words$word
+    paths[,keep:=ifelse(path_split %in% words, T, F)]
+    paths <- paths[keep==TRUE]
+    paths[,keep:=NULL]
+  }
+  paths <- unique(paths)
+  paths <- paths[, lapply(.SD, paste0, collapse=", "), by = tmp_index]
+  wt <- wt[paths, on = "tmp_index"]
+  wt[,tmp_index:=NULL]
+  wt[,path:=NULL]
+  if (varname != "url") {
+    setnames(wt, "path_split", paste0(varname, "_path_split"))
+  }
   wt[]
 }
 

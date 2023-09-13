@@ -78,6 +78,12 @@ test_that("deduplicate", {
   expect_true(!"duplicate" %in% names(wt_dedup))
   wt_dedup <- deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
   expect_true("visits" %in% names(wt_dedup))
+  wt <- extract_domain(wt)
+  wt_dedup <- deduplicate(wt, method = "aggregate", add_grpvars = "domain")
+  expect_true("domain" %in% names(wt_dedup))
+  wt <- extract_host(wt)
+  wt_dedup <- deduplicate(wt, method = "aggregate", add_grpvars = c("domain", "host"))
+  expect_true("domain" %in% names(wt_dedup))
 })
 
 test_that("deduplicate errors", {
@@ -186,6 +192,37 @@ test_that("extract_path testdt_specific", {
   wt_path <- extract_path(wt)
   expect_true(wt_path[1, "path"] == "tzktsxomta")
   expect_true(is.na(wt_path[url == "https://www.youtube.com/", "path"][1]))
+})
+
+test_that("parse_path", {
+  skip_on_cran()
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_path <- parse_path(wt)
+  expect_true("path_split" %in% names(wt_path))
+  # test that all path_split values have letters
+  expect_true(nrow(wt_path[,test:=grepl("[A-Za-z]", path_split, perl = T)]) ==
+                nrow(wt_path[!is.na(path_split)]))
+  # test different name for URL variable
+  wt[, url2 := url]
+  wt_path2 <- parse_path(wt, varname = "url2")
+  expect_true("url2_path_split" %in% names(wt_path2))
+})
+
+test_that("parse_path errors", {
+  skip_on_cran()
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  expect_error(extract_path(wt, varname = "not_a_variable"))
+})
+
+test_that("parse_path testdt_specific", {
+  skip_on_cran()
+  data("testdt_tracking")
+  wt <- as.wt_dt(testdt_tracking)
+  wt_path <- parse_path(wt)
+  expect_true(wt_path[4672, "path_split"] == "quartzy, instagram, influencers, are, out, slackers, in")
+  expect_true(is.na(wt_path[url == "https://www.youtube.com/", "path_split"][1]))
 })
 
 test_that("drop_query", {
