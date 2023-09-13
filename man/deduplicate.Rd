@@ -10,7 +10,8 @@ deduplicate(
   within = 1,
   duration_var = "duration",
   keep_nvisits = FALSE,
-  same_day = TRUE
+  same_day = TRUE,
+  add_grpvars = NULL
 )
 }
 \arguments{
@@ -36,6 +37,11 @@ number of aggregated visits should be kept as variable. Defaults to \code{FALSE}
 
 \item{same_day}{boolean. If method set to \code{"aggregate"}, determines
 whether to count visits as consecutive only when on the same day. Defaults to \code{TRUE}.}
+
+\item{add_grpvars}{vector. If method set to \code{"aggregate"}, determines
+whether any additional variables are included in grouping of visits and
+therefore kept. Defaults to \code{NULL}.
+add_grpvars = NULL}
 }
 \value{
 webtrack data.table with the same columns as wt with updated duration
@@ -57,5 +63,8 @@ wt_dedup <- deduplicate(wt, method = "flag")
 wt_dedup <- deduplicate(wt[1:1000], method = "aggregate")
 # Aggregating duplicates and keeping number of visits for aggregated visits
 wt_dedup <- deduplicate(wt[1:1000], method = "aggregate", keep_nvisits = TRUE)
+# Aggregating duplicates and keeping "domain" variable despite grouping
+wt <- extract_domain(wt)
+wt_dedup <- deduplicate(wt, method = "aggregate", add_grpvars = "domain")
 }
 }
