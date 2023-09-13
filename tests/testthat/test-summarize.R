@@ -1,5 +1,5 @@
 test_that("sum_visits", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt))
@@ -32,7 +32,7 @@ test_that("sum_visits", {
 })
 
 test_that("sum_visits errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt))
@@ -44,7 +44,7 @@ test_that("sum_visits errors", {
 })
 
 test_that("sum_visits testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt))
@@ -59,7 +59,7 @@ test_that("sum_visits testdt_specific", {
 })
 
 test_that("sum_durations", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt))
@@ -92,7 +92,7 @@ test_that("sum_durations", {
 })
 
 test_that("sum_durations errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt))
@@ -106,7 +106,7 @@ test_that("sum_durations errors", {
 })
 
 test_that("sum_durations testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt <- suppressWarnings(extract_domain(wt))
@@ -121,7 +121,7 @@ test_that("sum_durations testdt_specific", {
 })
 
 test_that("sum_activity", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_sum <- sum_activity(wt)
@@ -141,7 +141,7 @@ test_that("sum_activity", {
   expect_true("active_waves" %in% names(wt_sum_wave))
 })
 test_that("sum_activity errors", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   expect_error(sum_activity(wt, timeframe = "not_a_variable"))
@@ -150,7 +150,7 @@ test_that("sum_activity errors", {
 })
 
 test_that("sum_activity testdt_specific", {
-  skip_on_cran()
+  
   data("testdt_tracking")
   wt <- as.wt_dt(testdt_tracking)
   wt_sum <- sum_activity(wt)

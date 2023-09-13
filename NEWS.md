@@ -1,5 +1,8 @@
 # webtrackR (development version)
 
+* fixed #81
+* fixed #84
+
 # webtrackR 0.1.0
 
 * added preprocessing functions `add_session()`, `extract_host()`,
