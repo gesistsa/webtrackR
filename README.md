@@ -20,6 +20,15 @@ tracking data is oftentimes collected and analyzed in conjunction with
 survey data of the same participants. The R package is built on top of
 data.table and can thus comfortably handle very large datasets.
 
+`webtrackR` is part of a series of R packages to analyse webtracking
+data:
+
+- [webtrackR](https://github.com/schochastics/webtrackR): preprocess raw
+  webtracking data
+- [domainator](https://github.com/schochastics/domainator): classify
+  domains
+- [adaR](https://github.com/schochastics/adaR): parse urls
+
 ## Installation
 
 You can install the development version of webtrackR from
