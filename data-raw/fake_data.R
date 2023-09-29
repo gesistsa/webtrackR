@@ -25,5 +25,5 @@ generate_timestamp <- function() {
 }
 timestamps <- replicate(n, generate_timestamp())
 fake_tracking <- data.frame(panelist_id = user_ids, url = visited_urls, timestamp = timestamps)
-fake_tracking <- dplyr::arrange(fake_tracking, panelist_id, timestamp)
+fake_tracking <- dplyr::arrange(fake_tracking, panelist_id, timestamp)[sample(1:n), ]
 usethis::use_data(fake_tracking, overwrite = TRUE)
