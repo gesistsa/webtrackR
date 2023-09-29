@@ -425,21 +425,26 @@ add_next_visit <- function(wt, level = "url") {
 
     if (level == "url") {
         wt$url_next <- with(wt, ave(url, panelist_id, FUN = lead))
+        return(wt)
     } else if (level == "host") {
         if (!"host" %in% names(wt)) {
-            wt <- suppressWarnings(extract_host(wt, varname = "url", drop_na = FALSE))
+            wt <- extract_host(wt, varname = "url")
             wt$host_next <- with(wt, ave(host, panelist_id, FUN = lead))
             wt$host <- NULL
+            return(wt)
         } else {
             wt$host_next <- with(wt, ave(host, panelist_id, FUN = lead))
+            return(wt)
         }
     } else if (level == "domain") {
         if (!"domain" %in% names(wt)) {
-            wt <- suppressWarnings(extract_domain(wt, varname = "url", drop_na = FALSE))
+            wt <- extract_domain(wt, varname = "url")
             wt$domain_next <- with(wt, ave(domain, panelist_id, FUN = lag))
             wt$domain <- NULL
+            return(wt)
         } else {
             wt$domain_next <- with(wt, ave(domain, panelist_id, FUN = lag))
+            return(wt)
         }
     }
 
@@ -477,7 +482,7 @@ add_previous_visit <- function(wt, level = "url") {
         wt$url_previous <- with(wt, ave(url, panelist_id, FUN = lag))
     } else if (level == "host") {
         if (!"host" %in% names(wt)) {
-            wt <- suppressWarnings(extract_host(wt, varname = "url", drop_na = FALSE))
+            wt <- extract_host(wt, varname = "url")
             wt$host_previous <- with(wt, ave(host, panelist_id, FUN = lag))
             wt$host <- NULL
         } else {
@@ -485,7 +490,7 @@ add_previous_visit <- function(wt, level = "url") {
         }
     } else if (level == "domain") {
         if (!"domain" %in% names(wt)) {
-            wt <- suppressWarnings(extract_domain(wt, varname = "url", drop_na = FALSE))
+            wt <- extract_domain(wt, varname = "url")
             wt$domain_previous <- with(wt, ave(domain, panelist_id, FUN = lag))
             wt$domain <- NULL
         } else {
