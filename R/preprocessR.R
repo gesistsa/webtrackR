@@ -399,9 +399,7 @@ add_next_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
     stopifnot("input is not a wt_dt object" = is.data.frame(wt))
 
-
     wt <- wt[order(wt$panelist_id, wt$timestamp), ]
-
     if (level == "url") {
         wt$url_next <- with(wt, ave(url, panelist_id, FUN = lead))
         return(wt)
@@ -426,7 +424,6 @@ add_next_visit <- function(wt, level = "url") {
             return(wt)
         }
     }
-
     return(wt)
 }
 
@@ -453,31 +450,33 @@ add_next_visit <- function(wt, level = "url") {
 #' @export
 add_previous_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
-    stopifnot("input is not a wt_dt object" = is.data.frame(wt))
-
-
+    level <- match.arg(level, c("url", "host", "domain"))
     wt <- wt[order(wt$panelist_id, wt$timestamp), ]
 
     if (level == "url") {
         wt$url_previous <- with(wt, ave(url, panelist_id, FUN = lag))
+        return(wt)
     } else if (level == "host") {
         if (!"host" %in% names(wt)) {
             wt <- extract_host(wt, varname = "url")
             wt$host_previous <- with(wt, ave(host, panelist_id, FUN = lag))
             wt$host <- NULL
+            return(wt)
         } else {
             wt$host_previous <- with(wt, ave(host, panelist_id, FUN = lag))
+            return(wt)
         }
     } else if (level == "domain") {
         if (!"domain" %in% names(wt)) {
             wt <- extract_domain(wt, varname = "url")
             wt$domain_previous <- with(wt, ave(domain, panelist_id, FUN = lag))
             wt$domain <- NULL
+            return(wt)
         } else {
             wt$domain_previous <- with(wt, ave(domain, panelist_id, FUN = lag))
+            return(wt)
         }
     }
-
     return(wt)
 }
 
@@ -512,7 +511,6 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
     abort_if_not_wtdt(wt)
 
     urls <- data.frame(url = unique(wt$url))
-
 
     urls$title <- mapply(function(x) {
         return(
