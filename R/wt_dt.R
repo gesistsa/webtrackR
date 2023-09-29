@@ -58,21 +58,13 @@ abort_if_not_wtdt <- function(x) {
 }
 
 # printing ------
-#' @keywords internal
-print_wt_dt <- function(x, ...) {
-    print_txt <- utils::capture.output(print(tibble::as_tibble(x), ...))
-    print_txt[1] <- sub("A tibble", "webtrack data", print_txt[1])
-    cat(print_txt, sep = "\n")
-    invisible(x)
-}
-
 #' Print web tracking data
 #' @param x object of class wt_dt
 #' @param ... additional parameters for print
 #' @return No return value, called for side effects
 #' @export
 print.wt_dt <- function(x, ...) {
-    print_wt_dt(x, ...)
+    NextMethod(x, ...)
 }
 
 #' Summary function for web tracking data
