@@ -10,3 +10,4 @@ codecov.yml
 ^docs$
 ^pkgdown$
 R/preprocessR.R
+^data-raw$

@@ -4,7 +4,7 @@
 \alias{extract_host}
 \title{Extract the host from URL}
 \usage{
-extract_host(wt, varname = "url", drop_na = TRUE)
+extract_host(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object.}

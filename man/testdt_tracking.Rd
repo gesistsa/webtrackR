@@ -6,11 +6,17 @@
 \title{Test data}
 \format{
 An object of class \code{data.table} (inherits from \code{data.frame}) with 49612 rows and 5 columns.
+
+An object of class \code{data.table} (inherits from \code{data.frame}) with 49612 rows and 5 columns.
 }
 \usage{
+testdt_tracking
+
 testdt_tracking
 }
 \description{
 Sample of fully anomymized webtrack data from a research project with US participants
+
+Small fake webtracking data for testing purpose
 }
 \keyword{datasets}

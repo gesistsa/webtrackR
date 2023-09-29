@@ -4,7 +4,7 @@
 \alias{extract_domain}
 \title{Extract the domain from URL}
 \usage{
-extract_domain(wt, varname = "url", drop_na = TRUE)
+extract_domain(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object.}
