@@ -51,6 +51,12 @@ is.wt_dt <- function(x) {
     "wt_dt" %in% class(x)
 }
 
+abort_if_not_wtdt <- function(x) {
+    if (isFALSE(is.wt_dt(x))) {
+        stop("input is not a wt_dt object", call. = FALSE)
+    }
+}
+
 # printing ------
 #' @keywords internal
 print_wt_dt <- function(x, ...) {

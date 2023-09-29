@@ -36,7 +36,7 @@
 
 add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA,
                          device_switch_na = FALSE, device_var = NULL) {
-    stopifnot(is.data.frame(wt))
+    abort_if_not_wtdt(wt)
     stopifnot((is.na(replace_by) | replace_by >= 0))
     if (device_switch_na == TRUE) {
         stopifnot(!is.null(device_var))
@@ -91,41 +91,17 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
 #' }
 #' @export
 add_session <- function(wt, cutoff) {
-    stopifnot(!missing(cutoff))
-    stopifnot(is.data.frame(wt))
-
-
-    required_vars <- c("panelist_id", "timestamp")
-    missing_vars <- setdiff(required_vars, names(wt))
-    if (length(missing_vars) > 0) {
-        stop(paste("Missing required columns:", paste(missing_vars, collapse = ", ")))
-    }
-
-
-    wt <- wt[order(wt$panelist_id, wt$timestamp), ]
-
+    abort_if_not_wtdt(wt)
+    # wt <- wt[order(wt$panelist_id, wt$timestamp), ]
 
     wt$tmp_index <- ave(seq_along(wt$panelist_id), wt$panelist_id, FUN = seq_along)
-
 
     last_timestamp <- c(wt$timestamp[1], head(wt$timestamp, -1))
     duration <- as.numeric(difftime(wt$timestamp, last_timestamp, units = "secs"))
     sessions <- ave(duration, wt$panelist_id, FUN = function(x) cumsum(x > cutoff))
 
-
     wt$session <- ifelse(wt$tmp_index == 1, 1, sessions + 1)
-
-
-    fill_na_locf <- function(x) {
-        na_loc <- which(is.na(x))
-        for (i in na_loc) {
-            x[i] <- x[i - 1]
-        }
-        return(x)
-    }
     wt$session <- ave(wt$session, wt$panelist_id, FUN = fill_na_locf)
-
-    # Cleanup
     wt$tmp_index <- NULL
 
     return(wt)
@@ -179,10 +155,7 @@ add_session <- function(wt, cutoff) {
 #'
 deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "duration",
                         keep_nvisits = FALSE, same_day = TRUE, add_grpvars = NULL) {
-    stopifnot("input is not a wt_dt object" = is.data.frame(wt))
-
-
-
+    abort_if_not_wtdt(wt)
 
     wt <- wt[order(wt$panelist_id, wt$timestamp), ]
 
@@ -261,6 +234,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' }
 #' @export
 extract_host <- function(wt, varname = "url") {
+    abort_if_not_wtdt(wt)
     wt[["host"]] <- adaR::ada_get_hostname(wt[[varname]])
     wt
 }
@@ -303,6 +277,7 @@ extract_host <- function(wt, varname = "url") {
 #' }
 #' @export
 extract_domain <- function(wt, varname = "url") {
+    abort_if_not_wtdt(wt)
     wt[["domain"]] <- adaR::ada_get_domain(wt[[varname]])
     wt
 }
@@ -326,6 +301,7 @@ extract_domain <- function(wt, varname = "url") {
 #' }
 #' @export
 extract_path <- function(wt, varname = "url") {
+    abort_if_not_wtdt(wt)
     wt[["path"]] <- adaR::ada_get_pathname(wt[[varname]])
     wt
 }
@@ -349,6 +325,7 @@ extract_path <- function(wt, varname = "url") {
 #' }
 #' @export
 drop_query <- function(wt, varname = "url") {
+    abort_if_not_wtdt(wt)
     hash <- adaR::ada_get_hash(wt[[varname]])
     search <- adaR::ada_get_search(wt[[varname]])
     query <- paste0(search, hash)
@@ -383,6 +360,7 @@ drop_query <- function(wt, varname = "url") {
 #' }
 #' @export
 parse_path <- function(wt, varname = "url", keep = "letters_only") {
+    abort_if_not_wtdt(wt)
     keep_path <- TRUE
     if (!"path" %in% names(wt)) {
         wt[["path"]] <- extract_path(wt, varname)
@@ -418,6 +396,7 @@ parse_path <- function(wt, varname = "url", keep = "letters_only") {
 #' }
 #' @export
 add_next_visit <- function(wt, level = "url") {
+    abort_if_not_wtdt(wt)
     stopifnot("input is not a wt_dt object" = is.data.frame(wt))
 
 
@@ -473,6 +452,7 @@ add_next_visit <- function(wt, level = "url") {
 #' }
 #' @export
 add_previous_visit <- function(wt, level = "url") {
+    abort_if_not_wtdt(wt)
     stopifnot("input is not a wt_dt object" = is.data.frame(wt))
 
 
@@ -529,7 +509,7 @@ add_previous_visit <- function(wt, level = "url") {
 #' }
 #' @export
 add_title <- function(wt, lang = "en-US,en-GB,en") {
-    stopifnot("input is not a wt_dt object" = is.data.frame(wt))
+    abort_if_not_wtdt(wt)
 
     urls <- data.frame(url = unique(wt$url))
 
@@ -590,8 +570,7 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
 #' }
 #' @export
 add_referral <- function(wt, platform_domains, patterns) {
-    stopifnot("Input is not a wt_dt object" = is.data.frame(wt))
-
+    abort_if_not_wtdt(wt)
     stopifnot("Number of platform_domains must be identical to number of patterns" = length(platform_domains) == length(patterns))
 
 
@@ -641,6 +620,7 @@ add_referral <- function(wt, platform_domains, patterns) {
 #' }
 #' @export
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
+    abort_if_not_wtdt(wt)
     if (!is.null(cols)) {
         if (!all(cols %in% names(data))) {
             stop("couldn't locate all columns in data")
@@ -666,4 +646,12 @@ lag <- function(x, n = 1, default = NA) {
         return(rep(default, length(x)))
     }
     c(rep(default, n), head(x, -n))
+}
+
+fill_na_locf <- function(x) {
+    na_loc <- which(is.na(x))
+    for (i in na_loc) {
+        x[i] <- x[i - 1]
+    }
+    return(x)
 }
