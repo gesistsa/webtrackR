@@ -52,23 +52,24 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
     wt <- wt[order(wt$panelist_id, wt$timestamp), ]
 
     next_timestamp <- c(tail(wt$timestamp, -1), NA)
-    wt$duration <- as.numeric(difftime(next_timestamp, wt$timestamp, units = "secs"))
+    next_user <- c(tail(wt$panelist_id, -1), NA)
 
-    wt$tmp_last <- is.na(wt$duration)
+    wt$duration <- ifelse(wt$panelist_id == next_user,
+        as.numeric(difftime(next_timestamp, wt$timestamp, units = "secs")), NA
+    )
+
+    tmp_last <- is.na(wt$duration)
 
     if (device_switch_na == TRUE) {
-        wt$device_next <- c(tail(wt[[device_var]], -1), NA)
+        device_next <- c(tail(wt[[device_var]], -1), NA)
 
         wt$duration[wt$tmp_last == TRUE] <- last_replace_by
-        wt$duration[wt$duration > cutoff & wt$tmp_last == FALSE] <- replace_by
-        wt$duration[wt$device_next != wt[[device_var]] & wt$tmp_last == FALSE] <- NA
+        wt$duration[wt$duration > cutoff & tmp_last == FALSE] <- replace_by
+        wt$duration[device_next != wt$device_var & tmp_last == FALSE] <- NA
     } else {
         wt$duration[wt$tmp_last == TRUE] <- last_replace_by
-        wt$duration[wt$duration > cutoff & wt$tmp_last == FALSE] <- replace_by
+        wt$duration[wt$duration > cutoff & tmp_last == FALSE] <- replace_by
     }
-
-    wt$tmp_last <- NULL
-    if ("device_next" %in% names(wt)) wt$device_next <- NULL
 
     return(wt)
 }
