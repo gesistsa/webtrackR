@@ -20,7 +20,7 @@ cf. https://cran.r-project.org/web/packages/words/index.html) are kept.
 Support for more languages will be added in future.}
 }
 \value{
-webtrack data.table with the same columns as wt
+webtrack data.frame with the same columns as wt
 and a new column called \code{'path_split'}  (or, if varname not equal to \code{'url'}, \code{'<varname>_path_split'})
 containing parts as a comma-separated string.
 }

@@ -13,8 +13,7 @@ add_session(wt, cutoff)
 timestamps exceeds this value, a new browsing session is defined.}
 }
 \value{
-webtrack data.table (ordered by panelist_id and timestamp)
-with the same columns as wt and a new column called \code{session}.
+webtrack data.frame with the same columns as wt and a new column called session.
 }
 \description{
 \code{add_session()} groups visits into "sessions", defining a session to end

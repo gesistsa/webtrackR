@@ -13,7 +13,7 @@ extract_path(wt, varname = "url")
 Defaults to \code{"url"}.}
 }
 \value{
-webtrack data.table with the same columns as wt
+webtrack data.frame with the same columns as wt
 and a new column called \code{'path'} (or, if varname not equal to \code{'url'}, \code{'<varname>_path'})
 }
 \description{

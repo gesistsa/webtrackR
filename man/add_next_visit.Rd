@@ -12,7 +12,7 @@ add_next_visit(wt, level = "url")
 \item{level}{character. Either \code{"url"}, \code{"host"} or \code{"domain"}. Defaults to \code{"url"}.}
 }
 \value{
-webtrack data.table with the same columns as wt and
+webtrack data.frame with the same columns as wt and
 a new column called \code{url_next},\code{host_next} or \code{domain_next}.
 }
 \description{

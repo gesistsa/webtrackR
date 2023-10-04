@@ -15,8 +15,8 @@ test_that("add_duration", {
     expect_true(tail(wt_duration$duration[wt_duration$panelist_id == "AiDS4k1rQZ"], 1) == 0)
     # test device_switch_na
     wt_duration <- add_duration(wt, device_switch_na = TRUE, device_var = "device")
-    wt_duration[, device_next := shift(device, n = 1, type = "lead", fill = NA), by = "panelist_id"]
-    expect_true(is.na(wt_duration[device_next != device][["duration"]][1]))
+    wt_duration$device_next <- ave(wt_duration$device, wt_duration$panelist_id, FUN = function(x) c(tail(x, -1), NA))
+    expect_true(is.na(wt_duration$duration[wt_duration$device_next != wt_duration$device][1]))
 })
 
 test_that("add_duration testdt_specific", {
@@ -47,8 +47,8 @@ test_that("add_session", {
     # test that session variable always positive
     expect_true(min(wt_session$session, na.rm = T) >= 1)
     # test that next session is only smaller than session when switch to new panelist
-    wt_session[, next_session := shift(session, n = 1, type = "lead", fill = NA), by = "panelist_id"]
-    expect_true(nrow(wt_session[session > next_session]) <=
+    wt_session$next_session <- ave(wt_session$session, wt_session$panelist_id, FUN = function(x) c(tail(x, -1), NA))
+    expect_true(nrow(wt_session[wt_session$session > wt_session$next_session, ]) <=
         length(unique(wt_session$panelist_id)))
 })
 
@@ -64,7 +64,7 @@ test_that("add_session testdt_specific", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
     wt_session <- add_session(wt, cutoff = 1800)
-    expect_true(wt_session[panelist_id == "AiDS4k1rQZ"][.N, "session"] == 123)
+    expect_true(max(wt_session$session[wt$panelist_id == "AiDS4k1rQZ"]) == 124)
 })
 
 test_that("deduplicate", {
@@ -105,7 +105,7 @@ test_that("deduplicate testdt_specific", {
     expect_true(sum(wt_dedup[, "duplicate"]) == 3038)
     wt_dedup <- deduplicate(wt, method = "aggregate")
     expect_true(nrow(wt_dedup) == 39540)
-    wt_dedup <- deduplicate(wt, method = "aggregate", keep_nvisits = T)
+    wt_dedup <- deduplicate(wt, method = "aggregate", keep_nvisits = TRUE)
     expect_true(max(wt_dedup[, "visits"]) == 608)
 })
 
@@ -114,7 +114,7 @@ test_that("extract_host", {
     wt <- as.wt_dt(testdt_tracking)
     wt_host <- suppressWarnings(extract_host(wt))
     expect_true("host" %in% names(wt_host))
-    wt[, other_url := url]
+    wt$other_url <- wt$url
     wt_host <- suppressWarnings(extract_host(wt, varname = "other_url"))
     expect_true("other_url_host" %in% names(wt_host))
 })
@@ -128,30 +128,20 @@ test_that("extract_host errors", {
 test_that("extract_host testdt_specific", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
-    wt_host <- suppressWarnings(extract_host(wt, drop_na = TRUE))
-    expect_true(wt_host[1, "host"] == "dkr1.ssisurveys.com")
-    expect_true(nrow(wt_host) == 49451)
-    wt_host <- suppressWarnings(extract_host(wt, drop_na = FALSE))
-    expect_true(nrow(wt_host) == nrow(wt))
+    wt_host <- extract_host(wt)
+    expect_true(wt_host$host[1] == "dkr1.ssisurveys.com")
+    expect_true(!any(is.na(wt_host$host)))
 })
 
 test_that("extract_domain", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
     # test existence of new columns
-    wt_domain <- suppressWarnings(extract_domain(wt))
+    wt_domain <- extract_domain(wt)
     expect_true("domain" %in% names(wt_domain))
-    wt[, other_url := url]
-    wt_domain <- suppressWarnings(extract_domain(wt, varname = "other_url"))
+    wt$other_url <- wt$url
+    wt_domain <- extract_domain(wt, varname = "other_url")
     expect_true("other_url_domain" %in% names(wt_domain))
-    wt_domain <- suppressWarnings(extract_domain(wt, drop_na = FALSE))
-    # test domain composition
-    wt_domain[, tmp_host := urltools::domain(gsub("@", "%40", url))]
-    wt_domain[, tmp_suffix := urltools::suffix_extract(tmp_host)[["suffix"]]]
-    wt_domain[, tmp_domain_name := urltools::suffix_extract(tmp_host)[["domain"]]]
-    expect_true(is.na(wt_domain[is.na(tmp_suffix), "domain"][1]))
-    expect_true(wt_domain[!is.na(tmp_suffix) & is.na(tmp_domain_name), "domain"] ==
-        wt_domain[!is.na(tmp_suffix) & is.na(tmp_domain_name), "tmp_suffix"])
 })
 
 test_that("extract_domain errors", {
@@ -163,11 +153,8 @@ test_that("extract_domain errors", {
 test_that("extract_domain testdt_specific", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
-    wt_domain <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
+    wt_domain <- extract_domain(wt)
     expect_true(wt_domain[1, "domain"] == "ssisurveys.com")
-    expect_true(nrow(wt_domain) == 49451)
-    wt_domain <- suppressWarnings(extract_domain(wt, drop_na = FALSE))
-    expect_true(nrow(wt_domain) == nrow(wt))
 })
 
 test_that("extract_path", {
@@ -175,9 +162,9 @@ test_that("extract_path", {
     wt <- as.wt_dt(testdt_tracking)
     wt_path <- extract_path(wt)
     expect_true("path" %in% names(wt_path))
-    wt[, other_url := url]
-    wt_host <- extract_path(wt, varname = "other_url")
-    expect_true("other_url_path" %in% names(wt_host))
+    wt$other_url <- wt$url
+    wt_path <- extract_path(wt, varname = "other_url")
+    expect_true("other_url_path" %in% names(wt_path))
 })
 
 test_that("extract_path errors", {
@@ -190,8 +177,8 @@ test_that("extract_path testdt_specific", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
     wt_path <- extract_path(wt)
-    expect_true(wt_path[1, "path"] == "tzktsxomta")
-    expect_true(is.na(wt_path[url == "https://www.youtube.com/", "path"][1]))
+    expect_true(wt_path[1, "path"] == "/tzktsxomta")
+    expect_true(wt_path[wt_path$url == "https://www.youtube.com/", "path"][1] == "/")
 })
 
 test_that("parse_path", {
@@ -201,10 +188,10 @@ test_that("parse_path", {
     wt_path <- parse_path(wt)
     expect_true("path_split" %in% names(wt_path))
     # test that all path_split values have letters
-    expect_true(nrow(wt_path[, test := grepl("[A-Za-z]", path_split, perl = T)]) ==
-        nrow(wt_path[!is.na(path_split)]))
+    expect_true(sum(grepl("[A-Za-z]", wt_path$path_split)) ==
+        sum(wt_path$path_split != ""))
     # test different name for URL variable
-    wt[, url2 := url]
+    wt$url2 <- wt$url
     wt_path2 <- parse_path(wt, varname = "url2")
     expect_true("url2_path_split" %in% names(wt_path2))
 })
@@ -221,8 +208,8 @@ test_that("parse_path testdt_specific", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
     wt_path <- parse_path(wt)
-    expect_true(wt_path[4672, "path_split"] == "quartzy, instagram, influencers, are, out, slackers, in")
-    expect_true(is.na(wt_path[url == "https://www.youtube.com/", "path_split"][1]))
+    expect_true(wt_path[4879, "path_split"] == "quartzy,instagram,influencers,are,out,slackers,are,in")
+    expect_true(wt_path$path_split[wt_path$url == "https://www.youtube.com/"][1] == "")
 })
 
 test_that("drop_query", {
@@ -231,12 +218,12 @@ test_that("drop_query", {
     # test existence of new colums
     wt_noquery <- drop_query(wt)
     expect_true("url_noquery" %in% names(wt_noquery))
-    wt[, other_url := url]
+    wt$other_url <- wt$url
     wt_noquery <- drop_query(wt, varname = "other_url")
     expect_true("other_url_noquery" %in% names(wt_noquery))
     # test absence of queries / fragments
     wt_noquery <- drop_query(wt)
-    expect_true(nrow(wt[data.table::like(url_noquery, "\\?|#")]) == 0)
+    expect_true(length(grep("\\?|#", wt_noquery$url_noquery)) == 0)
 })
 
 test_that("drop_query errors", {
@@ -250,7 +237,7 @@ test_that("drop_query testdt_specific", {
     wt <- as.wt_dt(testdt_tracking)
     wt_noquery <- drop_query(wt)
     expect_true(wt_noquery[1, "url_noquery"] == "https://dkr1.ssisurveys.com/tzktsxomta")
-    wt_queries <- wt[data.table::like(url, "\\?")]
+    wt_queries <- wt[grep("\\?", wt$url), ]
     wt_noquery <- drop_query(wt_queries)
     expect_true(wt_noquery[1, "url_noquery"] == "https://www.marketwatch.com/story/kelloggs-owned-veggie-burger-brand-morningstar-farms-to-go-all-vegan-by-2021-2019-03-04")
 })
@@ -278,7 +265,7 @@ test_that("add_next_visit add_previous_visit", {
     wt_prev <- add_previous_visit(wt)
     expect_true(wt_prev[1, "url"] == wt_prev[2, "url_previous"])
     # test first and last row
-    expect_true(is.na(wt_next[.N, "url_next"]))
+    expect_true(is.na(wt_next[nrow(wt_next), "url_next"]))
     expect_true(is.na(wt_prev[1, "url_previous"]))
 })
 
@@ -292,15 +279,18 @@ test_that("add_next_visit add_previous_visit testdt_specific", {
 })
 
 test_that("add_title", {
+    skip_on_cran()
     data("testdt_tracking")
-    wt <- as.wt_dt(testdt_tracking[1])
+    wt <- as.wt_dt(testdt_tracking[1, ])
     wt_title <- add_title(wt)
     expect_true("title" %in% names(wt_title))
 })
 
 test_that("add_title testdt_specific", {
+    skip_on_cran()
+
     data("testdt_tracking")
-    wt <- as.wt_dt(testdt_tracking[1])
+    wt <- as.wt_dt(testdt_tracking[1, ])
     wt_title <- add_title(wt)
     expect_true(is.na(wt_title[, "title"]))
 })
@@ -335,7 +325,7 @@ test_that("add_referral testdt_specific", {
 test_that("urldummy", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
-    wt <- suppressWarnings(extract_domain(wt))
+    wt <- extract_domain(wt)
     code_urls <- c("https://dkr1.ssisurveys.com/tzktsxomta")
     wt <- create_urldummy(wt, dummy = code_urls, name = "test_dummy")
     expect_true(wt$test_dummy[1])

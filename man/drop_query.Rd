@@ -13,7 +13,7 @@ drop_query(wt, varname = "url")
 Defaults to \code{"url"}.}
 }
 \value{
-webtrack data.table with the same columns as wt
+webtrack data.frame with the same columns as wt
 and a new column called \code{'<varname>_noquery'}
 }
 \description{

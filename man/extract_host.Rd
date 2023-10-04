@@ -16,7 +16,7 @@ Defaults to \code{"url"}.}
 should be dropped from the data. Defaults to \code{TRUE}.}
 }
 \value{
-webtrack data.table with the same columns as wt
+webtrack data.frame with the same columns as wt
 and a new column called \code{'host'} (or, if varname not equal to \code{'url'}, \code{'<varname>_host'})
 }
 \description{
