@@ -6,7 +6,7 @@
 \title{Domain list
 classification of domains into news,portals, search, and social media}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 663 rows and 2 columns.
+An object of class \code{data.frame} with 663 rows and 2 columns.
 }
 \usage{
 domain_list

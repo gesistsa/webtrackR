@@ -23,8 +23,8 @@
 #' # summarize by week
 #' wt_summ <- sum_visits(wt, timeframe = "week")
 #' # create a class variable to summarize by class
-#' wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
-#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' wt <- extract_domain(wt)
+#' wt$google <- ifelse(wt$domain == "google.com", 1, 0)]
 #' wt_summ <- sum_visits(wt, timeframe = "week", visit_class = "google")
 #' }
 #' @export
@@ -110,8 +110,8 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 #' # summarize by week
 #' wt_summ <- sum_durations(wt, timeframe = "week")
 #' # create a class variable to summarize by class
-#' wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
-#' wt[, google := ifelse(domain == "google.com", 1, 0)]
+#' wt <- extract_domain(wt)
+#' wt$google <- ifelse(wt$domain == "google.com", 1, 0)]
 #' wt_summ <- sum_durations(wt, timeframe = "week", visit_class = "google")
 #' }
 #' @export

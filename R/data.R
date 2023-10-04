@@ -41,4 +41,4 @@
 #' Fake data
 #'
 #' Small fake webtracking data for testing purpose
-"testdt_tracking"
+"fake_tracking"

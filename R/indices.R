@@ -3,9 +3,9 @@
 #' extent to which group A disproportionately visit websites whose other visitors
 #' are also members of group A.
 #' @param grp_A  vector (usually corresponds to a column in a webtrack
-#' data.table) indicating the number of individuals of group A using a website
+#' data frame) indicating the number of individuals of group A using a website
 #' @param grp_B  vector (usually corresponds to a column in a webtrack
-#' data.table) indicating the number of individuals of group B using a website
+#' data frame) indicating the number of individuals of group B using a website
 #' @details a value of 1 indicates that the websites visited by group A and group B do not overlap.
 #' A value of 0 means both visit exactly the same websites
 #' @return numeric value between 0 and 1. 0 indicates no isolation and 1 perfect isolation
@@ -24,14 +24,14 @@
 #' isolation_index(left, right)
 #' @export
 isolation_index <- function(grp_A, grp_B) {
-  if (length(grp_A) != length(grp_B)) {
-    stop("grp_A and grp_B need to have the same length")
-  }
-  grp_A <- grp_A / sum(grp_A, na.rm = TRUE)
-  grp_B <- grp_B / sum(grp_B, na.rm = TRUE)
-  right_share <- grp_B / (grp_A + grp_B)
-  bilanz <- (grp_B - grp_A) * right_share
-  sum(bilanz, na.rm = TRUE)
+    if (length(grp_A) != length(grp_B)) {
+        stop("grp_A and grp_B need to have the same length")
+    }
+    grp_A <- grp_A / sum(grp_A, na.rm = TRUE)
+    grp_B <- grp_B / sum(grp_B, na.rm = TRUE)
+    right_share <- grp_B / (grp_A + grp_B)
+    bilanz <- (grp_B - grp_A) * right_share
+    sum(bilanz, na.rm = TRUE)
 }
 
 # Will be incorporated later

@@ -47,6 +47,6 @@ wt <- as.wt_dt(testdt_tracking)
 # Extract domain and drop rows without domain
 wt <- extract_domain(wt)
 # Extract domain and keep rows without domain
-wt <- extract_domain(wt, drop_na = FALSE)
+wt <- extract_domain(wt)
 }
 }

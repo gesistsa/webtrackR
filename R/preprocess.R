@@ -214,8 +214,6 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' @param wt webtrack data object.
 #' @param varname character. Name of the column from which to extract the host.
 #' Defaults to `"url"`.
-#' @param drop_na boolean. Determines whether rows for which no host can be extracted
-#' should be dropped from the data. Defaults to `TRUE`.
 #' @return webtrack data.frame with the same columns as wt
 #' and a new column called `'host'` (or, if varname not equal to `'url'`, `'<varname>_host'`)
 #' @examples
@@ -225,7 +223,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 #' # Extract host and drop rows without host
 #' wt <- extract_host(wt)
 #' # Extract host and keep rows without host
-#' wt <- extract_host(wt, drop_na = FALSE)
+#' wt <- extract_host(wt)
 #' }
 #' @export
 extract_host <- function(wt, varname = "url") {
@@ -274,7 +272,7 @@ extract_host <- function(wt, varname = "url") {
 #' # Extract domain and drop rows without domain
 #' wt <- extract_domain(wt)
 #' # Extract domain and keep rows without domain
-#' wt <- extract_domain(wt, drop_na = FALSE)
+#' wt <- extract_domain(wt)
 #' }
 #' @export
 extract_domain <- function(wt, varname = "url") {
@@ -634,7 +632,7 @@ add_referral <- function(wt, platform_domains, patterns) {
     return(wt)
 }
 
-#' Create an urldummy variable from a data.table object
+#' Create an urldummy variable
 #' @param wt webtrack data object
 #' @param dummy a vector of urls that should be dummy coded
 #' @param name name of dummy variable to create.
@@ -659,10 +657,10 @@ create_urldummy <- function(wt, dummy, name) {
 
 #' Add panelist features to tracking data
 #' @description
-#' `add_panelist_data()` adds information about panelists (e.g., from a survey)
+#' Adds information about panelists (e.g., from a survey)
 #' to the tracking data.
 #' @param wt webtrack data object.
-#' @param data a data.table (or object that can be converted to data.table)
+#' @param data a data frame containing panelist data
 #'  which contains columns about panelists
 #' @param cols character vector of columns to add. If `NULL`, all columns are added.
 #' Defaults to `NULL`.

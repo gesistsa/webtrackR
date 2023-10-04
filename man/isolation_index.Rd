@@ -8,10 +8,10 @@ isolation_index(grp_A, grp_B)
 }
 \arguments{
 \item{grp_A}{vector (usually corresponds to a column in a webtrack
-data.table) indicating the number of individuals of group A using a website}
+data frame) indicating the number of individuals of group A using a website}
 
 \item{grp_B}{vector (usually corresponds to a column in a webtrack
-data.table) indicating the number of individuals of group B using a website}
+data frame) indicating the number of individuals of group B using a website}
 }
 \value{
 numeric value between 0 and 1. 0 indicates no isolation and 1 perfect isolation

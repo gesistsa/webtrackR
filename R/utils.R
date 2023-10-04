@@ -9,7 +9,7 @@
 #' @return A data.table object.
 vars_exist <- function(wt, vars = c("panelist_id", "url", "timestamp")) {
     vars_wt <- names(wt)
-    idx <- pmatch(vars, vars_wt)
+    idx <- match(vars, vars_wt)
     if (any(is.na(idx))) {
         not_found <- is.na(idx)
         err <- paste0("'", paste0(vars[not_found], collapse = "', '"), "'")

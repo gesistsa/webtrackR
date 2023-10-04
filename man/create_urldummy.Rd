@@ -2,7 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{create_urldummy}
 \alias{create_urldummy}
-\title{Create an urldummy variable from a data.table object}
+\title{Create an urldummy variable}
 \usage{
 create_urldummy(wt, dummy, name)
 }
@@ -17,7 +17,7 @@ create_urldummy(wt, dummy, name)
 webtrack object with the same columns and a new column called "name" including the dummy variable
 }
 \description{
-Create an urldummy variable from a data.table object
+Create an urldummy variable
 }
 \examples{
 \dontrun{
