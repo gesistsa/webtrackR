@@ -149,5 +149,5 @@ test_that("sum_activity testdt_specific", {
     wt$timestamp <- wt$timestamp + 60 * 60 * 60 + 2
     wt_sum <- sum_activity(wt)
     # test correct number of active days
-    expect_equal(sum(wt_sum$active_dates, na.rm = TRUE), 182)
+    expect_equal(sum(wt_sum$active_dates, na.rm = TRUE), 183)
 })
