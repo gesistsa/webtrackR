@@ -219,8 +219,9 @@ sum_activity <- function(wt, timeframe = "date") {
         }
     }
 
-    summary <- aggregate(x = list(temp = wt[[timeframe]]), by = list(panelist_id = wt$panelist_id), FUN = function(x) length(unique(x)))
-
+    summary <- aggregate(x = list(temp = wt[[timeframe]]), 
+        by = list(panelist_id = wt$panelist_id), FUN = function(x) length(unique(x)))
+    
     names(summary)[which(names(summary) == "temp")] <- timeframe_var
 
     return(summary)

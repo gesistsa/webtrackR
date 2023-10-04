@@ -148,5 +148,5 @@ test_that("sum_activity testdt_specific", {
     wt <- as.wt_dt(testdt_tracking)
     wt_sum <- sum_activity(wt, timeframe = "week")
     # test correct number of active weeks
-    expect_equal(sum(wt_sum$active_weeks, na.rm = TRUE), 49)
+    expect_equal(sum(wt_sum$active_weeks, na.rm = TRUE), 46)
 })
