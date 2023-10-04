@@ -30,7 +30,7 @@ a data.table with columns \code{panelist_id}, column indicating the time unit
 (in seconds, or whatever the unit of the variable specified by \code{var_duration} parameter),
 and a column for each value of \code{visit_class}, if specified.
 
-a data.table with columns \code{panelist_id}, column indicating the time unit
+a data.frame with columns \code{panelist_id}, column indicating the time unit
 (unless \code{timeframe} set to \code{NULL}), \code{duration_visits} indicating the duration of visits
 (in seconds, or whatever the unit of the variable specified by \code{var_duration} parameter),
 and a column for each value of \code{visit_class}, if specified.

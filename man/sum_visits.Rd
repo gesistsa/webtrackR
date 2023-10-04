@@ -25,7 +25,7 @@ a data.table with columns \code{panelist_id}, column indicating the time unit
 (unless \code{timeframe} set to \code{NULL}), \code{n_visits} indicating the number of visits,
 and a column for each value of \code{visit_class}, if specified.
 
-a data.table with columns \code{panelist_id}, column indicating the time unit
+a data.frame with columns \code{panelist_id}, column indicating the time unit
 (unless \code{timeframe} set to \code{NULL}), \code{n_visits} indicating the number of visits,
 and a column for each value of \code{visit_class}, if specified.
 }

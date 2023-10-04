@@ -19,7 +19,7 @@ set to \code{"wave"}, \code{wt} must contain a column call \code{wave}. Defaults
 a data.table with columns \code{panelist_id}, column indicating the
 number of active time units.
 
-a data.table with columns \code{panelist_id}, column indicating the
+a data.frame with columns \code{panelist_id}, column indicating the
 number of active time units.
 }
 \description{
