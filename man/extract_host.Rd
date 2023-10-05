@@ -4,19 +4,16 @@
 \alias{extract_host}
 \title{Extract the host from URL}
 \usage{
-extract_host(wt, varname = "url", drop_na = TRUE)
+extract_host(wt, varname = "url")
 }
 \arguments{
 \item{wt}{webtrack data object.}
 
 \item{varname}{character. Name of the column from which to extract the host.
 Defaults to \code{"url"}.}
-
-\item{drop_na}{boolean. Determines whether rows for which no host can be extracted
-should be dropped from the data. Defaults to \code{TRUE}.}
 }
 \value{
-webtrack data.table with the same columns as wt
+webtrack data.frame with the same columns as wt
 and a new column called \code{'host'} (or, if varname not equal to \code{'url'}, \code{'<varname>_host'})
 }
 \description{
@@ -33,6 +30,6 @@ wt <- as.wt_dt(testdt_tracking)
 # Extract host and drop rows without host
 wt <- extract_host(wt)
 # Extract host and keep rows without host
-wt <- extract_host(wt, drop_na = FALSE)
+wt <- extract_host(wt)
 }
 }

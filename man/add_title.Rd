@@ -15,11 +15,11 @@ different from the ones seen originally by the user, because the language
 also depend on the user's IP and device settings.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column
+webtrack data.frame with the same columns as wt and a new column
 called \code{"title"}, which will be \code{NA} if the title cannot be retrieved.
 }
 \description{
-\code{add_title()} gets the title of a URL by accessing the web address online
+Gets the title of a URL by accessing the web address online
 and adds the title as a new column. See details for the meaning of "title".
 You need an internet connection to run this function.
 }

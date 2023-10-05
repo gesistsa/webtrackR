@@ -16,7 +16,7 @@ referrers should be identified. Order and length must correspondent to \code{pat
 be identified. Order and length must correspondent to \code{platform_domains} vector.}
 }
 \value{
-webtrack data.table with the same columns as wt and a new column called \code{referral},
+webtrack data.frame with the same columns as wt and a new column called \code{referral},
 which takes on NA if no referral has been identified, or the name specified
 platform_domains if a referral from that platform has been identified
 }
@@ -37,8 +37,8 @@ data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
 wt <- add_referral(wt, platform_domains = "facebook.com", patterns = "fbclid=")
 wt <- add_referral(wt,
-  platform_domains = c("facebook.com", "twitter.com"),
-  patterns = c("fbclid=", "utm_source=twitter")
+    platform_domains = c("facebook.com", "twitter.com"),
+    patterns = c("fbclid=", "utm_source=twitter")
 )
 }
 }

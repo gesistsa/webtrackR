@@ -23,7 +23,7 @@ For each value in this column, the output will have a column indicating the
 number of visits belonging to that value. Defaults to \code{NULL}.}
 }
 \value{
-a data.table with columns \code{panelist_id}, column indicating the time unit
+a data.frame with columns \code{panelist_id}, column indicating the time unit
 (unless \code{timeframe} set to \code{NULL}), \code{duration_visits} indicating the duration of visits
 (in seconds, or whatever the unit of the variable specified by \code{var_duration} parameter),
 and a column for each value of \code{visit_class}, if specified.
@@ -46,8 +46,8 @@ wt_summ <- sum_durations(wt)
 # summarize by week
 wt_summ <- sum_durations(wt, timeframe = "week")
 # create a class variable to summarize by class
-wt <- suppressWarnings(extract_domain(wt, drop_na = TRUE))
-wt[, google := ifelse(domain == "google.com", 1, 0)]
+wt <- extract_domain(wt)
+wt$google <- ifelse(wt$domain == "google.com", 1, 0)]
 wt_summ <- sum_durations(wt, timeframe = "week", visit_class = "google")
 }
 }

@@ -36,8 +36,8 @@ the difference to the next timestamp (\code{FALSE}). Defaults to \code{FALSE}.}
 Required if 'device_switch_na' set to \code{TRUE}. Defaults to \code{NULL}.}
 }
 \value{
-webtrack data.table (ordered by panelist_id and timestamp) with
-the same columns as wt and a new column called \code{duration}.
+webtrack data.frame with
+the same columns as wt and a new column called for duration.
 }
 \description{
 \code{add_duration()} approximates the time spent on a visit based on the difference
@@ -52,8 +52,8 @@ wt <- add_duration(wt)
 # Defining cutoff at 10 minutes, replacing those exceeding cutoff to 5 minutes,
 # and setting duration before device switch to `NA`:
 wt <- add_duration(wt,
-  cutoff = 600, replace_by = 300,
-  device_switch_na = TRUE, device_var = "device"
+    cutoff = 600, replace_by = 300,
+    device_switch_na = TRUE, device_var = "device"
 )
 }
 }

@@ -44,7 +44,7 @@ therefore kept. Defaults to \code{NULL}.
 add_grpvars = NULL}
 }
 \value{
-webtrack data.table with the same columns as wt with updated duration
+webtrack data.frame with the same columns as wt with updated duration
 }
 \description{
 \code{deduplicate()} flags, drops or aggregates duplicates, which are defined as

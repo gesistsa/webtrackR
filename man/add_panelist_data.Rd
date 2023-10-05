@@ -9,7 +9,7 @@ add_panelist_data(wt, data, cols = NULL, join_on = "panelist_id")
 \arguments{
 \item{wt}{webtrack data object.}
 
-\item{data}{a data.table (or object that can be converted to data.table)
+\item{data}{a data frame containing panelist data
 which contains columns about panelists}
 
 \item{cols}{character vector of columns to add. If \code{NULL}, all columns are added.
@@ -22,7 +22,7 @@ webtrack object with the same columns and the columns from \code{data}
 specified in \code{cols}.
 }
 \description{
-\code{add_panelist_data()} adds information about panelists (e.g., from a survey)
+Adds information about panelists (e.g., from a survey)
 to the tracking data.
 }
 \examples{

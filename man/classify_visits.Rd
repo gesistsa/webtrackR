@@ -16,7 +16,7 @@ classify_visits(
 \arguments{
 \item{wt}{webtrack data object.}
 
-\item{classes}{a data.table containing classes that can be matched to visits.}
+\item{classes}{a data frame containing classes that can be matched to visits.}
 
 \item{match_by}{character. Whether to match list entries from \code{classes} to
 the domain of a visit (\code{"domain"}) or the host (\code{"host"}) with an exact match;
@@ -39,7 +39,7 @@ setting \code{return_rows_by} to \code{"type"} and \code{return_rows_val} to \co
 will only return visits classified as \code{"shopping"}.}
 }
 \value{
-webtrack data.table with the same columns as \code{wt} and any column
+webtrack data.frame with the same columns as \code{wt} and any column
 in \code{classes} except the column specified by \code{match_by}.
 }
 \description{
@@ -53,27 +53,27 @@ data("testdt_tracking")
 data("domain_list")
 wt <- as.wt_dt(testdt_tracking)
 # classify visits via domain
-wt_domains <- extract_domain(wt, drop_na = FALSE)
+wt_domains <- extract_domain(wt)
 wt_classes <- classify_visits(wt_domains, classes = domain_list, match_by = "domain")
 # classify visits via domain
 # for the example, just renaming "domain" column
 domain_list$host <- domain_list$domain
-wt_hosts <- extract_host(wt, drop_na = FALSE)
+wt_hosts <- extract_host(wt)
 wt_classes <- classify_visits(wt_hosts, classes = domain_list, match_by = "host")
 # classify visits with pattern matching
 # for the example, any value in "domain" treated as pattern
 data("domain_list")
 regex_list <- domain_list[type == "facebook"]
 wt_classes <- classify_visits(wt[1:5000],
-  classes = regex_list,
-  match_by = "regex", regex_on = "domain"
+    classes = regex_list,
+    match_by = "regex", regex_on = "domain"
 )
 # classify visits via domain and only return class "search"
 data("domain_list")
 wt_classes <- classify_visits(wt_domains,
-  classes = domain_list,
-  match_by = "domain", return_rows_by = "type",
-  return_rows_val = "search"
+    classes = domain_list,
+    match_by = "domain", return_rows_by = "type",
+    return_rows_val = "search"
 )
 }
 }

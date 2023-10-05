@@ -5,7 +5,7 @@
 \alias{testdt_tracking}
 \title{Test data}
 \format{
-An object of class \code{data.table} (inherits from \code{data.frame}) with 49612 rows and 5 columns.
+An object of class \code{data.frame} with 49612 rows and 5 columns.
 }
 \usage{
 testdt_tracking
