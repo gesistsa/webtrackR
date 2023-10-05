@@ -14,6 +14,7 @@ NULL
 #' (`panelist_id`), the visit's URL (`url`) and the visit's timestamp (`timestamp`).
 #' @param timestamp_format string. Specifies the raw timestamp's formatting.
 #' Defaults to `"%Y-%m-%d %H:%M:%OS"`.
+#' @param tz timezone of date. defaults to UTC
 #' @return a webtrack data object with at least columns `panelist_id`, `url`
 #' and `timestamp`
 #' @examples
@@ -21,7 +22,7 @@ NULL
 #' wt <- as.wt_dt(testdt_tracking)
 #' is.wt_dt(wt)
 #' @export
-as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS",
+as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS", tz = "UTC",
                      varnames = c(panelist_id = "panelist_id", url = "url", timestamp = "timestamp")) {
     standard_vars <- c("panelist_id", "url", "timestamp")
     if (!inherits(x, "data.frame")) {
@@ -37,7 +38,7 @@ as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS",
         varnames <- c(varnames, named_standard_vars[idx])
     }
     vars_exist(x, vars = varnames)
-    x[["timestamp"]] <- as.POSIXct(x[[varnames[["timestamp"]]]], format = timestamp_format)
+    x[["timestamp"]] <- as.POSIXct(x[[varnames[["timestamp"]]]], format = timestamp_format, tz = tz)
     names(x)[match(varnames, names(x))] <- names(varnames)
     x <- x[with(x, order(panelist_id, timestamp)), ]
     class(x) <- c("wt_dt", class(x))

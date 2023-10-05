@@ -9,6 +9,7 @@
 as.wt_dt(
   x,
   timestamp_format = "\%Y-\%m-\%d \%H:\%M:\%OS",
+  tz = "UTC",
   varnames = c(panelist_id = "panelist_id", url = "url", timestamp = "timestamp")
 )
 
@@ -20,6 +21,8 @@ panelist's ID, visit URL and visit timestamp.}
 
 \item{timestamp_format}{string. Specifies the raw timestamp's formatting.
 Defaults to \code{"\%Y-\%m-\%d \%H:\%M:\%OS"}.}
+
+\item{tz}{timezone of date. defaults to UTC}
 
 \item{varnames}{Named vector of column names, which contain the panelist's ID
 (\code{panelist_id}), the visit's URL (\code{url}) and the visit's timestamp (\code{timestamp}).}
