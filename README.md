@@ -17,8 +17,7 @@ coverage](https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.s
 webtrackR is an R package to preprocess and analyze web tracking data,
 i.e., web browsing histories of participants in an academic study. Web
 tracking data is oftentimes collected and analyzed in conjunction with
-survey data of the same participants. The R package is built on top of
-data.table and can thus comfortably handle very large datasets.
+survey data of the same participants.
 
 `webtrackR` is part of a series of R packages to analyse webtracking
 data:
@@ -49,7 +48,7 @@ install.packages("webtrackR")
 ## S3 class `wt_dt`
 
 The package defines an S3 class called `wt_dt` which inherits most of
-the functionality from the `data.table` class. A `summary` and `print`
+the functionality from the `data.frame` class. A `summary` and `print`
 method are included in the package.
 
 Each row in a web tracking data set represents a visit. Raw data need to
@@ -149,24 +148,3 @@ wt <- add_panelist_data(wt, testdt_survey_w)
 # aggregate number of visits by day and panelist, and by domain class
 wt_summ <- sum_visits(wt, timeframe = "date", visit_class = "type")
 ```
-
-## Analysis
-
-The package also contains functions for the analysis of web tracking
-data. One example is the analysis of audience networks (Mangold &
-Scharkow, [2020](https://doi.org/10.1080/19312458.2020.1724274)). More
-functionalities will be added in later versions of the package.
-
-``` r
-audience_network(wt, cutoff = 3, type = "pmi")
-```
-
-- `cutoff` indicates the minimal duration needed to count a URL as a
-  website visit.
-- `type` can be one of “pmi”, “phi”, “disparity”, “sdsm”, or “fdsm”
-
-<!-- ### Ideology
-&#10;Top 500 Bakshy scores are available in the package
-&#10;``` r
-data("bakshy")
-``` -->

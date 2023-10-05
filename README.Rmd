@@ -6,10 +6,10 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+    collapse = TRUE,
+    comment = "#>",
+    fig.path = "man/figures/README-",
+    out.width = "100%"
 )
 ```
 
@@ -22,7 +22,9 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/schochastics/webtrackR?branch=main)
 <!-- badges: end -->
 
-webtrackR is an R package to preprocess and analyze web tracking data, i.e., web browsing histories of participants in an academic study. Web tracking data is oftentimes collected and analyzed in conjunction with survey data of the same participants. The R package is built on top of data.table and can thus comfortably handle very large datasets. 
+webtrackR is an R package to preprocess and analyze web tracking data, i.e., 
+web browsing histories of participants in an academic study. Web tracking data is 
+oftentimes collected and analyzed in conjunction with survey data of the same participants.  
 
 `webtrackR` is part of a series of R packages to analyse webtracking data:
 
@@ -45,7 +47,7 @@ install.packages("webtrackR")
 ```
 ## S3 class `wt_dt`
 
-The package defines an S3 class called `wt_dt` which inherits most of the functionality from the `data.table` class. A `summary` and `print` method are included in the package.
+The package defines an S3 class called `wt_dt` which inherits most of the functionality from the `data.frame` class. A `summary` and `print` method are included in the package.
 
 Each row in a web tracking data set represents a visit. Raw data need to have at least the following variables:
 
@@ -53,7 +55,9 @@ Each row in a web tracking data set represents a visit. Raw data need to have at
 - `url`: the URL of the visit
 - `timestamp`: the time of the URL visit
 
-The function `as.wt_dt` assigns the class `wt_dt` to a raw web tracking data set. It also allows you to specify the name of the raw variables corresponding to `panelist_id`, `url` and `timestamp`. Additionally, it turns the timestamp variable into `POSIXct` format.
+The function `as.wt_dt` assigns the class `wt_dt` to a raw web tracking data set. 
+It also allows you to specify the name of the raw variables corresponding to `panelist_id`, `url` and `timestamp`. 
+Additionally, it turns the timestamp variable into `POSIXct` format.
 
 All preprocessing functions check if these three variables are present. Otherwise an error is thrown.
 
@@ -109,28 +113,5 @@ wt <- add_panelist_data(wt, testdt_survey_w)
 
 # aggregate number of visits by day and panelist, and by domain class
 wt_summ <- sum_visits(wt, timeframe = "date", visit_class = "type")
-
 ```
-## Analysis
-
-The package also contains functions for the analysis of web tracking data. One example is the analysis of audience networks (Mangold & Scharkow, [2020](https://doi.org/10.1080/19312458.2020.1724274)). More functionalities will be added in later versions of the package.
-
-``` r
-audience_network(wt, cutoff = 3, type = "pmi")
-```
-
-- `cutoff` indicates the minimal duration needed to count a URL as a website visit.
-- `type` can be one of “pmi”, “phi”, “disparity”, “sdsm”, or “fdsm”
-
-
-<!-- ### Ideology
-
-Top 500 Bakshy scores are available in the package
-
-``` r
-data("bakshy")
-``` -->
-
-
-
 
