@@ -146,7 +146,8 @@ test_that("sum_activity errors", {
 test_that("sum_activity testdt_specific", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
+    attr(wt$timestamp, "tzone") <- "UTC"
     wt_sum <- sum_activity(wt, timeframe = "week")
     # test correct number of active weeks
-    expect_equal(sum(wt_sum$active_weeks, na.rm = TRUE), 46)
+    expect_equal(sum(wt_sum$active_weeks, na.rm = TRUE), 47)
 })
