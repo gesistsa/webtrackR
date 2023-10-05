@@ -40,12 +40,6 @@
     <loc>https://schochastics.github.io/webtrackR/reference/add_title.html</loc>
   </url>
   <url>
-    <loc>https://schochastics.github.io/webtrackR/reference/audience_incidence.html</loc>
-  </url>
-  <url>
-    <loc>https://schochastics.github.io/webtrackR/reference/audience_network.html</loc>
-  </url>
-  <url>
     <loc>https://schochastics.github.io/webtrackR/reference/bakshy.html</loc>
   </url>
   <url>
@@ -71,6 +65,9 @@
   </url>
   <url>
     <loc>https://schochastics.github.io/webtrackR/reference/extract_path.html</loc>
+  </url>
+  <url>
+    <loc>https://schochastics.github.io/webtrackR/reference/fake_tracking.html</loc>
   </url>
   <url>
     <loc>https://schochastics.github.io/webtrackR/reference/index.html</loc>

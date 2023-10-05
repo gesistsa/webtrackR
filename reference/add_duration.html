@@ -106,8 +106,8 @@ Required if 'device_switch_na' set to <code>TRUE</code>. Defaults to <code>NULL<
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>webtrack data.table (ordered by panelist_id and timestamp) with
-the same columns as wt and a new column called <code>duration</code>.</p>
+<p>webtrack data.frame with
+the same columns as wt and a new column called for duration.</p>
     </div>
 
     <div class="section level2">
@@ -119,8 +119,8 @@ the same columns as wt and a new column called <code>duration</code>.</p>
 <span class="r-in"><span><span class="co"># Defining cutoff at 10 minutes, replacing those exceeding cutoff to 5 minutes,</span></span></span>
 <span class="r-in"><span><span class="co"># and setting duration before device switch to `NA`:</span></span></span>
 <span class="r-in"><span><span class="va">wt</span> <span class="op">&lt;-</span> <span class="fu">add_duration</span><span class="op">(</span><span class="va">wt</span>,</span></span>
-<span class="r-in"><span>  cutoff <span class="op">=</span> <span class="fl">600</span>, replace_by <span class="op">=</span> <span class="fl">300</span>,</span></span>
-<span class="r-in"><span>  device_switch_na <span class="op">=</span> <span class="cn">TRUE</span>, device_var <span class="op">=</span> <span class="st">"device"</span></span></span>
+<span class="r-in"><span>    cutoff <span class="op">=</span> <span class="fl">600</span>, replace_by <span class="op">=</span> <span class="fl">300</span>,</span></span>
+<span class="r-in"><span>    device_switch_na <span class="op">=</span> <span class="cn">TRUE</span>, device_var <span class="op">=</span> <span class="st">"device"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
