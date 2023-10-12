@@ -15,14 +15,14 @@
 #' Gentzkow, Matthew, and Jesse M. Shapiro. "Ideological segregation online and offline." The Quarterly Journal of Economics 126.4 (2011): 1799-1839.
 #' @examples
 #' # perfect isolation
-#' left <- c(5, 5, 0, 0)
-#' right <- c(0, 0, 5, 5)
-#' isolation_index(left, right)
+#' grp_a <- c(5, 5, 0, 0)
+#' grp_b <- c(0, 0, 5, 5)
+#' isolation_index(grp_a, grp_b)
 #'
 #' # perfect overlap
-#' left <- c(5, 5, 5, 5)
-#' right <- c(5, 5, 5, 5)
-#' isolation_index(left, right)
+#' grp_a <- c(5, 5, 5, 5)
+#' grp_b <- c(5, 5, 5, 5)
+#' isolation_index(grp_a, grp_b)
 #' @export
 isolation_index <- function(grp_a, grp_b, adjusted = FALSE) {
     if (length(grp_a) != length(grp_b)) {
@@ -41,25 +41,54 @@ isolation_index <- function(grp_a, grp_b, adjusted = FALSE) {
     }
 }
 
-# Will be incorporated later
-# Cutler, David M., Edward L. Glaeser, and Jacob L. Vigdor. "The rise and decline of the American ghetto." Journal of political economy 107.3 (1999): 455-506.
-# dissimilarity_index <- function(left,right){
-#   if(length(left)!=length(right)){
-#     stop("left and right need to have the same length")
-#   }
-#   left  <- left/sum(left,na.rm = TRUE)
-#   right <- right/sum(right,na.rm = TRUE)
-#   bilanz <- abs(right - left)
-#   0.5 * sum(bilanz,na.rm = TRUE)
-# }
-#
-# Frankel, David, and Oscar Volij. "Scale Invariant Measures of Segregation"Working Paper, 2008.
-# atkinson <- function(left,right){
-#   if(length(left)!=length(right)){
-#     stop("left and right need to have the same length")
-#   }
-#   left  <- (left/sum(left,na.rm = TRUE))^(1/2)
-#   right <- (right/sum(right,na.rm = TRUE))^(1/2)
-#   bilanz <- left * right
-#   1 - sum(bilanz, na.rm = TRUE)
-# }
+#' Dissimilarity Index
+#' @description The Dissimilarity Index can be interpreted as the share of Group A
+#' visits that would need to be redistributed across media for the share of
+#' group A to be uniform across websites.
+#' @inheritParams isolation_index
+#' @references
+#' Cutler, David M., Edward L. Glaeser, and Jacob L. Vigdor. "The rise and decline of the American ghetto." Journal of political economy 107.3 (1999): 455-506.
+#' @examples
+#' # perfect dissimilarity
+#' grp_a <- c(5, 5, 0, 0)
+#' grp_b <- c(0, 0, 5, 5)
+#' dissimilarity_index(grp_a, grp_b)
+#'
+#' # no dissimilarity
+#' grp_a <- c(5, 5, 5, 5)
+#' grp_b <- c(5, 5, 5, 5)
+#' dissimilarity_index(grp_a, grp_b)
+#' @export
+dissimilarity_index <- function(grp_a, grp_b) {
+    if (length(grp_a) != length(grp_b)) {
+        stop("grp_a and grp_b need to have the same length")
+    }
+    grp_a <- grp_a / sum(grp_a, na.rm = TRUE)
+    grp_b <- grp_b / sum(grp_b, na.rm = TRUE)
+    out <- abs(grp_b - grp_a)
+    0.5 * sum(out, na.rm = TRUE)
+}
+#' Symmetric Atkinson Index
+#' calculates the symmetric Atkinson index
+#' @inheritParams isolation_index
+#' @references
+#' Frankel, David, and Oscar Volij. "Scale Invariant Measures of Segregation "Working Paper, 2008.
+#' @examples
+#' # perfect score
+#' grp_a <- c(5, 5, 0, 0)
+#' grp_b <- c(0, 0, 5, 5)
+#' atkinson_index(grp_a, grp_b)
+#'
+#' grp_a <- c(5, 5, 5, 5)
+#' grp_b <- c(5, 5, 5, 5)
+#' atkinson_index(grp_a, grp_b)
+#' @export
+atkinson_index <- function(grp_a, grp_b) {
+    if (length(grp_a) != length(grp_b)) {
+        stop("grp_a and grp_b need to have the same length")
+    }
+    grp_a <- (grp_a / sum(grp_a, na.rm = TRUE))^(1 / 2)
+    grp_b <- (grp_b / sum(grp_b, na.rm = TRUE))^(1 / 2)
+    bilanz <- grp_a * grp_b
+    1 - sum(bilanz, na.rm = TRUE)
+}

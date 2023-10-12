@@ -4,14 +4,16 @@
 \alias{isolation_index}
 \title{Isolation Index}
 \usage{
-isolation_index(grp_A, grp_B)
+isolation_index(grp_a, grp_b, adjusted = FALSE)
 }
 \arguments{
-\item{grp_A}{vector (usually corresponds to a column in a webtrack
+\item{grp_a}{vector (usually corresponds to a column in a webtrack
 data frame) indicating the number of individuals of group A using a website}
 
-\item{grp_B}{vector (usually corresponds to a column in a webtrack
+\item{grp_b}{vector (usually corresponds to a column in a webtrack
 data frame) indicating the number of individuals of group B using a website}
+
+\item{adjusted}{logical. should the index be adjusted (defaults to FALSE)}
 }
 \value{
 numeric value between 0 and 1. 0 indicates no isolation and 1 perfect isolation
@@ -27,14 +29,14 @@ A value of 0 means both visit exactly the same websites
 }
 \examples{
 # perfect isolation
-left <- c(5, 5, 0, 0)
-right <- c(0, 0, 5, 5)
-isolation_index(left, right)
+grp_a <- c(5, 5, 0, 0)
+grp_b <- c(0, 0, 5, 5)
+isolation_index(grp_a, grp_b)
 
 # perfect overlap
-left <- c(5, 5, 5, 5)
-right <- c(5, 5, 5, 5)
-isolation_index(left, right)
+grp_a <- c(5, 5, 5, 5)
+grp_b <- c(5, 5, 5, 5)
+isolation_index(grp_a, grp_b)
 }
 \references{
 Cutler, David M., Edward L. Glaeser, and Jacob L. Vigdor. "The rise and decline of the American ghetto." Journal of political economy 107.3 (1999): 455-506.
