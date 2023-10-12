@@ -36,7 +36,7 @@ isolation_index <- function(grp_a, grp_b, adjusted = FALSE) {
         return(sum(out, na.rm = TRUE))
     } else {
         out <- 1 / sum(grp_a, na.rm = TRUE) * grp_a * (grp_a - 1) / (grp_a + grp_b - 1)
-        out <- out - 1 / sum(grp_b, na.rm = TRUE) * (grp_b * grp_a) / (grp_a * grp_b - 1)
+        out <- out - 1 / sum(grp_b, na.rm = TRUE) * (grp_b * grp_a) / (grp_a + grp_b - 1)
         return(sum(out, na.rm = TRUE))
     }
 }
