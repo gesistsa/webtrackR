@@ -40,6 +40,9 @@
     <loc>https://schochastics.github.io/webtrackR/reference/add_title.html</loc>
   </url>
   <url>
+    <loc>https://schochastics.github.io/webtrackR/reference/atkinson_index.html</loc>
+  </url>
+  <url>
     <loc>https://schochastics.github.io/webtrackR/reference/bakshy.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>https://schochastics.github.io/webtrackR/reference/deduplicate.html</loc>
+  </url>
+  <url>
+    <loc>https://schochastics.github.io/webtrackR/reference/dissimilarity_index.html</loc>
   </url>
   <url>
     <loc>https://schochastics.github.io/webtrackR/reference/domain_list.html</loc>

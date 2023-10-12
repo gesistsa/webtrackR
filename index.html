@@ -77,7 +77,7 @@
 </div>
 <!-- badges: start -->
 
-<p>webtrackR is an R package to preprocess and analyze web tracking data, i.e., web browsing histories of participants in an academic study. Web tracking data is oftentimes collected and analyzed in conjunction with survey data of the same participants. The R package is built on top of data.table and can thus comfortably handle very large datasets.</p>
+<p>webtrackR is an R package to preprocess and analyze web tracking data, i.e., web browsing histories of participants in an academic study. Web tracking data is oftentimes collected and analyzed in conjunction with survey data of the same participants.</p>
 <p><code>webtrackR</code> is part of a series of R packages to analyse webtracking data:</p>
 <ul>
 <li>
@@ -102,7 +102,7 @@
 <h2 id="s3-class-wt_dt">S3 class <code>wt_dt</code>
 <a class="anchor" aria-label="anchor" href="#s3-class-wt_dt"></a>
 </h2>
-<p>The package defines an S3 class called <code>wt_dt</code> which inherits most of the functionality from the <code>data.table</code> class. A <code>summary</code> and <code>print</code> method are included in the package.</p>
+<p>The package defines an S3 class called <code>wt_dt</code> which inherits most of the functionality from the <code>data.frame</code> class. A <code>summary</code> and <code>print</code> method are included in the package.</p>
 <p>Each row in a web tracking data set represents a visit. Raw data need to have at least the following variables:</p>
 <ul>
 <li>
@@ -186,24 +186,6 @@
 <span></span>
 <span><span class="co"># aggregate number of visits by day and panelist, and by domain class</span></span>
 <span><span class="va">wt_summ</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sum_visits.html">sum_visits</a></span><span class="op">(</span><span class="va">wt</span>, timeframe <span class="op">=</span> <span class="st">"date"</span>, visit_class <span class="op">=</span> <span class="st">"type"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="analysis">Analysis<a class="anchor" aria-label="anchor" href="#analysis"></a>
-</h2>
-<p>The package also contains functions for the analysis of web tracking data. One example is the analysis of audience networks (Mangold &amp; Scharkow, <a href="https://doi.org/10.1080/19312458.2020.1724274" class="external-link">2020</a>). More functionalities will be added in later versions of the package.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">audience_network</span><span class="op">(</span><span class="va">wt</span>, cutoff <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">"pmi"</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>
-<code>cutoff</code> indicates the minimal duration needed to count a URL as a website visit.</li>
-<li>
-<code>type</code> can be one of “pmi”, “phi”, “disparity”, “sdsm”, or “fdsm”</li>
-</ul>
-<!-- ### Ideology
-&#10;Top 500 Bakshy scores are available in the package
-&#10;``` r
-data("bakshy")
-``` -->
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

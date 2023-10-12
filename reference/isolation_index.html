@@ -57,19 +57,23 @@ are also members of group A.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">isolation_index</span><span class="op">(</span><span class="va">grp_A</span>, <span class="va">grp_B</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">isolation_index</span><span class="op">(</span><span class="va">grp_a</span>, <span class="va">grp_b</span>, adjusted <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>grp_A</dt>
+    <dl><dt>grp_a</dt>
 <dd><p>vector (usually corresponds to a column in a webtrack
 data frame) indicating the number of individuals of group A using a website</p></dd>
 
 
-<dt>grp_B</dt>
+<dt>grp_b</dt>
 <dd><p>vector (usually corresponds to a column in a webtrack
 data frame) indicating the number of individuals of group B using a website</p></dd>
+
+
+<dt>adjusted</dt>
+<dd><p>logical. should the index be adjusted (defaults to FALSE)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -92,15 +96,15 @@ Gentzkow, Matthew, and Jesse M. Shapiro. "Ideological segregation online and off
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># perfect isolation</span></span></span>
-<span class="r-in"><span><span class="va">left</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">right</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">isolation_index</span><span class="op">(</span><span class="va">left</span>, <span class="va">right</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">grp_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">grp_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">isolation_index</span><span class="op">(</span><span class="va">grp_a</span>, <span class="va">grp_b</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># perfect overlap</span></span></span>
-<span class="r-in"><span><span class="va">left</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">right</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">isolation_index</span><span class="op">(</span><span class="va">left</span>, <span class="va">right</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">grp_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">grp_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">isolation_index</span><span class="op">(</span><span class="va">grp_a</span>, <span class="va">grp_b</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 </code></pre></div>
     </div>
