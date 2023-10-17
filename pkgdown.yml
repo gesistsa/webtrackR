@@ -2,7 +2,7 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2023-10-12T15:53Z
+last_built: 2023-10-17T13:40Z
 urls:
   reference: https://schochastics.github.io/webtrackR/reference
   article: https://schochastics.github.io/webtrackR/articles
