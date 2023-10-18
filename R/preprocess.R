@@ -395,7 +395,6 @@ parse_path <- function(wt, varname = "url", keep = "letters_only") {
     if (keep == "letters_only") {
         path_split <- lapply(path_split, function(x) x[grepl("^[A-Za-z]+$", x)])
     } else if (keep == "words_only") {
-        data("words_en")
         words <- words_en$word
         path_split <- lapply(path_split, function(x) x[x %fin% words])
     }
