@@ -338,19 +338,8 @@ extract_path <- function(wt, varname = "url") {
 drop_query <- function(wt, varname = "url") {
     abort_if_not_wtdt(wt)
     vars_exist(wt, varname)
-    hash <- adaR::ada_get_hash(wt[[varname]])
-    search <- adaR::ada_get_search(wt[[varname]])
-    query <- paste0(search, hash)
-    idx <- which(query != "")
-    if (length(idx) != 0) {
-        no_query <- mapply(function(x, y) sub(x, "", y, fixed = TRUE), query[idx], wt[[varname]][idx], USE.NAMES = FALSE)
-        wt[[paste0(varname, "_noquery")]] <- wt[[varname]]
-        wt[[paste0(varname, "_noquery")]][idx] <- no_query
-        return(wt)
-    } else {
-        wt[[paste0(varname, "_noquery")]] <- wt[[varname]]
-        return(wt)
-    }
+    wt[[paste0(varname, "_noquery")]] <- adaR::ada_clear_hash(adaR::ada_clear_search(wt[[varname]]))
+    return(wt)
 }
 
 #' Parse parts of path for text analysis
