@@ -10,6 +10,12 @@
     <loc>https://schochastics.github.io/webtrackR/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://schochastics.github.io/webtrackR/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://schochastics.github.io/webtrackR/articles/webtrackR.html</loc>
+  </url>
+  <url>
     <loc>https://schochastics.github.io/webtrackR/authors.html</loc>
   </url>
   <url>
@@ -116,9 +122,6 @@
   </url>
   <url>
     <loc>https://schochastics.github.io/webtrackR/reference/webtrackR-package.html</loc>
-  </url>
-  <url>
-    <loc>https://schochastics.github.io/webtrackR/reference/words_en.html</loc>
   </url>
   <url>
     <loc>https://schochastics.github.io/webtrackR/reference/wt_dt.html</loc>
