@@ -678,6 +678,23 @@ add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
     return(merged_data)
 }
 
+#' Clean URLs
+#' make URls WHATWG-compliant for faster parsing
+#' @param varname character. name of the column from which to extract the host.
+#' Defaults to `"url"`.
+#' @export
+clean_urls <- function(wt, varname = "url") {
+    abort_if_not_wtdt(wt)
+    vars_exist(wt, varname)
+    protocol <- adaR::ada_get_protocol(wt[[varname]])
+    wt[[varname]][is.na(protocol)] <- paste0("https://", wt[[varname]][is.na(protocol)])
+    wt[[varname]] <- gsub("/#/", "/", wt[[varname]])
+    wt
+}
+
+
+
+
 # helpers
 lead <- function(x, n = 1, default = NA) {
     if (length(x) <= n) {
