@@ -201,6 +201,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
         wt$tmp_url_prev <- NULL
         wt$tmp_timestamp_prev <- NULL
     }
+    class(wt) <- c("wt_dt",class(wt))
     return(wt)
 }
 
