@@ -164,7 +164,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
             if (!is.null(add_grpvars)) grp_vars <- c(grp_vars, add_grpvars)
 
 
-            wt <- aggregate(cbind(visits = 1, duration = as.numeric(wt$duration), timestamp = wt$timestamp),
+            wt <- aggregate(data.frame(visits = 1, duration = as.numeric(wt$duration), timestamp = wt$timestamp),
                 by = wt[grp_vars], FUN = function(x) if (is.numeric(x)) sum(x, na.rm = TRUE) else min(x)
             )
             wt$day <- NULL
@@ -201,6 +201,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
         wt$tmp_url_prev <- NULL
         wt$tmp_timestamp_prev <- NULL
     }
+    class(wt) <- c("wt_dt", class(wt))
     return(wt)
 }
 
@@ -278,6 +279,8 @@ extract_host <- function(wt, varname = "url") {
 extract_domain <- function(wt, varname = "url") {
     abort_if_not_wtdt(wt)
     vars_exist(wt, varname)
+    protocol <- adaR::ada_get_protocol(wt[[varname]])
+    wt[[varname]][is.na(protocol)] <- paste0("https://", wt[[varname]][is.na(protocol)])
     domain <- adaR::ada_get_domain(wt[[varname]])
     if (varname == "url") {
         wt[["domain"]] <- domain
