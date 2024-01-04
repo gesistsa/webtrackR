@@ -1,8 +1,7 @@
 # webtrackR 0.1.0.9000
 
 * reimplemented in base R removing several dependencies
-* fixed #1, #81, #82, #83, #84, #87, #88 
-
+* fixed #1, #81, #82, #83, #84, #87, #88, #98
 
 # webtrackR 0.1.0
 
