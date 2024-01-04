@@ -4,7 +4,7 @@
 \alias{parse_path}
 \title{Parse parts of path for text analysis}
 \usage{
-parse_path(wt, varname = "url", keep = "letters_only")
+parse_path(wt, varname = "url", keep = "letters_only", decode = TRUE)
 }
 \arguments{
 \item{wt}{webtrack data object}
@@ -18,6 +18,8 @@ containing letters are kept. If \code{"words_only"}, only parts constituting
 English words (as defined by the Word Game Dictionary,
 cf. https://cran.r-project.org/web/packages/words/index.html) are kept.
 Support for more languages will be added in future.}
+
+\item{decode}{logical. Whether to decode the path (see \code{\link[utils:URLencode]{utils::URLdecode()}}), default to TRUE}
 }
 \value{
 webtrack data.frame with the same columns as wt

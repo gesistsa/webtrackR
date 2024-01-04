@@ -296,8 +296,8 @@ extract_domain <- function(wt, varname = "url") {
 #' The path is defined as the part following the host but not including a
 #' query (anything after a "?") or a fragment (anything after a "#").
 #' @param wt webtrack data object
-#' @param varname character. name of the column from which to extract the host.
-#' Defaults to `"url"`.
+#' @param varname character. name of the column from which to extract the host. Defaults to `"url"`.
+#' @param decode logical. Whether to decode the path (see [utils::URLdecode()]), default to TRUE
 #' @return webtrack data.frame with the same columns as wt
 #' and a new column called `'path'` (or, if varname not equal to `'url'`, `'<varname>_path'`)
 #' @examples
@@ -308,10 +308,10 @@ extract_domain <- function(wt, varname = "url") {
 #' wt <- extract_path(wt)
 #' }
 #' @export
-extract_path <- function(wt, varname = "url") {
+extract_path <- function(wt, varname = "url", decode = TRUE) {
     abort_if_not_wtdt(wt)
     vars_exist(wt, varname)
-    path <- adaR::ada_get_pathname(wt[[varname]])
+    path <- adaR::ada_get_pathname(wt[[varname]], decode = decode)
     if (varname == "url") {
         wt[["path"]] <- path
     } else {
@@ -359,6 +359,7 @@ drop_query <- function(wt, varname = "url") {
 #' English words (as defined by the Word Game Dictionary,
 #' cf. https://cran.r-project.org/web/packages/words/index.html) are kept.
 #' Support for more languages will be added in future.
+#' @param decode logical. Whether to decode the path (see [utils::URLdecode()]), default to TRUE
 #' @return webtrack data.frame with the same columns as wt
 #' and a new column called `'path_split'`  (or, if varname not equal to `'url'`, `'<varname>_path_split'`)
 #' containing parts as a comma-separated string.
@@ -370,14 +371,14 @@ drop_query <- function(wt, varname = "url") {
 #' wt <- parse_path(wt)
 #' }
 #' @export
-parse_path <- function(wt, varname = "url", keep = "letters_only") {
+parse_path <- function(wt, varname = "url", keep = "letters_only", decode = TRUE) {
     abort_if_not_wtdt(wt)
     vars_exist(wt, varname)
     keep <- match.arg(keep, c("letters_only", "words_only"))
 
     path_delims <- "/|-|_|\\."
     if (!"path" %in% names(wt)) {
-        tmp <- extract_path(wt, varname)
+        tmp <- extract_path(wt, varname, decode = decode)
         paths <- tmp[[grep("path", names(tmp))]]
     } else {
         paths <- wt[["path"]]

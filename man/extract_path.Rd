@@ -4,13 +4,14 @@
 \alias{extract_path}
 \title{Extract the path from URL}
 \usage{
-extract_path(wt, varname = "url")
+extract_path(wt, varname = "url", decode = TRUE)
 }
 \arguments{
 \item{wt}{webtrack data object}
 
-\item{varname}{character. name of the column from which to extract the host.
-Defaults to \code{"url"}.}
+\item{varname}{character. name of the column from which to extract the host. Defaults to \code{"url"}.}
+
+\item{decode}{logical. Whether to decode the path (see \code{\link[utils:URLencode]{utils::URLdecode()}}), default to TRUE}
 }
 \value{
 webtrack data.frame with the same columns as wt

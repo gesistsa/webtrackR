@@ -360,3 +360,14 @@ test_that("panelist_data testdt_specific", {
     wt_joined <- add_panelist_data(wt, testdt_survey_w)
     expect_true(round(mean(wt_joined$leftright), 2) == 4.99)
 })
+
+test_that("issue 98", {
+    test <- data.frame(
+        panelist_id = "abc",
+        timestamp = as.POSIXct("2019-05-31 12:41:59"),
+        url = "https://www.omahasteaks.com/product/Private-Reserve%AE-Boneless-Strips-00000004718"
+    )
+    test <- as.wt_dt(test)
+    expect_error(suppressWarnings(parse_path(test, decode = TRUE)))
+    expect_no_error(parse_path(test, decode = FALSE))
+})
