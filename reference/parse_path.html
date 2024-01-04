@@ -60,7 +60,7 @@ consist of letters only, or of a real word, can be filtered via the argument <co
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">parse_path</span><span class="op">(</span><span class="va">wt</span>, varname <span class="op">=</span> <span class="st">"url"</span>, keep <span class="op">=</span> <span class="st">"letters_only"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">parse_path</span><span class="op">(</span><span class="va">wt</span>, varname <span class="op">=</span> <span class="st">"url"</span>, keep <span class="op">=</span> <span class="st">"letters_only"</span>, decode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,6 +81,10 @@ containing letters are kept. If <code>"words_only"</code>, only parts constituti
 English words (as defined by the Word Game Dictionary,
 cf. https://cran.r-project.org/web/packages/words/index.html) are kept.
 Support for more languages will be added in future.</p></dd>
+
+
+<dt>decode</dt>
+<dd><p>logical. Whether to decode the path (see <code><a href="https://rdrr.io/r/utils/URLencode.html" class="external-link">utils::URLdecode()</a></code>), default to TRUE</p></dd>
 
 </dl></div>
     <div class="section level2">
