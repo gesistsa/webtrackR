@@ -34,13 +34,13 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 
     if (!is.null(timeframe)) {
         if (timeframe == "date") {
-            wt$date <- format(wt$timestamp, format = "%F")
+            wt[, `:=`(date = format(timestamp, format = "%F"))]
         } else if (timeframe == "week") {
-            wt$week <- format(wt$timestamp, format = "%Y week %W")
+            wt[, `:=`(week = format(timestamp, format = "%Y week %W"))]
         } else if (timeframe == "month") {
-            wt$month <- format(wt$timestamp, format = "%Y month %m")
+            wt[, `:=`(month = format(timestamp, format = "%Y month %m"))]
         } else if (timeframe == "year") {
-            wt$year <- format(wt$timestamp, format = "%Y")
+            wt[, `:=`(year = format(timestamp, format = "%Y"))]
         } else if (timeframe == "wave") {
             stopifnot("couldn't find the column 'wave' in the webtrack data" = "wave" %in% names(wt))
         }
@@ -48,34 +48,25 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
 
     grp_vars <- c("panelist_id", timeframe)
 
-    summary <- aggregate(x = list(n_visits = rep(1, nrow(wt))), by = wt[grp_vars], FUN = length)
-
+    summary <- wt[, list("n_visits" = .N), by = grp_vars]
     if (!is.null(visit_class)) {
-        vars_exist(wt, visit_class)
-        wt$tmp_class <- paste0("n_visits_", visit_class, "_", wt[[visit_class]])
-
-        grp_vars <- c(grp_vars, "tmp_class")
-        tmp_summary <- aggregate(x = list(tmp_visits = rep(1, nrow(wt))), by = wt[grp_vars], FUN = length)
-
+        wt <- wt[, tmp_class := paste0("n_visits_", visit_class, "_", get(visit_class))]
+        grp_vars <- c("panelist_id", timeframe, "tmp_class")
+        tmp_summary <- wt[, list("tmp_visits" = .N), by = grp_vars]
         if (is.null(timeframe)) {
-            tmp_summary <- reshape(tmp_summary, timevar = "tmp_class", idvar = "panelist_id", direction = "wide", sep = "_")
-            names(tmp_summary) <- gsub("tmp_visits_", "", names(tmp_summary))
+            tmp_summary <- dcast(tmp_summary, panelist_id ~ tmp_class, value.var = c("tmp_visits"), fill = 0)
         } else {
-            names(tmp_summary)[which(names(tmp_summary) == timeframe)] <- "tmp_timeframe"
-            tmp_summary <- reshape(tmp_summary, timevar = "tmp_class", idvar = c("panelist_id", "tmp_timeframe"), direction = "wide", sep = "_")
-            names(tmp_summary)[which(names(tmp_summary) == "tmp_timeframe")] <- timeframe
+            setnames(tmp_summary, timeframe, "tmp_timeframe")
+            tmp_summary <- dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_visits"), fill = 0)
+            setnames(tmp_summary, "tmp_timeframe", timeframe)
         }
-
-        wt$tmp_class <- NULL
-
-        summary <- merge(summary, tmp_summary, by = c("panelist_id", timeframe), all = TRUE)
+        wt[, tmp_class := NULL]
+        summary <- summary[tmp_summary, on = c("panelist_id", timeframe)]
     }
-
     if (!is.null(timeframe)) {
         wt[[timeframe]] <- NULL
     }
-
-    return(summary)
+    summary[]
 }
 
 
@@ -124,53 +115,43 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class
         wt <- add_duration(wt)
     } else {
         vars_exist(wt, vars = var_duration)
-        names(wt)[names(wt) == var_duration] <- "duration"
+        colnames(wt)[colnames(wt) == var_duration] <- "duration"
     }
 
     if (!is.null(timeframe)) {
         if (timeframe == "date") {
-            wt$date <- format(wt$timestamp, format = "%F")
+            wt[, `:=`(date = format(timestamp, format = "%F"))]
         } else if (timeframe == "week") {
-            wt$week <- format(wt$timestamp, format = "%Y week %W")
+            wt[, `:=`(week = format(timestamp, format = "%Y week %W"))]
         } else if (timeframe == "month") {
-            wt$month <- format(wt$timestamp, format = "%Y month %m")
+            wt[, `:=`(month = format(timestamp, format = "%Y month %m"))]
         } else if (timeframe == "year") {
-            wt$year <- format(wt$timestamp, format = "%Y")
+            wt[, `:=`(year = format(timestamp, format = "%Y"))]
         } else if (timeframe == "wave") {
             stopifnot("couldn't find the column 'wave' in the webtrack data" = "wave" %in% names(wt))
         }
     }
 
     grp_vars <- c("panelist_id", timeframe)
-    summary_fun <- function(duration) if (all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)
-    summary <- aggregate(x = list(duration_visits = wt$duration), by = wt[grp_vars], FUN = summary_fun)
-
+    summary <- wt[, list("duration_visits" = if (all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)), by = grp_vars]
     if (!is.null(visit_class)) {
-        vars_exist(wt, visit_class)
-        wt$tmp_class <- paste0("duration_visits_", visit_class, "_", wt[[visit_class]])
-
-        grp_vars <- c(grp_vars, "tmp_class")
-        tmp_summary <- aggregate(x = list(tmp_duration = wt$duration), by = wt[grp_vars], FUN = summary_fun)
-
+        wt <- wt[, tmp_class := paste0("duration_visits_", visit_class, "_", get(visit_class))]
+        grp_vars <- c("panelist_id", timeframe, "tmp_class")
+        tmp_summary <- wt[, list("tmp_duration" = if (all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)), by = grp_vars]
         if (is.null(timeframe)) {
-            tmp_summary <- reshape(tmp_summary, timevar = "tmp_class", idvar = "panelist_id", direction = "wide", sep = "_")
-            names(tmp_summary) <- gsub("tmp_duration_", "", names(tmp_summary))
+            tmp_summary <- dcast(tmp_summary, panelist_id ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
         } else {
-            names(tmp_summary)[which(names(tmp_summary) == timeframe)] <- "tmp_timeframe"
-            tmp_summary <- reshape(tmp_summary, timevar = "tmp_class", idvar = c("panelist_id", "tmp_timeframe"), direction = "wide", sep = "_")
-            names(tmp_summary)[which(names(tmp_summary) == "tmp_timeframe")] <- timeframe
+            setnames(tmp_summary, timeframe, "tmp_timeframe")
+            tmp_summary <- dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
+            setnames(tmp_summary, "tmp_timeframe", timeframe)
         }
-
-        wt$tmp_class <- NULL
-
-        summary <- merge(summary, tmp_summary, by = c("panelist_id", timeframe), all = TRUE)
+        wt[, tmp_class := NULL]
+        summary <- summary[tmp_summary, on = c("panelist_id", timeframe)]
     }
-
     if (!is.null(timeframe)) {
         wt[[timeframe]] <- NULL
     }
-
-    return(summary)
+    summary[]
 }
 
 
@@ -200,29 +181,27 @@ sum_activity <- function(wt, timeframe = "date") {
     timeframe <- match.arg(timeframe, c("date", "week", "month", "year", "wave"))
 
     if (timeframe == "date") {
-        wt$date <- format(wt$timestamp, format = "%F")
+        wt[, `:=`(date = format(timestamp, format = "%F"))]
         timeframe_var <- "active_dates"
     } else if (timeframe == "week") {
-        wt$week <- format(wt$timestamp, format = "%Y week %W")
+        wt[, `:=`(week = format(timestamp, format = "%Y week %W"))]
         timeframe_var <- "active_weeks"
     } else if (timeframe == "month") {
-        wt$month <- format(wt$timestamp, format = "%Y month %m")
+        wt[, `:=`(month = format(timestamp, format = "%Y month %m"))]
         timeframe_var <- "active_months"
     } else if (timeframe == "year") {
-        wt$year <- format(wt$timestamp, format = "%Y")
+        wt[, `:=`(year = format(timestamp, format = "%Y"))]
         timeframe_var <- "active_years"
     } else if (timeframe == "wave") {
-        if ("wave" %in% names(wt)) {
-            timeframe_var <- "active_waves"
-        } else {
+        vars_wt <- names(wt)
+        wave <- pmatch("wave", vars_wt)
+        if (is.na(wave)) {
             stop("couldn't find the column 'wave' in the webtrack data", call. = FALSE)
+        } else {
+            timeframe_var <- "active_waves"
         }
     }
-
-    summary <- aggregate(x = list(temp = wt[[timeframe]]), 
-        by = list(panelist_id = wt$panelist_id), FUN = function(x) length(unique(x)))
-    
-    names(summary)[which(names(summary) == "temp")] <- timeframe_var
-
-    return(summary)
+    summary <- wt[, list(temp = length(unique(get(timeframe)))), by = "panelist_id"]
+    data.table::setnames(summary, "temp", timeframe_var)
+    summary[]
 }
