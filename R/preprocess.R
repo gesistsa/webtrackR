@@ -411,8 +411,10 @@ parse_path <- function(wt, varname = "url", keep = "letters_only", decode = TRUE
 #' @export
 add_next_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
+    level <- match.arg(level, c("url", "host", "domain"))
 
-    wt <- wt[order(wt$panelist_id, wt$timestamp), ]
+    setorder(wt, panelist_id, timestamp)
+
     if (level == "url") {
         wt[, url_next := data.table::shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
     } else if (level == "host") {
@@ -459,33 +461,28 @@ add_next_visit <- function(wt, level = "url") {
 add_previous_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
     level <- match.arg(level, c("url", "host", "domain"))
-    wt <- wt[order(wt$panelist_id, wt$timestamp), ]
+    setorder(wt, panelist_id, timestamp)
 
     if (level == "url") {
-        wt$url_previous <- with(wt, ave(url, panelist_id, FUN = lag))
-        return(wt)
+        wt[, url_previous := data.table::shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     } else if (level == "host") {
         if (!"host" %in% names(wt)) {
             wt <- extract_host(wt, varname = "url")
-            wt$host_previous <- with(wt, ave(host, panelist_id, FUN = lag))
-            wt$host <- NULL
-            return(wt)
+            wt[, host_previous := data.table::shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+            wt[, host := NULL]
         } else {
-            wt$host_previous <- with(wt, ave(host, panelist_id, FUN = lag))
-            return(wt)
+            wt[, host_previous := data.table::shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
         }
     } else if (level == "domain") {
         if (!"domain" %in% names(wt)) {
             wt <- extract_domain(wt, varname = "url")
-            wt$domain_previous <- with(wt, ave(domain, panelist_id, FUN = lag))
-            wt$domain <- NULL
-            return(wt)
+            wt[, domain_previous := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+            wt[, domain := NULL]
         } else {
-            wt$domain_previous <- with(wt, ave(domain, panelist_id, FUN = lag))
-            return(wt)
+            wt[, domain_previous := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
         }
     }
-    return(wt)
+    wt[]
 }
 
 #' Download and add the "title" of a URL
