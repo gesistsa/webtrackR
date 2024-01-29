@@ -59,31 +59,37 @@ classify_visits <- function(wt, classes, match_by = "domain",
                             return_rows_val = NULL) {
     abort_if_not_wtdt(wt)
     match_by <- match.arg(match_by, c("domain", "host", "regex"))
+    if (!data.table::is.data.table(classes)) {
+        stop("classes needs to be a data.table")
+    }
     if (match_by == "domain") {
         vars_exist(wt, "domain")
         vars_exist(classes, "domain")
-        wt <- merge(wt, classes, by = "domain", all.x = TRUE)
+        wt <- classes[wt, on = "domain"]
     } else if (match_by == "host") {
         vars_exist(wt, "host")
         vars_exist(classes, "host")
-        wt <- merge(wt, classes, by = "host", all.x = TRUE)
+        wt <- classes[wt, on = "host"]
     } else if (match_by == "regex") {
         stopifnot("You have to specify regex_on if match_by is set to 'regex'" = !is.null(regex_on))
         vars_exist(wt, "url")
         vars_exist(classes, regex_on)
         wt <- drop_query(wt)
+        wt <- wt[, tmp_index := seq_len(.N)]
+        tmp_wt <- wt[, list(tmp_index, url_noquery)]
         pattern <- paste(classes[[regex_on]], collapse = "|")
-        idx <- grepl(pattern, wt$url_noquery)
-        wt$match <- NA
-        wt$match[idx] <- regmatches(wt$url_noquery, regexpr(pattern, wt$url_noquery))
-        names(wt)[names(wt) == "match"] <- names(classes)[names(classes) != regex_on]
+        tmp_wt_matched <- tmp_wt[grepl(pattern, url_noquery)]
+        tmp_wt_matched <- tmp_wt_matched[, match := regmatches(url_noquery, regexpr(pattern, url_noquery))]
+        wt_matched <- tmp_wt_matched[, url_noquery := NULL][wt, on = "tmp_index"]
+        data.table::setnames(wt_matched, "match", regex_on)
+        wt <- classes[wt_matched, on = regex_on][, c("url_noquery", "tmp_index") := NULL]
     }
 
     if (!is.null(return_rows_by)) {
         vars_exist(classes, return_rows_by)
         stopifnot("You have to specify return_rows_val if return_rows_by is not NULL" = !is.null(return_rows_val))
-        wt <- wt[!is.na(wt[[return_rows_by]]) & wt[[return_rows_by]] == return_rows_val, ]
+        wt <- wt[get(return_rows_by) == return_rows_val]
     }
     class(wt) <- c("wt_dt", class(wt))
-    wt
+    wt[]
 }
