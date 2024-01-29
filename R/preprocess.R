@@ -18,6 +18,7 @@
 #' the difference to the next timestamp (`FALSE`). Defaults to `FALSE`.
 #' @param device_var character. Column indicating device.
 #' Required if 'device_switch_na' set to `TRUE`. Defaults to `NULL`.
+#' @importFrom data.table := .N .SD
 #' @return webtrack data.frame with
 #' the same columns as wt and a new column called for duration.
 #' @examples
@@ -49,29 +50,23 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
         stop(paste("Missing required columns:", paste(missing_vars, collapse = ", ")))
     }
 
-    wt <- wt[order(wt$panelist_id, wt$timestamp), ]
-
-    next_timestamp <- c(tail(wt$timestamp, -1), NA)
-    next_user <- c(tail(wt$panelist_id, -1), NA)
-
-    wt$duration <- ifelse(wt$panelist_id == next_user,
-        as.numeric(difftime(next_timestamp, wt$timestamp, units = "secs")), last_replace_by
-    )
-
-    tmp_last <- wt$panelist_id != next_user
-
+    data.table::setorder(wt, panelist_id, timestamp)
+    wt[, duration := as.numeric(data.table::shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp), by = "panelist_id"]
+    wt[, tmp_last := ifelse(is.na(duration), TRUE, FALSE)]
     if (device_switch_na == TRUE) {
-        device_next <- c(tail(wt[[device_var]], -1), NA)
-
-        # wt$duration[wt$tmp_last == TRUE] <- last_replace_by
-        wt$duration[wt$duration > cutoff & tmp_last == FALSE] <- replace_by
-        wt$duration[device_next != wt$device_var & tmp_last == FALSE] <- NA
+        data.table::setnames(wt, device_var, "device")
+        wt[, device_next := data.table::shift(device, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+        wt[tmp_last == TRUE, duration := last_replace_by]
+        wt[duration > cutoff & tmp_last == FALSE, duration := replace_by]
+        wt[device_next != device & tmp_last == FALSE, duration := NA]
+        data.table::setnames(wt, "device", device_var)
+        wt[, device_next := NULL]
     } else {
-        # wt$duration[wt$tmp_last == TRUE] <- last_replace_by
-        wt$duration[wt$duration > cutoff & tmp_last == FALSE] <- replace_by
+        wt[tmp_last == TRUE, duration := last_replace_by]
+        wt[duration > cutoff & tmp_last == FALSE, duration := replace_by]
     }
-
-    return(wt)
+    wt[, tmp_last := NULL]
+    wt[]
 }
 
 #' Add a session variable
@@ -92,14 +87,12 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
 #' @export
 add_session <- function(wt, cutoff) {
     abort_if_not_wtdt(wt)
-    # wt <- wt[order(wt$panelist_id, wt$timestamp), ]
-
-    last_timestamp <- c(wt$timestamp[1], head(wt$timestamp, -1))
-    duration <- as.numeric(difftime(wt$timestamp, last_timestamp, units = "secs"))
-    sessions <- ave(duration, wt$panelist_id, FUN = function(x) cumsum(x > cutoff)) + 1
-    wt$session <- ave(sessions, wt$panelist_id, FUN = fill_na_locf)
-
-    return(wt)
+    wt[, tmp_index := 1:.N, by = panelist_id]
+    wt[as.numeric(data.table::shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp) > cutoff, session := 1:.N, by = "panelist_id"]
+    wt[, session := ifelse(tmp_index == 1, 1, session)]
+    data.table::setnafill(wt, type = "locf", cols = "session")
+    wt[, tmp_index := NULL]
+    wt[]
 }
 
 #' Deduplicate visits
@@ -150,8 +143,6 @@ add_session <- function(wt, cutoff) {
 deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "duration",
                         keep_nvisits = FALSE, same_day = TRUE, add_grpvars = NULL) {
     abort_if_not_wtdt(wt)
-
-    # wt <- wt[order(wt$panelist_id, wt$timestamp), ]
 
     if (method == "aggregate") {
         vars_exist(wt, vars = duration_var)
@@ -363,7 +354,6 @@ drop_query <- function(wt, varname = "url") {
 #' @return webtrack data.frame with the same columns as wt
 #' and a new column called `'path_split'`  (or, if varname not equal to `'url'`, `'<varname>_path_split'`)
 #' containing parts as a comma-separated string.
-#' @importFrom fastmatch `%fin%`
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
