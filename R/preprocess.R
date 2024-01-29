@@ -638,14 +638,17 @@ create_urldummy <- function(wt, dummy, name) {
 #' @export
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
     abort_if_not_wtdt(wt)
+    vars_exist(wt, vars = c(join_on))
     if (!is.null(cols)) {
         if (!all(cols %in% names(data))) {
             stop("couldn't locate all columns in data")
         }
-        data <- data[, c(join_on, cols)]
+        data <- data[, c(join_on, cols), with = FALSE]
+        setattr(wt, "panelist", cols)
+    } else {
+        setattr(wt, "panelist", setdiff(names(data), join_on))
     }
-
-    merged_data <- merge(wt, data, by = join_on, all.x = TRUE)
-
-    return(merged_data)
+    data <- data[wt, on = join_on]
+    class(data) <- c("wt_dt", class(data))
+    data
 }
