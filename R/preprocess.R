@@ -649,26 +649,3 @@ add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
 
     return(merged_data)
 }
-
-# helpers
-lead <- function(x, n = 1, default = NA) {
-    if (length(x) <= n) {
-        return(rep(default, length(x)))
-    }
-    c(tail(x, -n), rep(default, n))
-}
-
-lag <- function(x, n = 1, default = NA) {
-    if (length(x) <= n) {
-        return(rep(default, length(x)))
-    }
-    c(rep(default, n), head(x, -n))
-}
-
-fill_na_locf <- function(x) {
-    na_loc <- which(is.na(x))
-    for (i in na_loc) {
-        x[i] <- x[i - 1]
-    }
-    return(x)
-}
