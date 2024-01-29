@@ -54,11 +54,11 @@ sum_visits <- function(wt, timeframe = NULL, visit_class = NULL) {
         grp_vars <- c("panelist_id", timeframe, "tmp_class")
         tmp_summary <- wt[, list("tmp_visits" = .N), by = grp_vars]
         if (is.null(timeframe)) {
-            tmp_summary <- dcast(tmp_summary, panelist_id ~ tmp_class, value.var = c("tmp_visits"), fill = 0)
+            tmp_summary <- data.table::dcast(tmp_summary, panelist_id ~ tmp_class, value.var = c("tmp_visits"), fill = 0)
         } else {
-            setnames(tmp_summary, timeframe, "tmp_timeframe")
-            tmp_summary <- dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_visits"), fill = 0)
-            setnames(tmp_summary, "tmp_timeframe", timeframe)
+            data.table::setnames(tmp_summary, timeframe, "tmp_timeframe")
+            tmp_summary <- data.table::dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_visits"), fill = 0)
+            data.table::setnames(tmp_summary, "tmp_timeframe", timeframe)
         }
         wt[, tmp_class := NULL]
         summary <- summary[tmp_summary, on = c("panelist_id", timeframe)]
@@ -139,11 +139,11 @@ sum_durations <- function(wt, var_duration = NULL, timeframe = NULL, visit_class
         grp_vars <- c("panelist_id", timeframe, "tmp_class")
         tmp_summary <- wt[, list("tmp_duration" = if (all(is.na(duration))) NA_real_ else sum(duration, na.rm = TRUE)), by = grp_vars]
         if (is.null(timeframe)) {
-            tmp_summary <- dcast(tmp_summary, panelist_id ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
+            tmp_summary <- data.table::dcast(tmp_summary, panelist_id ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
         } else {
-            setnames(tmp_summary, timeframe, "tmp_timeframe")
-            tmp_summary <- dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
-            setnames(tmp_summary, "tmp_timeframe", timeframe)
+            data.table::setnames(tmp_summary, timeframe, "tmp_timeframe")
+            tmp_summary <- data.table::dcast(tmp_summary, panelist_id + tmp_timeframe ~ tmp_class, value.var = c("tmp_duration"), fill = 0)
+            data.table::setnames(tmp_summary, "tmp_timeframe", timeframe)
         }
         wt[, tmp_class := NULL]
         summary <- summary[tmp_summary, on = c("panelist_id", timeframe)]

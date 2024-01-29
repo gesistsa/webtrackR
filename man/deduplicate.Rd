@@ -40,8 +40,7 @@ whether to count visits as consecutive only when on the same day. Defaults to \c
 
 \item{add_grpvars}{vector. If method set to \code{"aggregate"}, determines
 whether any additional variables are included in grouping of visits and
-therefore kept. Defaults to \code{NULL}.
-add_grpvars = NULL}
+therefore kept. Defaults to \code{NULL}.}
 }
 \value{
 webtrack data.frame with the same columns as wt with updated duration

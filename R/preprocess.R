@@ -145,7 +145,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 
     if (method == "aggregate") {
         vars_exist(wt, vars = duration_var)
-        setnames(wt, duration_var, "duration")
+        data.table::setnames(wt, duration_var, "duration")
         wt[, visit := cumsum(url != data.table::shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
 
         if (same_day == TRUE) {
@@ -413,7 +413,7 @@ add_next_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
     level <- match.arg(level, c("url", "host", "domain"))
 
-    setorder(wt, panelist_id, timestamp)
+    data.table::setorder(wt, panelist_id, timestamp)
 
     if (level == "url") {
         wt[, url_next := data.table::shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
@@ -461,7 +461,7 @@ add_next_visit <- function(wt, level = "url") {
 add_previous_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
     level <- match.arg(level, c("url", "host", "domain"))
-    setorder(wt, panelist_id, timestamp)
+    data.table::setorder(wt, panelist_id, timestamp)
 
     if (level == "url") {
         wt[, url_previous := data.table::shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
@@ -609,8 +609,8 @@ create_urldummy <- function(wt, dummy, name) {
     abort_if_not_wtdt(wt)
     vars_exist(wt, "url")
     wt[, dummy := data.table::fifelse(url %in% dummy, TRUE, FALSE)]
-    setnames(wt, "dummy", name)
-    setattr(wt, "dummy", c(attr(wt, "dummy"), name))
+    data.table::setnames(wt, "dummy", name)
+    data.table::setattr(wt, "dummy", c(attr(wt, "dummy"), name))
     wt[]
 }
 
@@ -644,9 +644,9 @@ add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
             stop("couldn't locate all columns in data")
         }
         data <- data[, c(join_on, cols), with = FALSE]
-        setattr(wt, "panelist", cols)
+        data.table::setattr(wt, "panelist", cols)
     } else {
-        setattr(wt, "panelist", setdiff(names(data), join_on))
+        data.table::setattr(wt, "panelist", setdiff(names(data), join_on))
     }
     data <- data[wt, on = join_on]
     class(data) <- c("wt_dt", class(data))
