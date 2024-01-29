@@ -190,7 +190,7 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
         wt[, tmp_url_prev := NULL]
         wt[, tmp_timestamp_prev := NULL]
     }
-    class(wt) <- c("wt_dt", class(wt))
+    # class(wt) <- c("wt_dt", class(wt))
     wt[]
 }
 
@@ -411,34 +411,28 @@ parse_path <- function(wt, varname = "url", keep = "letters_only", decode = TRUE
 #' @export
 add_next_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
-    stopifnot("input is not a wt_dt object" = is.data.frame(wt))
 
     wt <- wt[order(wt$panelist_id, wt$timestamp), ]
     if (level == "url") {
-        wt$url_next <- with(wt, ave(url, panelist_id, FUN = lead))
-        return(wt)
+        wt[, url_next := data.table::shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
     } else if (level == "host") {
         if (!"host" %in% names(wt)) {
             wt <- extract_host(wt, varname = "url")
-            wt$host_next <- with(wt, ave(host, panelist_id, FUN = lead))
-            wt$host <- NULL
-            return(wt)
+            wt[, host_next := data.table::shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+            wt[, host := NULL]
         } else {
-            wt$host_next <- with(wt, ave(host, panelist_id, FUN = lead))
-            return(wt)
+            wt[, host_next := data.table::shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
         }
     } else if (level == "domain") {
         if (!"domain" %in% names(wt)) {
             wt <- extract_domain(wt, varname = "url")
-            wt$domain_next <- with(wt, ave(domain, panelist_id, FUN = lag))
-            wt$domain <- NULL
-            return(wt)
+            wt[, domain_next := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+            wt[, domain := NULL]
         } else {
-            wt$domain_next <- with(wt, ave(domain, panelist_id, FUN = lag))
-            return(wt)
+            wt[, domain_next := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
         }
     }
-    return(wt)
+    wt[]
 }
 
 #' Add the previous visit as a new column
