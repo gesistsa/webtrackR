@@ -73,7 +73,7 @@ test_that("classify_visits testdt_specific", {
     # test number of cases when classified via regex
     regex_list <- domain_list[domain_list$type == "facebook", ]
     wt_classes <- classify_visits(wt, classes = regex_list, match_by = "regex", regex_on = "host")
-    expect_true(table(wt_classes$type)["facebook.com"] == 1374)
+    expect_true(table(wt_classes$type)["facebook"] == 1374)
     expect_true(sum(is.na(wt_classes$type)) == 48238)
     # test number of cases when only rows classified as "search" returned
     data("testdt_tracking")

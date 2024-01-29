@@ -639,6 +639,9 @@ create_urldummy <- function(wt, dummy, name) {
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
     abort_if_not_wtdt(wt)
     vars_exist(wt, vars = c(join_on))
+    if (!data.table::is.data.table(data)) {
+        data <- data.table::as.data.table(data)
+    }
     if (!is.null(cols)) {
         if (!all(cols %in% names(data))) {
             stop("couldn't locate all columns in data")
