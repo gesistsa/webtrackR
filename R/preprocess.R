@@ -580,24 +580,14 @@ add_referral <- function(wt, platform_domains, patterns) {
     abort_if_not_wtdt(wt)
     stopifnot("Number of platform_domains must be identical to number of patterns" = length(platform_domains) == length(patterns))
     wt <- add_previous_visit(wt, level = "domain")
-    wt$referral <- NA
-
-    conditions_matrix <- sapply(seq_along(patterns), function(i) {
-        grepl(patterns[i], wt$url) & wt$domain_previous == platform_domains[i]
-    })
-
-    wt$referral <- apply(conditions_matrix, 1, function(row) {
-        idx <- which(row)[1]
-        if (!is.na(idx)) {
-            return(platform_domains[idx])
-        } else {
-            return(NA)
-        }
-    })
-
-    wt$domain_previous <- NULL
-
-    return(wt)
+    wt[, referral := NA]
+    for (i in seq_along(platform_domains)) {
+        wt[, referral := ifelse(grepl(patterns[i], url) &
+            domain_previous == platform_domains[i] &
+            is.na(referral), platform_domains[i], referral)]
+    }
+    wt[, domain_previous := NULL]
+    wt[]
 }
 
 #' Create an urldummy variable
@@ -618,8 +608,10 @@ add_referral <- function(wt, platform_domains, patterns) {
 create_urldummy <- function(wt, dummy, name) {
     abort_if_not_wtdt(wt)
     vars_exist(wt, "url")
-    wt[[name]] <- wt$url %fin% dummy
-    wt
+    wt[, dummy := data.table::fifelse(url %in% dummy, TRUE, FALSE)]
+    setnames(wt, "dummy", name)
+    setattr(wt, "dummy", c(attr(wt, "dummy"), name))
+    wt[]
 }
 
 
