@@ -515,7 +515,7 @@ add_previous_visit <- function(wt, level = "url") {
 add_title <- function(wt, lang = "en-US,en-GB,en") {
     abort_if_not_wtdt(wt)
 
-    urls <- data.frame(url = unique(wt$url))
+    urls <- data.table::data.table(url = unique(wt$url))
 
     urls$title <- mapply(function(x) {
         return(
@@ -541,12 +541,9 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
             )
         )
     }, urls$url)
-
     on.exit(closeAllConnections())
-
-    wt <- merge(wt, urls, by = "url", all.x = TRUE)
-
-    return(wt)
+    wt <- wt[urls, on = "url"]
+    wt[]
 }
 
 #' Add social media referrals as a new column
