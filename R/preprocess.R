@@ -119,7 +119,6 @@ add_session <- function(wt, cutoff) {
 #' @param add_grpvars vector. If method set to `"aggregate"`, determines
 #' whether any additional variables are included in grouping of visits and
 #' therefore kept. Defaults to `NULL`.
-#' add_grpvars = NULL
 #' @return webtrack data.frame with the same columns as wt with updated duration
 #' @examples
 #' \dontrun{
@@ -146,54 +145,53 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
 
     if (method == "aggregate") {
         vars_exist(wt, vars = duration_var)
-        names(wt)[names(wt) == duration_var] <- "duration"
-        wt$visit <- with(wt, ave(url, panelist_id, FUN = function(x) cumsum(x != c(0, head(x, -1)))))
+        setnames(wt, duration_var, "duration")
+        wt[, visit := cumsum(url != data.table::shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
 
         if (same_day == TRUE) {
-            wt$day <- as.Date(wt$timestamp)
+            wt[, day := as.Date(timestamp)]
             grp_vars <- c("panelist_id", "visit", "url", "day")
             if (!is.null(add_grpvars)) grp_vars <- c(grp_vars, add_grpvars)
 
-
-            wt <- aggregate(data.frame(visits = 1, duration = as.numeric(wt$duration), timestamp = wt$timestamp),
-                by = wt[grp_vars], FUN = function(x) if (is.numeric(x)) sum(x, na.rm = TRUE) else min(x)
-            )
-            wt$day <- NULL
+            wt <- wt[, list(
+                visits = .N,
+                duration = sum(as.numeric(duration), na.rm = TRUE),
+                timestamp = min(timestamp)
+            ), by = grp_vars]
+            wt[, day := NULL]
         } else {
             grp_vars <- c("panelist_id", "visit", "url")
             if (!is.null(add_grpvars)) grp_vars <- c(grp_vars, add_grpvars)
-
-
-            wt <- aggregate(cbind(visits = 1, duration = as.numeric(wt$duration), timestamp = wt$timestamp),
-                by = wt[grp_vars], FUN = function(x) if (is.numeric(x)) sum(x, na.rm = TRUE) else min(x)
-            )
+            wt <- wt[, list(
+                visits = .N,
+                duration = sum(as.numeric(duration), na.rm = TRUE),
+                timestamp = min(timestamp)
+            ), by = grp_vars]
         }
-
-        wt$visit <- NULL
+        wt[, visit := NULL]
         if (keep_nvisits == FALSE) {
-            wt$visits <- NULL
+            wt[, visits := NULL]
         }
-        names(wt)[names(wt) == "duration"] <- duration_var
+        data.table::setnames(wt, "duration", duration_var)
     } else if (method %in% c("drop", "flag")) {
         stopifnot("'within' must be specified if 'method' set to 'flag' or 'drop" = !is.null(within))
 
-        wt$tmp_timestamp_prev <- with(wt, ave(timestamp, panelist_id, FUN = function(x) c(NA, head(x, -1))))
-        wt$tmp_url_prev <- with(wt, ave(url, panelist_id, FUN = function(x) c(NA, head(x, -1))))
-
-        wt$duplicate <- with(wt, ifelse(is.na(tmp_url_prev), FALSE,
-            ifelse((timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE)
-        ))
-
+        wt[, tmp_timestamp_prev := data.table::shift(timestamp, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+        wt[, tmp_url_prev := data.table::shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+        wt[, duplicate := ifelse(is.na(tmp_url_prev), FALSE, ifelse(
+            (timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE
+        )),
+        by = "panelist_id"
+        ]
         if (method == "drop") {
-            wt <- wt[wt$duplicate == FALSE, ]
-            wt$duplicate <- NULL
+            wt <- wt[duplicate == FALSE]
+            wt[, duplicate := NULL]
         }
-
-        wt$tmp_url_prev <- NULL
-        wt$tmp_timestamp_prev <- NULL
+        wt[, tmp_url_prev := NULL]
+        wt[, tmp_timestamp_prev := NULL]
     }
     class(wt) <- c("wt_dt", class(wt))
-    return(wt)
+    wt[]
 }
 
 #' Extract the host from URL
