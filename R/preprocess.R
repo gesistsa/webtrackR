@@ -18,6 +18,7 @@
 #' the difference to the next timestamp (`FALSE`). Defaults to `FALSE`.
 #' @param device_var character. Column indicating device.
 #' Required if 'device_switch_na' set to `TRUE`. Defaults to `NULL`.
+#' @importFrom data.table := .N .SD
 #' @return webtrack data.frame with
 #' the same columns as wt and a new column called for duration.
 #' @examples
@@ -49,29 +50,23 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
         stop(paste("Missing required columns:", paste(missing_vars, collapse = ", ")))
     }
 
-    wt <- wt[order(wt$panelist_id, wt$timestamp), ]
-
-    next_timestamp <- c(tail(wt$timestamp, -1), NA)
-    next_user <- c(tail(wt$panelist_id, -1), NA)
-
-    wt$duration <- ifelse(wt$panelist_id == next_user,
-        as.numeric(difftime(next_timestamp, wt$timestamp, units = "secs")), last_replace_by
-    )
-
-    tmp_last <- wt$panelist_id != next_user
-
+    data.table::setorder(wt, panelist_id, timestamp)
+    wt[, duration := as.numeric(data.table::shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp), by = "panelist_id"]
+    wt[, tmp_last := ifelse(is.na(duration), TRUE, FALSE)]
     if (device_switch_na == TRUE) {
-        device_next <- c(tail(wt[[device_var]], -1), NA)
-
-        # wt$duration[wt$tmp_last == TRUE] <- last_replace_by
-        wt$duration[wt$duration > cutoff & tmp_last == FALSE] <- replace_by
-        wt$duration[device_next != wt$device_var & tmp_last == FALSE] <- NA
+        data.table::setnames(wt, device_var, "device")
+        wt[, device_next := data.table::shift(device, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+        wt[tmp_last == TRUE, duration := last_replace_by]
+        wt[duration > cutoff & tmp_last == FALSE, duration := replace_by]
+        wt[device_next != device & tmp_last == FALSE, duration := NA]
+        data.table::setnames(wt, "device", device_var)
+        wt[, device_next := NULL]
     } else {
-        # wt$duration[wt$tmp_last == TRUE] <- last_replace_by
-        wt$duration[wt$duration > cutoff & tmp_last == FALSE] <- replace_by
+        wt[tmp_last == TRUE, duration := last_replace_by]
+        wt[duration > cutoff & tmp_last == FALSE, duration := replace_by]
     }
-
-    return(wt)
+    wt[, tmp_last := NULL]
+    wt[]
 }
 
 #' Add a session variable
@@ -92,14 +87,12 @@ add_duration <- function(wt, cutoff = 300, replace_by = NA, last_replace_by = NA
 #' @export
 add_session <- function(wt, cutoff) {
     abort_if_not_wtdt(wt)
-    # wt <- wt[order(wt$panelist_id, wt$timestamp), ]
-
-    last_timestamp <- c(wt$timestamp[1], head(wt$timestamp, -1))
-    duration <- as.numeric(difftime(wt$timestamp, last_timestamp, units = "secs"))
-    sessions <- ave(duration, wt$panelist_id, FUN = function(x) cumsum(x > cutoff)) + 1
-    wt$session <- ave(sessions, wt$panelist_id, FUN = fill_na_locf)
-
-    return(wt)
+    wt[, tmp_index := 1:.N, by = panelist_id]
+    wt[as.numeric(data.table::shift(timestamp, n = 1, type = "lead", fill = NA) - timestamp) > cutoff, session := 1:.N, by = "panelist_id"]
+    wt[, session := ifelse(tmp_index == 1, 1, session)]
+    data.table::setnafill(wt, type = "locf", cols = "session")
+    wt[, tmp_index := NULL]
+    wt[]
 }
 
 #' Deduplicate visits
@@ -126,7 +119,6 @@ add_session <- function(wt, cutoff) {
 #' @param add_grpvars vector. If method set to `"aggregate"`, determines
 #' whether any additional variables are included in grouping of visits and
 #' therefore kept. Defaults to `NULL`.
-#' add_grpvars = NULL
 #' @return webtrack data.frame with the same columns as wt with updated duration
 #' @examples
 #' \dontrun{
@@ -151,58 +143,55 @@ deduplicate <- function(wt, method = "aggregate", within = 1, duration_var = "du
                         keep_nvisits = FALSE, same_day = TRUE, add_grpvars = NULL) {
     abort_if_not_wtdt(wt)
 
-    # wt <- wt[order(wt$panelist_id, wt$timestamp), ]
-
     if (method == "aggregate") {
         vars_exist(wt, vars = duration_var)
-        names(wt)[names(wt) == duration_var] <- "duration"
-        wt$visit <- with(wt, ave(url, panelist_id, FUN = function(x) cumsum(x != c(0, head(x, -1)))))
+        data.table::setnames(wt, duration_var, "duration")
+        wt[, visit := cumsum(url != data.table::shift(url, n = 1, type = "lag", fill = 0)), by = "panelist_id"]
 
         if (same_day == TRUE) {
-            wt$day <- as.Date(wt$timestamp)
+            wt[, day := as.Date(timestamp)]
             grp_vars <- c("panelist_id", "visit", "url", "day")
             if (!is.null(add_grpvars)) grp_vars <- c(grp_vars, add_grpvars)
 
-
-            wt <- aggregate(data.frame(visits = 1, duration = as.numeric(wt$duration), timestamp = wt$timestamp),
-                by = wt[grp_vars], FUN = function(x) if (is.numeric(x)) sum(x, na.rm = TRUE) else min(x)
-            )
-            wt$day <- NULL
+            wt <- wt[, list(
+                visits = .N,
+                duration = sum(as.numeric(duration), na.rm = TRUE),
+                timestamp = min(timestamp)
+            ), by = grp_vars]
+            wt[, day := NULL]
         } else {
             grp_vars <- c("panelist_id", "visit", "url")
             if (!is.null(add_grpvars)) grp_vars <- c(grp_vars, add_grpvars)
-
-
-            wt <- aggregate(cbind(visits = 1, duration = as.numeric(wt$duration), timestamp = wt$timestamp),
-                by = wt[grp_vars], FUN = function(x) if (is.numeric(x)) sum(x, na.rm = TRUE) else min(x)
-            )
+            wt <- wt[, list(
+                visits = .N,
+                duration = sum(as.numeric(duration), na.rm = TRUE),
+                timestamp = min(timestamp)
+            ), by = grp_vars]
         }
-
-        wt$visit <- NULL
+        wt[, visit := NULL]
         if (keep_nvisits == FALSE) {
-            wt$visits <- NULL
+            wt[, visits := NULL]
         }
-        names(wt)[names(wt) == "duration"] <- duration_var
+        data.table::setnames(wt, "duration", duration_var)
     } else if (method %in% c("drop", "flag")) {
         stopifnot("'within' must be specified if 'method' set to 'flag' or 'drop" = !is.null(within))
 
-        wt$tmp_timestamp_prev <- with(wt, ave(timestamp, panelist_id, FUN = function(x) c(NA, head(x, -1))))
-        wt$tmp_url_prev <- with(wt, ave(url, panelist_id, FUN = function(x) c(NA, head(x, -1))))
-
-        wt$duplicate <- with(wt, ifelse(is.na(tmp_url_prev), FALSE,
-            ifelse((timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE)
-        ))
-
+        wt[, tmp_timestamp_prev := data.table::shift(timestamp, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+        wt[, tmp_url_prev := data.table::shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+        wt[, duplicate := ifelse(is.na(tmp_url_prev), FALSE, ifelse(
+            (timestamp - tmp_timestamp_prev <= within) & (url == tmp_url_prev), TRUE, FALSE
+        )),
+        by = "panelist_id"
+        ]
         if (method == "drop") {
-            wt <- wt[wt$duplicate == FALSE, ]
-            wt$duplicate <- NULL
+            wt <- wt[duplicate == FALSE]
+            wt[, duplicate := NULL]
         }
-
-        wt$tmp_url_prev <- NULL
-        wt$tmp_timestamp_prev <- NULL
+        wt[, tmp_url_prev := NULL]
+        wt[, tmp_timestamp_prev := NULL]
     }
-    class(wt) <- c("wt_dt", class(wt))
-    return(wt)
+    # class(wt) <- c("wt_dt", class(wt))
+    wt[]
 }
 
 #' Extract the host from URL
@@ -363,7 +352,6 @@ drop_query <- function(wt, varname = "url") {
 #' @return webtrack data.frame with the same columns as wt
 #' and a new column called `'path_split'`  (or, if varname not equal to `'url'`, `'<varname>_path_split'`)
 #' containing parts as a comma-separated string.
-#' @importFrom fastmatch `%fin%`
 #' @examples
 #' \dontrun{
 #' data("testdt_tracking")
@@ -423,34 +411,30 @@ parse_path <- function(wt, varname = "url", keep = "letters_only", decode = TRUE
 #' @export
 add_next_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
-    stopifnot("input is not a wt_dt object" = is.data.frame(wt))
+    level <- match.arg(level, c("url", "host", "domain"))
 
-    wt <- wt[order(wt$panelist_id, wt$timestamp), ]
+    data.table::setorder(wt, panelist_id, timestamp)
+
     if (level == "url") {
-        wt$url_next <- with(wt, ave(url, panelist_id, FUN = lead))
-        return(wt)
+        wt[, url_next := data.table::shift(url, n = 1, type = "lead", fill = NA), by = "panelist_id"]
     } else if (level == "host") {
         if (!"host" %in% names(wt)) {
             wt <- extract_host(wt, varname = "url")
-            wt$host_next <- with(wt, ave(host, panelist_id, FUN = lead))
-            wt$host <- NULL
-            return(wt)
+            wt[, host_next := data.table::shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
+            wt[, host := NULL]
         } else {
-            wt$host_next <- with(wt, ave(host, panelist_id, FUN = lead))
-            return(wt)
+            wt[, host_next := data.table::shift(host, n = 1, type = "lead", fill = NA), by = "panelist_id"]
         }
     } else if (level == "domain") {
         if (!"domain" %in% names(wt)) {
             wt <- extract_domain(wt, varname = "url")
-            wt$domain_next <- with(wt, ave(domain, panelist_id, FUN = lag))
-            wt$domain <- NULL
-            return(wt)
+            wt[, domain_next := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+            wt[, domain := NULL]
         } else {
-            wt$domain_next <- with(wt, ave(domain, panelist_id, FUN = lag))
-            return(wt)
+            wt[, domain_next := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
         }
     }
-    return(wt)
+    wt[]
 }
 
 #' Add the previous visit as a new column
@@ -477,33 +461,28 @@ add_next_visit <- function(wt, level = "url") {
 add_previous_visit <- function(wt, level = "url") {
     abort_if_not_wtdt(wt)
     level <- match.arg(level, c("url", "host", "domain"))
-    wt <- wt[order(wt$panelist_id, wt$timestamp), ]
+    data.table::setorder(wt, panelist_id, timestamp)
 
     if (level == "url") {
-        wt$url_previous <- with(wt, ave(url, panelist_id, FUN = lag))
-        return(wt)
+        wt[, url_previous := data.table::shift(url, n = 1, type = "lag", fill = NA), by = "panelist_id"]
     } else if (level == "host") {
         if (!"host" %in% names(wt)) {
             wt <- extract_host(wt, varname = "url")
-            wt$host_previous <- with(wt, ave(host, panelist_id, FUN = lag))
-            wt$host <- NULL
-            return(wt)
+            wt[, host_previous := data.table::shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+            wt[, host := NULL]
         } else {
-            wt$host_previous <- with(wt, ave(host, panelist_id, FUN = lag))
-            return(wt)
+            wt[, host_previous := data.table::shift(host, n = 1, type = "lag", fill = NA), by = "panelist_id"]
         }
     } else if (level == "domain") {
         if (!"domain" %in% names(wt)) {
             wt <- extract_domain(wt, varname = "url")
-            wt$domain_previous <- with(wt, ave(domain, panelist_id, FUN = lag))
-            wt$domain <- NULL
-            return(wt)
+            wt[, domain_previous := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
+            wt[, domain := NULL]
         } else {
-            wt$domain_previous <- with(wt, ave(domain, panelist_id, FUN = lag))
-            return(wt)
+            wt[, domain_previous := data.table::shift(domain, n = 1, type = "lag", fill = NA), by = "panelist_id"]
         }
     }
-    return(wt)
+    wt[]
 }
 
 #' Download and add the "title" of a URL
@@ -536,7 +515,7 @@ add_previous_visit <- function(wt, level = "url") {
 add_title <- function(wt, lang = "en-US,en-GB,en") {
     abort_if_not_wtdt(wt)
 
-    urls <- data.frame(url = unique(wt$url))
+    urls <- data.table::data.table(url = unique(wt$url))
 
     urls$title <- mapply(function(x) {
         return(
@@ -562,12 +541,9 @@ add_title <- function(wt, lang = "en-US,en-GB,en") {
             )
         )
     }, urls$url)
-
     on.exit(closeAllConnections())
-
-    wt <- merge(wt, urls, by = "url", all.x = TRUE)
-
-    return(wt)
+    wt <- wt[urls, on = "url"]
+    wt[]
 }
 
 #' Add social media referrals as a new column
@@ -604,24 +580,14 @@ add_referral <- function(wt, platform_domains, patterns) {
     abort_if_not_wtdt(wt)
     stopifnot("Number of platform_domains must be identical to number of patterns" = length(platform_domains) == length(patterns))
     wt <- add_previous_visit(wt, level = "domain")
-    wt$referral <- NA
-
-    conditions_matrix <- sapply(seq_along(patterns), function(i) {
-        grepl(patterns[i], wt$url) & wt$domain_previous == platform_domains[i]
-    })
-
-    wt$referral <- apply(conditions_matrix, 1, function(row) {
-        idx <- which(row)[1]
-        if (!is.na(idx)) {
-            return(platform_domains[idx])
-        } else {
-            return(NA)
-        }
-    })
-
-    wt$domain_previous <- NULL
-
-    return(wt)
+    wt[, referral := NA]
+    for (i in seq_along(platform_domains)) {
+        wt[, referral := ifelse(grepl(patterns[i], url) &
+            domain_previous == platform_domains[i] &
+            is.na(referral), platform_domains[i], referral)]
+    }
+    wt[, domain_previous := NULL]
+    wt[]
 }
 
 #' Create an urldummy variable
@@ -642,8 +608,10 @@ add_referral <- function(wt, platform_domains, patterns) {
 create_urldummy <- function(wt, dummy, name) {
     abort_if_not_wtdt(wt)
     vars_exist(wt, "url")
-    wt[[name]] <- wt$url %fin% dummy
-    wt
+    wt[, dummy := data.table::fifelse(url %in% dummy, TRUE, FALSE)]
+    data.table::setnames(wt, "dummy", name)
+    data.table::setattr(wt, "dummy", c(attr(wt, "dummy"), name))
+    wt[]
 }
 
 
@@ -670,37 +638,20 @@ create_urldummy <- function(wt, dummy, name) {
 #' @export
 add_panelist_data <- function(wt, data, cols = NULL, join_on = "panelist_id") {
     abort_if_not_wtdt(wt)
+    vars_exist(wt, vars = c(join_on))
+    if (!data.table::is.data.table(data)) {
+        data <- data.table::as.data.table(data)
+    }
     if (!is.null(cols)) {
         if (!all(cols %in% names(data))) {
             stop("couldn't locate all columns in data")
         }
-        data <- data[, c(join_on, cols)]
+        data <- data[, c(join_on, cols), with = FALSE]
+        data.table::setattr(wt, "panelist", cols)
+    } else {
+        data.table::setattr(wt, "panelist", setdiff(names(data), join_on))
     }
-
-    merged_data <- merge(wt, data, by = join_on, all.x = TRUE)
-
-    return(merged_data)
-}
-
-# helpers
-lead <- function(x, n = 1, default = NA) {
-    if (length(x) <= n) {
-        return(rep(default, length(x)))
-    }
-    c(tail(x, -n), rep(default, n))
-}
-
-lag <- function(x, n = 1, default = NA) {
-    if (length(x) <= n) {
-        return(rep(default, length(x)))
-    }
-    c(rep(default, n), head(x, -n))
-}
-
-fill_na_locf <- function(x) {
-    na_loc <- which(is.na(x))
-    for (i in na_loc) {
-        x[i] <- x[i - 1]
-    }
-    return(x)
+    data <- data[wt, on = join_on]
+    class(data) <- c("wt_dt", class(data))
+    data
 }

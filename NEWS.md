@@ -1,3 +1,7 @@
+# webtrackR 0.2.0.9000
+
+* revert back to data.table 
+
 # webtrackR 0.2.0
 
 * reimplemented in base R removing several dependencies

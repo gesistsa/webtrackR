@@ -64,7 +64,7 @@ test_that("add_session testdt_specific", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
     wt_session <- add_session(wt, cutoff = 1800)
-    expect_true(max(wt_session$session[wt$panelist_id == "AiDS4k1rQZ"]) == 124)
+    expect_true(max(wt_session$session[wt$panelist_id == "AiDS4k1rQZ"]) == 123)
 })
 
 test_that("deduplicate", {
