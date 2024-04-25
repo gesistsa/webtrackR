@@ -1,6 +1,6 @@
-# webtrackR 0.2.0.9000
+# webtrackR 0.3.0
 
-* revert back to data.table 
+* revert back to new version of data.table 
 
 # webtrackR 0.2.0
 
