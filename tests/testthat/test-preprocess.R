@@ -20,6 +20,7 @@ test_that("add_duration", {
 })
 
 test_that("add_duration testdt_specific", {
+    skip_on_cran()
     options(digits = 22)
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)

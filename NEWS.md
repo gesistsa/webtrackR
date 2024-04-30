@@ -1,3 +1,7 @@
+# webtrackR 0.3.1
+
+* fixed CRAN problems with tests
+
 # webtrackR 0.3.0
 
 * revert back to new version of data.table 
