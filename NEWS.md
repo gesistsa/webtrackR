@@ -1,3 +1,7 @@
+# webtrackR 0.3.1.9000
+
+* fixed undesired copy of data.table objects #101
+
 # webtrackR 0.3.1
 
 * fixed CRAN problems with tests
