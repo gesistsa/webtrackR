@@ -12,8 +12,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-1217-5778"))
     )
 Description: Data structures and methods to work with web tracking data. The functions cover data preprocessing steps, enriching web tracking data with external information and methods for the analysis of digital behavior as used in several academic papers (e.g., Clemm von Hohenberg et al., 2023 <doi:10.17605/OSF.IO/M3U9P>; Stier et al., 2022 <doi:10.1017/S0003055421001222>).
-URL: https://github.com/schochastics/webtrackR, https://schochastics.github.io/webtrackR/
-BugReports: https://github.com/schochastics/webtrackR/issues
+URL: https://github.com/gesistsa/webtrackR
+BugReports: https://github.com/gesistsa/webtrackR/issues
 Depends: 
     R (>= 3.5.0)
 License: MIT + file LICENSE
