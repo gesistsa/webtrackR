@@ -22,12 +22,7 @@ The package offers data structures and methods to work with web tracking data. T
 
 ## Science Usecase(s)
 
-<!-- - Include usecases from social sciences that would make this method applicable in a certain scenario.  -->
-<!-- The use cases or research questions mentioned should arise from the latest social science literature cited in the description. -->
-
-<!-- This is an example -->
-
-This package was used in the literature to valid topic models and prediction models trained on text data, e.g. [Rauchfleisch et al. (2023)](10.1080/17512786.2022.2110928), [Rothut, et al. (2023)](https://doi.org/10.1177/14614448231164409), [Eisele, et al. (2023)](https://doi.org/10.1080/19312458.2023.2230560).
+Web tracking data provides a powerful tool for social science research, enabling the analysis of human behavior and interaction patterns in digital environments. By capturing detailed user activity, such as page visits, clickstreams, and time spent on various platforms, researchers can uncover insights into online decision-making, information diffusion, and social influence. This data can also be used to study phenomena like polarization or the impact of targeted advertising on public opinion. 
 
 ## Repository structure
 
