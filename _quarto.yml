@@ -1,0 +1,5 @@
+project:
+  title: webtrackR
+  type: default
+  render:
+    - methodshub.qmd

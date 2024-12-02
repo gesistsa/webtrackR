@@ -11,3 +11,11 @@ codecov.yml
 ^pkgdown$
 R/preprocessR.R
 ^data-raw$
+^CITATION\.cff$
+^install\.R$
+^postBuild$
+^apt\.txt$
+^runtime\.txt$
+^_quarto\.yml$
+^\.quarto$
+^methodshub
