@@ -10,7 +10,7 @@ format:
 
 <!-- - Provide a brief and clear description of the method, its purpose, and what it aims to achieve. Add a link to a related paper from social science domain and show how your method can be applied to solve that research question.   -->
 
-The package offers data structures and methods to work with web tracking data. The functions cover data preprocessing steps, enriching web tracking data with external information and methods for the analysis of digital behavior as used in several academic papers (e.g., Clemm von Hohenberg et al., 2023 [<doi:10.17605/OSF.IO/M3U9P>](https://doi.org/10.17605/OSF.IO/M3U9P); Stier et al., 2022 [<doi:10.1017/S0003055421001222>](https://doi.org/10.1017/S0003055421001222)).
+The package offers data structures and methods to work with web tracking data. The functions cover data preprocessing steps, enriching web tracking data with external information and methods for the analysis of digital behavior as used in several academic papers (e.g., Clemm von Hohenberg et al., 2023 [doi:10.17605/OSF.IO/M3U9P](https://doi.org/10.17605/OSF.IO/M3U9P); Stier et al., 2022 [doi:10.1017/S0003055421001222](https://doi.org/10.1017/S0003055421001222)).
 
 ## Keywords
 
