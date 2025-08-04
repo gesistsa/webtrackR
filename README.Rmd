@@ -45,6 +45,11 @@ The [CRAN](https://CRAN.R-project.org/package=webtrackR) version can be installe
 ```r
 install.packages("webtrackR")
 ```
+
+## Hardware Requirements
+
+webtrackR runs on any machine that can run R.
+
 ## S3 class `wt_dt`
 
 The package defines an S3 class called `wt_dt` which inherits most of the functionality from the `data.frame` class. A `summary` and `print` method are included in the package.
@@ -115,3 +120,6 @@ wt <- add_panelist_data(wt, testdt_survey_w)
 wt_summ <- sum_visits(wt, timeframe = "date", visit_class = "type")
 ```
 
+## Technical Details
+
+Check the official [CRAN page](https://doi.org/10.32614/CRAN.package.webtrackR) for further information.
