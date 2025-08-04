@@ -54,10 +54,18 @@ install.packages("webtrackR")
 
 The package includes a sample dataset of raw webtracking data. 
 
+## Hardware Requirements
+
+webtrackR runs on any machine that can run R.
+
 ## How to Use
 
 <!-- - Providing HowTos on the method for different types of usages -->
 <!-- - Describe how the method should be used, including installation, configuration, and any specific instructions for users. -->
+
+## Technical Details
+
+Check the official [CRAN page](https://doi.org/10.32614/CRAN.package.webtrackR) for further information.
 
 ## Contact Details
 
