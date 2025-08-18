@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   webtrackR: webtrackR.html
-last_built: 2025-08-05T08:00Z
+last_built: 2025-08-18T13:54Z
 urls:
   reference: https://schochastics.github.io/webtrackR/reference
   article: https://schochastics.github.io/webtrackR/articles
