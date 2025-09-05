@@ -154,7 +154,7 @@ The workflow is highly customizable through function arguments:
 
 ### Example Code
 
-A typical workflow including preprocessing, classifying and aggregating web tracking data looks like this (using the in-built example data):  
+A typical workflow including preprocessing, classifying and aggregating web tracking data looks like this (using the available example data):  
 
 ```{r}
 library(webtrackR)
