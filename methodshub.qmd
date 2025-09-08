@@ -70,15 +70,12 @@ Web tracking data provides a powerful tool for social science research, enabling
 2. The output data section should link to a small example output file in the same repository that can be re-created (as far as the method is non-random) from the input data (as described in the section "How to Use").
 -->
 
+The functions in webtrackR return processed `wt_dt` objects (enhanced data frames) that contain enriched, cleaned, or summarized web tracking data. These objects remain in-memory within R and can be directly analyzed, visualized, or explicitly exported by the user into external file formats such as CSV or RDS.
 
-
-## Hardware Requirements
-<!--
-1. The hardware requirements section should list all requirements (storage, memory, compute, GPUs, cluster software, ...) that exceed the capabilities of a cheap virtual machine provided by cloud computing company (2 x86 CPU core, 4 GB RAM, 40GB HDD).
-2. If the method requires a GPU, the hardware requirements section must list the minimal GPU requirements (especially VRAM).
--->
-
-webtrackR runs on any hardware that can run R.
+```{r}
+# Example: export a processed webtrackR object to CSV
+write.csv(my_wt_data, "processed_webtracking.csv", row.names = FALSE)
+```
 
 ## Environment Setup
 <!--
@@ -98,7 +95,94 @@ install.packages("webtrackR")
 2. The how to use section should explain how to customize the steps to one's own needs, usually through configuration files or command line parameters, or refer to the appropriate open documentation.
 -->
 
+The **webtrackR** package is designed to preprocess, classify, and analyze web tracking data (web browsing histories of participants in academic studies). A typical workflow combines preprocessing of raw tracking data, enrichment with additional information, classification of visits, and aggregation or summarization for further analysis.  
 
+### Prepare your raw data
+
+Raw web tracking data must contain at least the following variables:  
+
+- `panelist_id`: the identifier of the participant from whom the data was collected  
+- `url`: the visited URL  
+- `timestamp`: the time of the visit  
+
+After loading the data into R, use the function `as.wt_dt()` to convert it into the special `wt_dt` format. This assigns the correct class, ensures that required variables are present, and converts the timestamp into `POSIXct` format. All subsequent functions in the package check for these variables and will throw an error if they are missing.
+
+### Preprocess the data
+
+Several functions can be used to derive new variables and enrich the raw data:  
+
+- `add_duration()`: calculates the time spent on a visit by measuring the difference between subsequent timestamps, with options to handle unusually long gaps using the `cutoff` and `replace_by` arguments.  
+- `add_session()`: groups subsequent visits into browsing sessions, stopping when the gap between visits exceeds a specified `cutoff`.  
+- `extract_host()`, `extract_domain()`, and `extract_path()`: parse URLs into host, domain, and path components.  
+- `drop_query()`: removes query strings or fragments from URLs.  
+- `add_next_visit()` and `add_previous_visit()`: add the following or preceding URL, domain, or host as a new variable.  
+- `add_referral()`: flags whether a visit was referred by a social media platform (based on Schmidt et al., 2023).  
+- `add_title()`: retrieves the `<title>` text of the visited webpage and adds it as a variable.  
+- `add_panelist_data()`: joins web tracking data with additional participant information such as survey data.  
+
+### Classify visits
+
+To categorize website visits, use `classify_visits()`. Visits can be matched by extracting the domain or host and comparing them to a predefined list, or by applying regular expressions to the raw URL. This step is essential if you want to distinguish between classes of sites (e.g., news, social media, search engines).  
+
+### Summarize and aggregate
+
+Once the data has been preprocessed and classified, it can be aggregated for analysis:  
+
+- `deduplicate()`: flags, drops, or aggregates consecutive visits to the same URL within a given time window.  
+- `sum_visits()`: counts visits by participant and timeframe (e.g., day, week, or date), optionally by a visit class.  
+- `sum_durations()`: aggregates total visit durations across timeframes or classes.  
+- `sum_activity()`: counts the number of active periods (e.g., active days) per participant.  
+
+### Work with the results
+
+All functions return updated `wt_dt` objects, which are simply enhanced data frames. These objects remain in memory in R and can be directly inspected, analyzed, or visualized.  
+
+By default, **webtrackR does not create output files**. If you wish to save the processed or summarized data, you must export it explicitly. For example:  
+
+```{r}
+write.csv(my_wt_data, "processed_webtracking.csv", row.names = FALSE)
+```
+
+### Customize the workflow
+
+The workflow is highly customizable through function arguments:  
+
+- Adjust `cutoff` values in `add_duration()` or `add_session()` to change how long gaps between visits are handled.  
+- Specify `within` and `method` in `deduplicate()` to control how duplicates are flagged, dropped, or aggregated.  
+- Set `timeframe` in `sum_visits()` or `sum_durations()` to change the level of aggregation (e.g., daily, weekly).  
+- Provide your own domain lists or regular expressions in `classify_visits()` to match visits to custom categories.  
+
+### Example Code
+
+A typical workflow including preprocessing, classifying and aggregating web tracking data looks like this (using the available example data):  
+
+```{r}
+library(webtrackR)
+
+# load example data and turn it into wt_dt
+data("testdt_tracking")
+wt <- as.wt_dt(testdt_tracking)
+
+# add duration
+wt <- add_duration(wt)
+
+# extract domains
+wt <- extract_domain(wt)
+
+# drop duplicates (consecutive visits to the same URL within one second)
+wt <- deduplicate(wt, within = 1, method = "drop")
+
+# load example domain classification and classify domains
+data("domain_list")
+wt <- classify_visits(wt, classes = domain_list, match_by = "domain")
+
+# load example survey data and join with web tracking data
+data("testdt_survey_w")
+wt <- add_panelist_data(wt, testdt_survey_w)
+
+# aggregate number of visits by day and panelist, and by domain class
+wt_summ <- sum_visits(wt, timeframe = "date", visit_class = "type")
+```
 
 ## Technical Details
 <!--
