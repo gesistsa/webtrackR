@@ -62,7 +62,7 @@ Web tracking data provides a powerful tool for social science research, enabling
 3. The input data section should link to a small example input file in the same repository that can be used to test the method (this test should be described in the section "How to Use").
 -->
 
-`webtrackR` accepts accepts raw webtracking data as provided by GESIS and includes a sample dataset of raw webtracking data. 
+`webtrackR` accepts raw webtracking data as provided by GESIS and includes a sample dataset of raw webtracking data. 
 
 ## Output Data
 <!--
@@ -73,6 +73,7 @@ Web tracking data provides a powerful tool for social science research, enabling
 The functions in webtrackR return processed `wt_dt` objects (enhanced data frames) that contain enriched, cleaned, or summarized web tracking data. These objects remain in-memory within R and can be directly analyzed, visualized, or explicitly exported by the user into external file formats such as CSV or RDS.
 
 ```{r}
+#| eval: false
 # Example: export a processed webtrackR object to CSV
 write.csv(my_wt_data, "processed_webtracking.csv", row.names = FALSE)
 ```
@@ -140,6 +141,13 @@ All functions return updated `wt_dt` objects, which are simply enhanced data fra
 By default, **webtrackR does not create output files**. If you wish to save the processed or summarized data, you must export it explicitly. For example:  
 
 ```{r}
+library("webtrackR")
+
+# load example data and turn it into wt_dt
+data("testdt_tracking")
+my_wt_data <-as.wt_dt(testdt_tracking)
+
+# output the data as a csv
 write.csv(my_wt_data, "processed_webtracking.csv", row.names = FALSE)
 ```
 
@@ -157,8 +165,7 @@ The workflow is highly customizable through function arguments:
 A typical workflow including preprocessing, classifying and aggregating web tracking data looks like this (using the available example data):  
 
 ```{r}
-library(webtrackR)
-
+#| warning: false
 # load example data and turn it into wt_dt
 data("testdt_tracking")
 wt <- as.wt_dt(testdt_tracking)
