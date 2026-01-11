@@ -26,7 +26,7 @@ Imports:
     fastmatch,
     adaR,
     httr,
-    data.table (>= 1.15.0)
+    data.table (>= 1.18.0)
 LazyData: true
 Suggests: 
     knitr,
