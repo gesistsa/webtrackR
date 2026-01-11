@@ -1,9 +1,10 @@
 # Changelog
 
-## webtrackR 0.3.1.9000
+## webtrackR 0.3.2
 
 - fixed undesired copy of data.table objects
   [\#101](https://github.com/gesistsa/webtrackR/issues/101)
+- bump `data.table` dependency to \>= 1.18.0
 
 ## webtrackR 0.3.1
 
