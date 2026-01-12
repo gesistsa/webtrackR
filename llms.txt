@@ -10,7 +10,8 @@ data:
 
 - [webtrackR](https://github.com/gesistsa/webtrackR): preprocess raw
   webtracking data
-- [domainator](https://github.com/gesistsa/domainator): classify domains
+- [domainator](https://github.com/schochastics/domainator): classify
+  domains
 - [adaR](https://github.com/gesistsa/adaR): parse urls
 
 ## Installation
