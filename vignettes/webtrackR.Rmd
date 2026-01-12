@@ -24,7 +24,7 @@ oftentimes collected and analyzed in conjunction with survey data of the same pa
 
 `webtrackR` is part of a series of R packages to analyse webtracking data:
 
-- [webtrackR](https://github.com/schochastics/webtrackR): preprocess raw webtracking data
+- [webtrackR](https://github.com/gesistsa/webtrackR): preprocess raw webtracking data
 - [domainator](https://github.com/schochastics/domainator): classify domains
 - [adaR](https://github.com/gesistsa/adaR): parse urls
 
@@ -34,7 +34,7 @@ You can install the development version of webtrackR from [GitHub](https://githu
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("schochastics/webtrackR")
+devtools::install_github("gesistsa/webtrackR")
 ```
 
 The [CRAN](https://CRAN.R-project.org/package=webtrackR) version can be installed with:
