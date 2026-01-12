@@ -13,9 +13,8 @@ Data structures and methods to work with web tracking data. The functions cover 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/schochastics/webtrackR}
-  \item \url{https://schochastics.github.io/webtrackR/}
-  \item Report bugs at \url{https://github.com/schochastics/webtrackR/issues}
+  \item \url{https://github.com/gesistsa/webtrackR}
+  \item Report bugs at \url{https://github.com/gesistsa/webtrackR/issues}
 }
 
 }
