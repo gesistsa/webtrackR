@@ -16,7 +16,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Preprocessing and Analyzing Web Tracking Data">
 <meta name="description" content="Data structures and methods to work with web tracking data. The functions cover data preprocessing steps, enriching web tracking data with external information and methods for the analysis of digital behavior as used in several academic papers (e.g., Clemm von Hohenberg et al., 2023 &lt;doi:10.17605/OSF.IO/M3U9P&gt;; Stier et al., 2022 &lt;doi:10.1017/S0003055421001222&gt;).">
 <meta property="og:description" content="Data structures and methods to work with web tracking data. The functions cover data preprocessing steps, enriching web tracking data with external information and methods for the analysis of digital behavior as used in several academic papers (e.g., Clemm von Hohenberg et al., 2023 &lt;doi:10.17605/OSF.IO/M3U9P&gt;; Stier et al., 2022 &lt;doi:10.1017/S0003055421001222&gt;).">
-<meta property="og:image" content="https://schochastics.github.io/webtrackR/logo.png">
+<meta property="og:image" content="https://gesistsa.github.io/webtrackR/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -59,9 +59,9 @@
 <p><code>webtrackR</code> is part of a series of R packages to analyse webtracking data:</p>
 <ul>
 <li>
-<a href="https://github.com/schochastics/webtrackR" class="external-link">webtrackR</a>: preprocess raw webtracking data</li>
+<a href="https://github.com/gesistsa/webtrackR" class="external-link">webtrackR</a>: preprocess raw webtracking data</li>
 <li>
-<a href="https://github.com/schochastics/domainator" class="external-link">domainator</a>: classify domains</li>
+<a href="https://github.com/gesistsa/domainator" class="external-link">domainator</a>: classify domains</li>
 <li>
 <a href="https://github.com/gesistsa/adaR" class="external-link">adaR</a>: parse urls</li>
 </ul>
@@ -71,7 +71,7 @@
 <p>You can install the development version of webtrackR from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"schochastics/webtrackR"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"gesistsa/webtrackR"</span><span class="op">)</span></span></code></pre></div>
 <p>The <a href="https://CRAN.R-project.org/package=webtrackR" class="external-link">CRAN</a> version can be installed with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"webtrackR"</span><span class="op">)</span></span></code></pre></div>
@@ -206,8 +206,8 @@
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=webtrackR" class="external-link"><img src="https://www.r-pkg.org/badges/version/webtrackR" alt="CRAN status"></a></li>
 <li><a href="https://CRAN.R-project.org/package=webtrackR" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/webtrackR" alt="CRAN Downloads"></a></li>
-<li><a href="https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/schochastics/webtrackR?branch=main" class="external-link"><img src="https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/gesistsa/webtrackR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/gesistsa/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/gesistsa/webtrackR?branch=main" class="external-link"><img src="https://codecov.io/gh/gesistsa/webtrackR/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 

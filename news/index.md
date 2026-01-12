@@ -35,14 +35,14 @@ CRAN release: 2024-04-28
 CRAN release: 2023-08-31
 
 - added preprocessing functions
-  [`add_session()`](https://schochastics.github.io/webtrackR/reference/add_session.md),
-  [`extract_host()`](https://schochastics.github.io/webtrackR/reference/extract_host.md),
-  [`extract_domain()`](https://schochastics.github.io/webtrackR/reference/extract_domain.md),
-  [`extract_path()`](https://schochastics.github.io/webtrackR/reference/extract_path.md),
-  [`add_next_visit()`](https://schochastics.github.io/webtrackR/reference/add_next_visit.md),
-  [`add_previous_visit()`](https://schochastics.github.io/webtrackR/reference/add_previous_visit.md),
-  [`add_title()`](https://schochastics.github.io/webtrackR/reference/add_title.md),
-  [`add_referral()`](https://schochastics.github.io/webtrackR/reference/add_referral.md)
+  [`add_session()`](https://gesistsa.github.io/webtrackR/reference/add_session.md),
+  [`extract_host()`](https://gesistsa.github.io/webtrackR/reference/extract_host.md),
+  [`extract_domain()`](https://gesistsa.github.io/webtrackR/reference/extract_domain.md),
+  [`extract_path()`](https://gesistsa.github.io/webtrackR/reference/extract_path.md),
+  [`add_next_visit()`](https://gesistsa.github.io/webtrackR/reference/add_next_visit.md),
+  [`add_previous_visit()`](https://gesistsa.github.io/webtrackR/reference/add_previous_visit.md),
+  [`add_title()`](https://gesistsa.github.io/webtrackR/reference/add_title.md),
+  [`add_referral()`](https://gesistsa.github.io/webtrackR/reference/add_referral.md)
 - changed example data to something more realistic
 - added unit tests
   ([\#65](https://github.com/gesistsa/webtrackR/issues/65))

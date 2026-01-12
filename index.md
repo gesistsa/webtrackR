@@ -8,10 +8,9 @@ survey data of the same participants.
 `webtrackR` is part of a series of R packages to analyse webtracking
 data:
 
-- [webtrackR](https://github.com/schochastics/webtrackR): preprocess raw
+- [webtrackR](https://github.com/gesistsa/webtrackR): preprocess raw
   webtracking data
-- [domainator](https://github.com/schochastics/domainator): classify
-  domains
+- [domainator](https://github.com/gesistsa/domainator): classify domains
 - [adaR](https://github.com/gesistsa/adaR): parse urls
 
 ## Installation
@@ -21,7 +20,7 @@ You can install the development version of webtrackR from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("schochastics/webtrackR")
+devtools::install_github("gesistsa/webtrackR")
 ```
 
 The [CRAN](https://CRAN.R-project.org/package=webtrackR) version can be
@@ -57,63 +56,63 @@ Otherwise an error is thrown.
 Several other variables can be derived from the raw data with the
 following functions:
 
-- [`add_duration()`](https://schochastics.github.io/webtrackR/reference/add_duration.md)
+- [`add_duration()`](https://gesistsa.github.io/webtrackR/reference/add_duration.md)
   adds a variable called `duration` based on the sequence of timestamps.
   The basic logic is that the duration of a visit is set to the time
   difference to the subsequent visit, unless this difference exceeds a
   certain value (defined by argument `cutoff`), in which case the
   duration will be replaced by `NA` or some user-defined value (defined
   by `replace_by`).
-- [`add_session()`](https://schochastics.github.io/webtrackR/reference/add_session.md)
+- [`add_session()`](https://gesistsa.github.io/webtrackR/reference/add_session.md)
   adds a variable called `session`, which groups subsequent visits into
   a session until the difference to the next visit exceeds a certain
   value (defined by `cutoff`).
-- [`extract_host()`](https://schochastics.github.io/webtrackR/reference/extract_host.md),
-  [`extract_domain()`](https://schochastics.github.io/webtrackR/reference/extract_domain.md),
-  [`extract_path()`](https://schochastics.github.io/webtrackR/reference/extract_path.md)
+- [`extract_host()`](https://gesistsa.github.io/webtrackR/reference/extract_host.md),
+  [`extract_domain()`](https://gesistsa.github.io/webtrackR/reference/extract_domain.md),
+  [`extract_path()`](https://gesistsa.github.io/webtrackR/reference/extract_path.md)
   extracts the host, domain and path of the raw URL and adds variables
   named accordingly. See function descriptions for definitions of these
   terms.
-  [`drop_query()`](https://schochastics.github.io/webtrackR/reference/drop_query.md)
+  [`drop_query()`](https://gesistsa.github.io/webtrackR/reference/drop_query.md)
   lets you drop the query and fragment components of the raw URL.
-- [`add_next_visit()`](https://schochastics.github.io/webtrackR/reference/add_next_visit.md)
+- [`add_next_visit()`](https://gesistsa.github.io/webtrackR/reference/add_next_visit.md)
   and
-  [`add_previous_visit()`](https://schochastics.github.io/webtrackR/reference/add_previous_visit.md)
+  [`add_previous_visit()`](https://gesistsa.github.io/webtrackR/reference/add_previous_visit.md)
   adds the previous or the next URL, domain, or host (defined by
   `level`) as a new variable.
-- [`add_referral()`](https://schochastics.github.io/webtrackR/reference/add_referral.md)
+- [`add_referral()`](https://gesistsa.github.io/webtrackR/reference/add_referral.md)
   adds a new variable indicating whether a visit was referred by a
   social media platform. Follows the logic of Schmidt et al.,
   [(2023)](https://doi.org/10.31235/osf.io/cks68).
-- [`add_title()`](https://schochastics.github.io/webtrackR/reference/add_title.md)
+- [`add_title()`](https://gesistsa.github.io/webtrackR/reference/add_title.md)
   downloads the title of a website (the text within the `<title>` tag of
   a web site’s `<head>`) and adds it as a new variable.
-- [`add_panelist_data()`](https://schochastics.github.io/webtrackR/reference/add_panelist_data.md).
+- [`add_panelist_data()`](https://gesistsa.github.io/webtrackR/reference/add_panelist_data.md).
   Joins a data set containing information about participants such as a
   survey.
 
 ## Classification
 
-- [`classify_visits()`](https://schochastics.github.io/webtrackR/reference/classify_visits.md)
+- [`classify_visits()`](https://gesistsa.github.io/webtrackR/reference/classify_visits.md)
   categorizes website visits by either extracting the URL’s domain or
   host and matching them to a list of domains or hosts, or by matching a
   list of regular expressions against the visit URL.
 
 ## Summarizing and aggregating
 
-- [`deduplicate()`](https://schochastics.github.io/webtrackR/reference/deduplicate.md)
+- [`deduplicate()`](https://gesistsa.github.io/webtrackR/reference/deduplicate.md)
   flags or drops (as defined by argument `method`) consecutive visits to
   the same URL within a user-defined time frame (as set by argument
   `within`). Alternatively to dropping or flagging visits, the function
   aggregates the durations of such duplicate visits.
-- [`sum_visits()`](https://schochastics.github.io/webtrackR/reference/sum_visits.md)
+- [`sum_visits()`](https://gesistsa.github.io/webtrackR/reference/sum_visits.md)
   and
-  [`sum_durations()`](https://schochastics.github.io/webtrackR/reference/sum_durations.md)
+  [`sum_durations()`](https://gesistsa.github.io/webtrackR/reference/sum_durations.md)
   aggregate the number or the durations of visits, by participant and by
   a time period (as set by argument `timeframe`). Optionally, the
   function aggregates the number / duration of visits to a certain class
   of visits.
-- [`sum_activity()`](https://schochastics.github.io/webtrackR/reference/sum_activity.md)
+- [`sum_activity()`](https://gesistsa.github.io/webtrackR/reference/sum_activity.md)
   counts the number of active time periods (defined by `timeframe`) by
   participant.
 
