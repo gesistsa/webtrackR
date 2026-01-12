@@ -9,9 +9,9 @@
 status](https://www.r-pkg.org/badges/version/webtrackR)](https://CRAN.R-project.org/package=webtrackR)
 [![CRAN
 Downloads](https://cranlogs.r-pkg.org/badges/webtrackR)](https://CRAN.R-project.org/package=webtrackR)
-[![R-CMD-check](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/schochastics/webtrackR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/gesistsa/webtrackR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/gesistsa/webtrackR/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/schochastics/webtrackR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/schochastics/webtrackR?branch=main)
+coverage](https://codecov.io/gh/gesistsa/webtrackR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/gesistsa/webtrackR?branch=main)
 <!-- badges: end -->
 
 webtrackR is an R package to preprocess and analyze web tracking data,
@@ -22,10 +22,9 @@ survey data of the same participants.
 `webtrackR` is part of a series of R packages to analyse webtracking
 data:
 
-- [webtrackR](https://github.com/schochastics/webtrackR): preprocess raw
+- [webtrackR](https://github.com/gesistsa/webtrackR): preprocess raw
   webtracking data
-- [domainator](https://github.com/schochastics/domainator): classify
-  domains
+- [domainator](https://github.com/gesistsa/domainator): classify domains
 - [adaR](https://github.com/gesistsa/adaR): parse urls
 
 ## Installation
@@ -35,7 +34,7 @@ You can install the development version of webtrackR from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("schochastics/webtrackR")
+devtools::install_github("gesistsa/webtrackR")
 ```
 
 The [CRAN](https://CRAN.R-project.org/package=webtrackR) version can be
