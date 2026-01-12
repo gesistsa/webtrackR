@@ -14,11 +14,9 @@ Stier et al., 2022
 
 Useful links:
 
-- <https://github.com/schochastics/webtrackR>
+- <https://github.com/gesistsa/webtrackR>
 
-- <https://schochastics.github.io/webtrackR/>
-
-- Report bugs at <https://github.com/schochastics/webtrackR/issues>
+- Report bugs at <https://github.com/gesistsa/webtrackR/issues>
 
 ## Author
 
