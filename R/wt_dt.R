@@ -41,7 +41,7 @@ as.wt_dt <- function(x, timestamp_format = "%Y-%m-%d %H:%M:%OS", tz = "UTC",
         x <- data.table::as.data.table(x)
     }
     vars_exist(x, vars = varnames)
-    x[, varnames[["timestamp"]] := as.POSIXct(get(varnames[["timestamp"]]), format = timestamp_format)]
+    x[, varnames[["timestamp"]] := as.POSIXct(get(varnames[["timestamp"]]), format = timestamp_format, tz = tz)]
     data.table::setnames(x, unname(varnames), names(varnames))
     data.table::setorder(x, panelist_id, timestamp)
     # class(x) <- c("wt_dt", class(x))
