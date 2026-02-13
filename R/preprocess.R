@@ -309,6 +309,36 @@ extract_path <- function(wt, varname = "url", decode = TRUE) {
     wt
 }
 
+#' Extract the query from URL
+#' @description
+#' `extract_query()` adds the query string of a URL as a new column.
+#' The query is defined as the part following a "?" after the path
+#' but not including a fragment (anything after a "#").
+#' @param wt webtrack data object
+#' @param varname character. name of the column from which to extract the host. Defaults to `"url"`.
+#' @param decode logical. Whether to decode the query (see [utils::URLdecode()]), default to TRUE
+#' @return webtrack data.frame with the same columns as wt
+#' and a new column called `'query'` (or, if varname not equal to `'url'`, `'<varname>_query'`)
+#' @examples
+#' \dontrun{
+#' data("testdt_tracking")
+#' wt <- as.wt_dt(testdt_tracking)
+#' # Extract query
+#' wt <- extract_query(wt)
+#' }
+#' @export
+extract_query <- function(wt, varname = "url", decode = TRUE) {
+    abort_if_not_wtdt(wt)
+    vars_exist(wt, varname)
+    query <- adaR::ada_get_search(wt[[varname]], decode = decode)
+    if (varname == "url") {
+        wt[["query"]] <- query
+    } else {
+        wt[[paste0(varname, "_query")]] <- query
+    }
+    wt
+}
+
 #' Drop the query and fragment from URL
 #' @description
 #' `drop_query()` adds the URL without query and fragment as a new column.

@@ -213,6 +213,35 @@ test_that("parse_path testdt_specific", {
     expect_true(wt_path$path_split[wt_path$url == "https://www.youtube.com/"][1] == "")
 })
 
+test_that("extract_query", {
+    data("testdt_tracking")
+    wt <- as.wt_dt(testdt_tracking)
+    wt_query <- extract_query(wt)
+    expect_true("query" %in% names(wt_query))
+    wt$other_url <- wt$url
+    wt_query <- extract_query(wt, varname = "other_url")
+    expect_true("other_url_query" %in% names(wt_query))
+})
+
+test_that("extract_query errors", {
+    data("testdt_tracking")
+    wt <- as.wt_dt(testdt_tracking)
+    expect_error(extract_query(wt, varname = "not_a_variable"))
+})
+
+test_that("extract_query testdt_specific", {
+    data("testdt_tracking")
+    wt <- as.wt_dt(testdt_tracking)
+    wt_query <- extract_query(wt)
+    # first row has no query
+    expect_true(wt_query[1, "query"] == "")
+    # check a row with a query
+    wt_queries <- wt[grep("\\?", wt$url), ]
+    wt_queries <- extract_query(wt_queries)
+    expect_true(nchar(wt_queries[1, "query"]) > 0)
+    expect_true(grepl("^\\?", wt_queries[1, "query"]))
+})
+
 test_that("drop_query", {
     data("testdt_tracking")
     wt <- as.wt_dt(testdt_tracking)
