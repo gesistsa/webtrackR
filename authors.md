@@ -12,6 +12,9 @@
 
 - **Sebastian Stier**. Author. [](https://orcid.org/0000-0002-1217-5778)
 
+- **Maximilian Haag**. Contributor.
+  [](https://orcid.org/0000-0002-0334-9270)
+
 ## Citation
 
 Source:

@@ -70,10 +70,11 @@ following functions:
   value (defined by `cutoff`).
 - [`extract_host()`](https://gesistsa.github.io/webtrackR/reference/extract_host.md),
   [`extract_domain()`](https://gesistsa.github.io/webtrackR/reference/extract_domain.md),
-  [`extract_path()`](https://gesistsa.github.io/webtrackR/reference/extract_path.md)
-  extracts the host, domain and path of the raw URL and adds variables
-  named accordingly. See function descriptions for definitions of these
-  terms.
+  [`extract_path()`](https://gesistsa.github.io/webtrackR/reference/extract_path.md),
+  [`extract_query()`](https://gesistsa.github.io/webtrackR/reference/extract_query.md)
+  extracts the host, domain, path, and query string of the raw URL and
+  adds variables named accordingly. See function descriptions for
+  definitions of these terms.
   [`drop_query()`](https://gesistsa.github.io/webtrackR/reference/drop_query.md)
   lets you drop the query and fragment components of the raw URL.
 - [`add_next_visit()`](https://gesistsa.github.io/webtrackR/reference/add_next_visit.md)
@@ -192,6 +193,8 @@ wt_summ <- sum_visits(wt, timeframe = "date", visit_class = "type")
   : Extract the host from URL
 - [`extract_path()`](https://gesistsa.github.io/webtrackR/reference/extract_path.md)
   : Extract the path from URL
+- [`extract_query()`](https://gesistsa.github.io/webtrackR/reference/extract_query.md)
+  : Extract the query from URL
 - [`fake_tracking`](https://gesistsa.github.io/webtrackR/reference/fake_tracking.md)
   : Fake data
 - [`isolation_index()`](https://gesistsa.github.io/webtrackR/reference/isolation_index.md)

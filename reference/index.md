@@ -40,6 +40,8 @@
   : Extract the host from URL
 - [`extract_path()`](https://gesistsa.github.io/webtrackR/reference/extract_path.md)
   : Extract the path from URL
+- [`extract_query()`](https://gesistsa.github.io/webtrackR/reference/extract_query.md)
+  : Extract the query from URL
 - [`fake_tracking`](https://gesistsa.github.io/webtrackR/reference/fake_tracking.md)
   : Fake data
 - [`isolation_index()`](https://gesistsa.github.io/webtrackR/reference/isolation_index.md)
