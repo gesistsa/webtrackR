@@ -9,7 +9,9 @@ Authors@R: c(
     person("Frank", "Mangold", email = "frank.mangold@gesis.org", role = "aut",
            comment = c(ORCID = "0000-0002-9776-3113")),
     person("Sebastian", "Stier", email = "sebastian.stier@gesis.org", role = "aut",
-           comment = c(ORCID = "0000-0002-1217-5778"))
+           comment = c(ORCID = "0000-0002-1217-5778")),
+    person("Maximilian", "Haag", email = "maximilian.haag@gesis.org", role = "ctb",
+           comment = c(ORCID = "0000-0002-0334-9270"))
     )
 Description: Data structures and methods to work with web tracking data. The functions cover data preprocessing steps, enriching web tracking data with external information and methods for the analysis of digital behavior as used in several academic papers (e.g., Clemm von Hohenberg et al., 2023 <doi:10.17605/OSF.IO/M3U9P>; Stier et al., 2022 <doi:10.1017/S0003055421001222>).
 URL: https://github.com/gesistsa/webtrackR

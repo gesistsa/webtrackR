@@ -80,11 +80,11 @@ following functions:
 - `add_session()` adds a variable called `session`, which groups
   subsequent visits into a session until the difference to the next
   visit exceeds a certain value (defined by `cutoff`).
-- `extract_host()`, `extract_domain()`, `extract_path()` extracts the
-  host, domain and path of the raw URL and adds variables named
-  accordingly. See function descriptions for definitions of these terms.
-  `drop_query()` lets you drop the query and fragment components of the
-  raw URL.
+- `extract_host()`, `extract_domain()`, `extract_path()`,
+  `extract_query()` extracts the host, domain, path, and query string of
+  the raw URL and adds variables named accordingly. See function
+  descriptions for definitions of these terms. `drop_query()` lets you
+  drop the query and fragment components of the raw URL.
 - `add_next_visit()` and `add_previous_visit()` adds the previous or the
   next URL, domain, or host (defined by `level`) as a new variable.
 - `add_referral()` adds a new variable indicating whether a visit was
